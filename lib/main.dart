@@ -1,6 +1,6 @@
 import 'package:event_app/features/auth/auth_state_notifier.dart';
 import 'package:event_app/features/auth/sign_in_screen.dart';
-import 'package:event_app/features/home/home_page.dart';
+import 'package:event_app/features/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -40,17 +40,12 @@ class App extends StatelessWidget {
       final bool loggedIn = _authState.loggedIn;
       final bool loggingIn = state.subloc == '/login';
 
-      if (!loggedIn) {
-        return '/login';
-      }
+      if (!loggedIn) return '/login';
 
-      if (loggingIn) {
-        return '/';
-      }
+      if (loggingIn) return '/';
 
       return null;
     },
-    // changes on the listenable will cause the router to refresh it's route
     refreshListenable: _authState,
   );
 }
