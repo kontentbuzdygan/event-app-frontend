@@ -1,4 +1,4 @@
-import 'package:event_app/features/auth/auth_state_notifier.dart';
+import 'package:event_app/features/auth/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,13 +16,13 @@ class HomeScreen extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             onPressed: authState.logout,
-            tooltip: 'Logout: ${authState.userName}',
+            tooltip: "Logout: ${authState.userToken}",
             icon: const Icon(Icons.logout),
           )
         ],
       ),
       body: const Center(
-        child: Text('HomeScreen'),
+        child: Text("HomeScreen"),
       ),
     );
   }

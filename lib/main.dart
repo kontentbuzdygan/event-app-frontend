@@ -1,4 +1,4 @@
-import 'package:event_app/features/auth/auth_state_notifier.dart';
+import 'package:event_app/features/auth/auth_state.dart';
 import 'package:event_app/features/auth/sign_in_screen.dart';
 import 'package:event_app/features/home/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -38,11 +38,11 @@ class App extends StatelessWidget {
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final bool loggedIn = _authState.loggedIn;
-      final bool loggingIn = state.subloc == '/login';
+      final bool loggingIn = state.subloc == "/login";
 
-      if (!loggedIn) return '/login';
+      if (!loggedIn) return "/login";
 
-      if (loggingIn) return '/';
+      if (loggingIn) return "/";
 
       return null;
     },

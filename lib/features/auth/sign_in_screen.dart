@@ -1,4 +1,4 @@
-import 'package:event_app/features/auth/auth_state_notifier.dart';
+import 'package:event_app/features/auth/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,20 +7,26 @@ class SignInScreen extends StatelessWidget {
   final String title;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text(title)),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  context.read<AuthState>().login('test-user');
-                },
-                child: const Text('Login'),
-              ),
-            ],
-          ),
+  Widget build(BuildContext context) {
+    final bool loading = Provider.of<AuthState>(context).loading;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: !loading
+                  ? () {
+                      context.read<AuthState>().login("test", "test");
+                    }
+                  : null,
+              child: const Text("Login"),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 }
