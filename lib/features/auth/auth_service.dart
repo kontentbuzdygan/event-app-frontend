@@ -1,6 +1,4 @@
 class AuthService {
-  static Future<String> signIn(String username, String password) {
-    return Future.delayed(const Duration(seconds: 2))
-        .then((value) => "user_token");
-  }
+  static Future<String> signIn(String username, String password) =>
+      Future.delayed(const Duration(seconds: 2)).then((_) => "user_token");
 }

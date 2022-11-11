@@ -1,6 +1,6 @@
-import 'package:event_app/features/auth/auth_state.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import "package:event_app/features/auth/auth_state.dart";
+import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key, required this.title}) : super(key: key);
