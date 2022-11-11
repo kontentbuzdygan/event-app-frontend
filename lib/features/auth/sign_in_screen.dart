@@ -18,9 +18,7 @@ class SignInScreen extends StatelessWidget {
           children: <Widget>[
             ElevatedButton(
               onPressed: !loading
-                  ? () {
-                      context.read<AuthState>().login("test", "test");
-                    }
+                  ? () => context.read<AuthState>().login("test", "test")
                   : null,
               child: const Text("Login"),
             ),
