@@ -8,7 +8,7 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool loading = Provider.of<AuthState>(context).loading;
+    final authState = context.watch<AuthState>();
 
     return Scaffold(
       appBar: AppBar(title: Text(title)),
@@ -17,8 +17,8 @@ class SignInScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              onPressed: !loading
-                  ? () => context.read<AuthState>().login("test", "test")
+              onPressed: authState.canLogIn
+                  ? () => authState.login("test", "test")
                   : null,
               child: const Text("Login"),
             ),

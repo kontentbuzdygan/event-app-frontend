@@ -8,20 +8,10 @@ import 'package:provider/provider.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget {
-  App({Key? key}) : super(key: key);
+  App({super.key});
 
-  final AuthState _authState = AuthState();
   static const String title = 'Event App';
-
-  @override
-  Widget build(BuildContext context) => ChangeNotifierProvider<AuthState>.value(
-        value: _authState,
-        child: MaterialApp.router(
-          routerConfig: _router,
-          title: title,
-          debugShowCheckedModeBanner: false,
-        ),
-      );
+  final AuthState _authState = AuthState();
 
   late final GoRouter _router = GoRouter(
     routes: <GoRoute>[
@@ -37,15 +27,20 @@ class App extends StatelessWidget {
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
-      final bool loggedIn = _authState.loggedIn;
-      final bool loggingIn = state.subloc == "/login";
-
-      if (!loggedIn) return "/login";
-
-      if (loggingIn) return "/";
-
+      if (!_authState.loggedIn) return "/login";
+      if (state.subloc == "/login") return "/";
       return null;
     },
     refreshListenable: _authState,
   );
+
+  @override
+  Widget build(BuildContext context) => ChangeNotifierProvider<AuthState>.value(
+        value: _authState,
+        child: MaterialApp.router(
+          routerConfig: _router,
+          title: title,
+          debugShowCheckedModeBanner: false,
+        ),
+      );
 }

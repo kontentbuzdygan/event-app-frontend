@@ -11,6 +11,7 @@ class AuthState extends ChangeNotifier {
   String? get error => _error;
   String? _error;
 
+  bool get canLogIn => _userToken == null && !_loading;
   bool get loggedIn => _userToken != null;
 
   void login(String username, String password) async {
