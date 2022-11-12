@@ -18,7 +18,7 @@ class SignInScreen extends StatelessWidget {
           children: <Widget>[
             ElevatedButton(
               onPressed: authState.canLogIn
-                  ? () => authState.login("test", "test")
+                  ? () => authState.signIn("test@example.com", "test1234")
                   : null,
               child: const Text("Login"),
             ),

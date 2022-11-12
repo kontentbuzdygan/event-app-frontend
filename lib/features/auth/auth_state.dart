@@ -14,22 +14,43 @@ class AuthState extends ChangeNotifier {
   bool get canLogIn => _userToken == null && !_loading;
   bool get loggedIn => _userToken != null;
 
-  void login(String username, String password) async {
+  void signIn(String email, String password) async {
     _loading = true;
     notifyListeners();
 
-    try {
-      _userToken = await AuthService.signIn(username, password);
-    } catch (e) {
-      _error = e.toString();
+    final loginResponse = await AuthService.signIn(email, password);
+
+    if (loginResponse is SignInSuccess) {
+      _userToken = loginResponse.authToken;
+    } else if (loginResponse is AuthInvalidCredentials) {
+      _error = "Invalid login credentials";
+    } else if (loginResponse is AuthUnexpectedException) {
+      // _error = loginResponse.exception.toString();
+    } else {
+      throw ArgumentError.value(
+        loginResponse,
+        "loginResponse",
+        "Unexpected subtype of LoginResponse",
+      );
     }
 
     _loading = false;
     notifyListeners();
   }
 
-  void logout() {
-    _userToken = null;
+  void signOut(String token) async {
+    _loading = true;
+    notifyListeners();
+
+    final signOutResponse = await AuthService.signOut(token);
+
+    if (signOutResponse is SignOutSuccess) {
+      _userToken = null;
+    } else {
+      // elo
+    }
+
+    _loading = false;
     notifyListeners();
   }
 }

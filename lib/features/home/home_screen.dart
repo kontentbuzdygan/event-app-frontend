@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
         title: Text(title),
         actions: <Widget>[
           IconButton(
-            onPressed: authState.logout,
+            onPressed: () => authState.signOut(authState.userToken!),
             tooltip: "Logout: ${authState.userToken}",
             icon: const Icon(Icons.logout),
           )
