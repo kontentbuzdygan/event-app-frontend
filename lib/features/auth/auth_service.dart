@@ -21,12 +21,11 @@ class AuthService {
       }),
     );
 
-    _handleStatus(res.statusCode);
-
     if (res.statusCode == 200) {
       return jsonDecode(res.body)["token"];
     }
 
+    _handleStatus(res.statusCode);
     throw UnexpectedException();
   }
 
@@ -42,12 +41,15 @@ class AuthService {
       }),
     );
 
-    _handleStatus(res.statusCode);
+    if (res.statusCode == 201) return;
 
-    if (res.statusCode == 201) {
-      return;
+    if (res.statusCode == 409) {
+      throw InvalidCredentials(
+        message: "An account with this email already exists",
+      );
     }
 
+    _handleStatus(res.statusCode);
     throw UnexpectedException();
   }
 
@@ -59,12 +61,44 @@ class AuthService {
       },
     );
 
+    if (res.statusCode == 200) return;
+
     _handleStatus(res.statusCode);
+    throw UnexpectedException();
+  }
+
+  static Future<String> refreshToken(String token) async {
+    final res = await http.post(
+      _endpoint("refresh"),
+      headers: {
+        HttpHeaders.authorizationHeader: "Bearer $token",
+      },
+    );
 
     if (res.statusCode == 200) {
-      return;
+      return jsonDecode(res.body)["token"];
     }
 
+    _handleStatus(res.statusCode);
+    throw UnexpectedException();
+  }
+
+  static Future<bool> userExists(String email) async {
+    final res = await http.post(
+      _endpoint("user-exists"),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        "email": email,
+      }),
+    );
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body)["user_exists"];
+    }
+
+    _handleStatus(res.statusCode);
     throw UnexpectedException();
   }
 

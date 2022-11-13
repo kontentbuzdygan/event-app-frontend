@@ -23,13 +23,49 @@ class AuthState extends ChangeNotifier {
     }
   }
 
-  void signOut(String token) async {
+  Future<void> signUp(String email, String password) async {
+    _loading = true;
+    notifyListeners();
+
+    try {
+      await AuthService.signUp(email, password);
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> signOut(String token) async {
     _loading = true;
     notifyListeners();
 
     try {
       await AuthService.signOut(token);
       _userToken = null;
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> refreshToken(String token) async {
+    _loading = true;
+    notifyListeners();
+
+    try {
+      _userToken = await AuthService.refreshToken(token);
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> userExists(String email) async {
+    _loading = true;
+    notifyListeners();
+
+    try {
+      return await AuthService.userExists(email);
     } finally {
       _loading = false;
       notifyListeners();

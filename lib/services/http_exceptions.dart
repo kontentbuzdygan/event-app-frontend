@@ -6,9 +6,13 @@ class NoInternet implements Exception {
 }
 
 class InvalidCredentials implements Exception {
+  String? message;
+
+  InvalidCredentials({this.message});
+
   @override
   String toString() {
-    return "Invalid credentials";
+    return message ?? "Invalid credentials";
   }
 }
 
