@@ -8,14 +8,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthState authState = context.read<AuthState>();
+    final AuthState authState = context.watch<AuthState>();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: <Widget>[
           IconButton(
-            onPressed: () => authState.signOut(authState.userToken!),
+            onPressed: () => authState.signOut(),
             tooltip: "Logout: ${authState.userToken}",
             icon: const Icon(Icons.logout),
           )

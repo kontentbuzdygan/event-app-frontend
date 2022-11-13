@@ -11,61 +11,33 @@ class AuthState extends ChangeNotifier {
   bool get canLogIn => _userToken == null && !_loading;
   bool get loggedIn => _userToken != null;
 
-  Future<void> signIn(String email, String password) async {
+  Future<void> signIn(String email, String password) => _transition(() async {
+        _userToken = await AuthService.signIn(email, password);
+      });
+
+  Future<void> signUp(String email, String password) =>
+      _transition(() => AuthService.signUp(email, password));
+
+  Future<void> signOut() => _transition(() async {
+        if (_userToken == null) return;
+        await AuthService.signOut(_userToken!);
+        _userToken = null;
+      });
+
+  Future<void> refreshToken() => _transition(() async {
+        if (_userToken == null) return;
+        _userToken = await AuthService.refreshToken(_userToken!);
+      });
+
+  Future<bool> userExists(String email) =>
+      _transition(() => AuthService.userExists(email));
+
+  Future<T> _transition<T>(Future<T> Function() f) async {
     _loading = true;
     notifyListeners();
 
     try {
-      _userToken = await AuthService.signIn(email, password);
-    } finally {
-      _loading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> signUp(String email, String password) async {
-    _loading = true;
-    notifyListeners();
-
-    try {
-      await AuthService.signUp(email, password);
-    } finally {
-      _loading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> signOut(String token) async {
-    _loading = true;
-    notifyListeners();
-
-    try {
-      await AuthService.signOut(token);
-      _userToken = null;
-    } finally {
-      _loading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> refreshToken(String token) async {
-    _loading = true;
-    notifyListeners();
-
-    try {
-      _userToken = await AuthService.refreshToken(token);
-    } finally {
-      _loading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<bool> userExists(String email) async {
-    _loading = true;
-    notifyListeners();
-
-    try {
-      return await AuthService.userExists(email);
+      return await f();
     } finally {
       _loading = false;
       notifyListeners();
