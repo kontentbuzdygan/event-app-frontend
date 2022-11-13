@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:event_app/services/http.dart';
+import 'package:event_app/services/config.dart';
+import 'package:event_app/services/http_exceptions.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
