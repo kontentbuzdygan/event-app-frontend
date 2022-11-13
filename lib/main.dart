@@ -1,5 +1,5 @@
 import "package:event_app/features/auth/auth_state.dart";
-import "package:event_app/features/auth/sign_in_screen.dart";
+import 'package:event_app/features/auth/auth_screen.dart';
 import "package:event_app/features/home/home_screen.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
@@ -21,14 +21,14 @@ class App extends StatelessWidget {
             const HomeScreen(title: "Dom"),
       ),
       GoRoute(
-        path: "/login",
+        path: "/auth",
         builder: (BuildContext context, GoRouterState state) =>
-            const SignInScreen(title: "Sign In Screen"),
+            const SignInScreen(),
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
-      if (!_authState.loggedIn) return "/login";
-      if (state.subloc == "/login") return "/";
+      if (!_authState.loggedIn) return "/auth";
+      if (state.subloc == "/auth") return "/";
       return null;
     },
     refreshListenable: _authState,
