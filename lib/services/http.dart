@@ -1,19 +1,22 @@
 const baseUri = "http://localhost:8001/api/v0";
 
-abstract class HttpResponse {}
-
-abstract class ResponseSuccess implements HttpResponse {}
-
-abstract class ResponseFailure implements HttpResponse {}
-
-class NoInternet implements ResponseFailure {
-  const NoInternet();
+class NoInternet implements Exception {
+  @override
+  String toString() {
+    return "No internet connection";
+  }
 }
 
-class InvalidCredentials implements ResponseFailure {
-  const InvalidCredentials();
+class InvalidCredentials implements Exception {
+  @override
+  String toString() {
+    return "Invalid credentials";
+  }
 }
 
-class UnexpectedException implements ResponseFailure {
-  const UnexpectedException();
+class UnexpectedException implements Exception {
+  @override
+  String toString() {
+    return "Unexpected exception";
+  }
 }

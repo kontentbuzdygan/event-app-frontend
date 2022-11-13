@@ -8,7 +8,7 @@ class AuthService {
     return Uri.parse("$baseUri/auth/$endpoint");
   }
 
-  static Future<HttpResponse> signIn(String email, String password) async {
+  static Future<String> signIn(String email, String password) async {
     final res = await http.post(
       _endpoint("sign-in"),
       headers: <String, String>{
@@ -20,14 +20,16 @@ class AuthService {
       }),
     );
 
+    _handleStatus(res.statusCode);
+
     if (res.statusCode == 200) {
-      return SignInSuccess.fromJson(jsonDecode(res.body));
+      return jsonDecode(res.body)["token"];
     }
 
-    return _handleStatus(res.statusCode);
+    throw UnexpectedException();
   }
 
-  static Future<HttpResponse> signUp(String email, String password) async {
+  static Future<void> signUp(String email, String password) async {
     final res = await http.post(
       _endpoint("sign-up"),
       headers: <String, String>{
@@ -39,14 +41,16 @@ class AuthService {
       }),
     );
 
+    _handleStatus(res.statusCode);
+
     if (res.statusCode == 201) {
-      return const SignUpSuccess();
+      return;
     }
 
-    return _handleStatus(res.statusCode);
+    throw UnexpectedException();
   }
 
-  static Future<HttpResponse> signOut(String token) async {
+  static Future<void> signOut(String token) async {
     final res = await http.delete(
       _endpoint("sign-out"),
       headers: <String, String>{
@@ -54,35 +58,18 @@ class AuthService {
       },
     );
 
+    _handleStatus(res.statusCode);
+
     if (res.statusCode == 200) {
-      return const SignOutSuccess();
+      return;
     }
 
-    return _handleStatus(res.statusCode);
+    throw UnexpectedException();
   }
 
-  static HttpResponse _handleStatus(int statusCode) {
+  static void _handleStatus(int statusCode) {
     if (statusCode == 401) {
-      return const InvalidCredentials();
+      throw InvalidCredentials();
     }
-
-    return const UnexpectedException();
   }
-}
-
-class SignInSuccess implements ResponseSuccess {
-  final String authToken;
-  const SignInSuccess(this.authToken);
-
-  factory SignInSuccess.fromJson(Map<String, dynamic> json) {
-    return SignInSuccess(json["token"]);
-  }
-}
-
-class SignUpSuccess implements ResponseSuccess {
-  const SignUpSuccess();
-}
-
-class SignOutSuccess implements ResponseSuccess {
-  const SignOutSuccess();
 }

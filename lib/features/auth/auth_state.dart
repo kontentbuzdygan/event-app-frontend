@@ -1,5 +1,4 @@
 import 'package:event_app/features/auth/auth_service.dart';
-import 'package:event_app/services/http.dart';
 import 'package:flutter/material.dart';
 
 class AuthState extends ChangeNotifier {
@@ -16,18 +15,11 @@ class AuthState extends ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    final loginResponse = await AuthService.signIn(email, password);
-
-    _loading = false;
-    notifyListeners();
-
-    if (loginResponse is SignInSuccess) {
-      _userToken = loginResponse.authToken;
+    try {
+      _userToken = await AuthService.signIn(email, password);
+    } finally {
+      _loading = false;
       notifyListeners();
-    } else if (loginResponse is InvalidCredentials) {
-      throw Exception("Invalid login credentials");
-    } else {
-      throw Exception("Unexpected exception");
     }
   }
 
@@ -35,15 +27,12 @@ class AuthState extends ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    final signOutResponse = await AuthService.signOut(token);
-
-    if (signOutResponse is SignOutSuccess) {
+    try {
+      await AuthService.signOut(token);
       _userToken = null;
-    } else {
-      throw Exception("Unexpected exception");
+    } finally {
+      _loading = false;
+      notifyListeners();
     }
-
-    _loading = false;
-    notifyListeners();
   }
 }
