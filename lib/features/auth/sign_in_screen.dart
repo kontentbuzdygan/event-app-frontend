@@ -10,6 +10,16 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authState = context.watch<AuthState>();
 
+    Future<void> signIn(String email, String password) async {
+      try {
+        await authState.signIn(email, password);
+      } catch (e) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: Center(
@@ -18,7 +28,7 @@ class SignInScreen extends StatelessWidget {
           children: <Widget>[
             ElevatedButton(
               onPressed: authState.canLogIn
-                  ? () => authState.login("test", "test")
+                  ? () => signIn("test@example.com", "test1234")
                   : null,
               child: const Text("Login"),
             ),

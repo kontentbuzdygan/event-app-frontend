@@ -8,28 +8,39 @@ class AuthState extends ChangeNotifier {
   bool get loading => _loading;
   bool _loading = false;
 
-  String? get error => _error;
-  String? _error;
-
   bool get canLogIn => _userToken == null && !_loading;
   bool get loggedIn => _userToken != null;
 
-  void login(String username, String password) async {
+  Future<void> signIn(String email, String password) => _transition(() async {
+        _userToken = await AuthService.signIn(email, password);
+      });
+
+  Future<void> signUp(String email, String password) =>
+      _transition(() => AuthService.signUp(email, password));
+
+  Future<void> signOut() => _transition(() async {
+        if (_userToken == null) return;
+        await AuthService.signOut(_userToken!);
+        _userToken = null;
+      });
+
+  Future<void> refreshToken() => _transition(() async {
+        if (_userToken == null) return;
+        _userToken = await AuthService.refreshToken(_userToken!);
+      });
+
+  Future<bool> userExists(String email) =>
+      _transition(() => AuthService.userExists(email));
+
+  Future<T> _transition<T>(Future<T> Function() f) async {
     _loading = true;
     notifyListeners();
 
     try {
-      _userToken = await AuthService.signIn(username, password);
-    } catch (e) {
-      _error = e.toString();
+      return await f();
+    } finally {
+      _loading = false;
+      notifyListeners();
     }
-
-    _loading = false;
-    notifyListeners();
-  }
-
-  void logout() {
-    _userToken = null;
-    notifyListeners();
   }
 }
