@@ -1,13 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:event_app/config.dart';
-import 'package:event_app/api/exceptions.dart';
-import 'package:http/http.dart' as http;
+import "dart:convert";
+import "dart:io";
+import "package:event_app/config.dart";
+import "package:event_app/api/exceptions.dart";
+import "package:http/http.dart" as http;
 
 class AuthService {
   static const _defaultHeaders = {
-    HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-    HttpHeaders.acceptHeader: 'application/json',
+    HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8",
+    HttpHeaders.acceptHeader: "application/json",
   };
 
   static Uri _endpoint(String? path) {
@@ -19,8 +19,8 @@ class AuthService {
       _endpoint("sign-in"),
       headers: _defaultHeaders,
       body: jsonEncode({
-        'email': email,
-        'password': password,
+        "email": email,
+        "password": password,
       }),
     );
 
@@ -36,8 +36,8 @@ class AuthService {
       _endpoint("sign-up"),
       headers: _defaultHeaders,
       body: jsonEncode({
-        'email': email,
-        'password': password,
+        "email": email,
+        "password": password,
       }),
     );
 
