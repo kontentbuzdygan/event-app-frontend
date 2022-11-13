@@ -12,10 +12,10 @@ class AuthService {
   static Future<String> signIn(String email, String password) async {
     final res = await http.post(
       _endpoint("sign-in"),
-      headers: <String, String>{
+      headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode({
         'email': email,
         'password': password,
       }),
@@ -33,10 +33,10 @@ class AuthService {
   static Future<void> signUp(String email, String password) async {
     final res = await http.post(
       _endpoint("sign-up"),
-      headers: <String, String>{
+      headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode({
         'email': email,
         'password': password,
       }),
@@ -54,7 +54,7 @@ class AuthService {
   static Future<void> signOut(String token) async {
     final res = await http.delete(
       _endpoint("sign-out"),
-      headers: <String, String>{
+      headers: {
         HttpHeaders.authorizationHeader: "Bearer $token",
       },
     );
