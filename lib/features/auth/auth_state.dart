@@ -1,5 +1,6 @@
-import "package:event_app/features/auth/auth_service.dart";
-import "package:flutter/material.dart";
+import 'package:event_app/features/auth/auth_service.dart';
+import 'package:event_app/services/http.dart';
+import 'package:flutter/material.dart';
 
 class AuthState extends ChangeNotifier {
   String? get userToken => _userToken;
@@ -8,34 +9,26 @@ class AuthState extends ChangeNotifier {
   bool get loading => _loading;
   bool _loading = false;
 
-  String? get error => _error;
-  String? _error;
-
   bool get canLogIn => _userToken == null && !_loading;
   bool get loggedIn => _userToken != null;
 
-  void signIn(String email, String password) async {
+  Future<void> signIn(String email, String password) async {
     _loading = true;
     notifyListeners();
 
     final loginResponse = await AuthService.signIn(email, password);
 
-    if (loginResponse is SignInSuccess) {
-      _userToken = loginResponse.authToken;
-    } else if (loginResponse is AuthInvalidCredentials) {
-      _error = "Invalid login credentials";
-    } else if (loginResponse is AuthUnexpectedException) {
-      // _error = loginResponse.exception.toString();
-    } else {
-      throw ArgumentError.value(
-        loginResponse,
-        "loginResponse",
-        "Unexpected subtype of LoginResponse",
-      );
-    }
-
     _loading = false;
     notifyListeners();
+
+    if (loginResponse is SignInSuccess) {
+      _userToken = loginResponse.authToken;
+      notifyListeners();
+    } else if (loginResponse is InvalidCredentials) {
+      throw Exception("Invalid login credentials");
+    } else {
+      throw Exception("Unexpected exception");
+    }
   }
 
   void signOut(String token) async {
@@ -47,7 +40,7 @@ class AuthState extends ChangeNotifier {
     if (signOutResponse is SignOutSuccess) {
       _userToken = null;
     } else {
-      // elo
+      throw Exception("Unexpected exception");
     }
 
     _loading = false;

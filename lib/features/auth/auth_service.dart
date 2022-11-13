@@ -1,17 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:event_app/services/http.dart';
 import 'package:http/http.dart' as http;
 
-const domain = "localhost:8001";
-const authBaseUrl = "/api/v0/auth";
-
 class AuthService {
-  static Future<AuthResponse> signIn(String email, String password) async {
-    final url = Uri.http(domain, "$authBaseUrl/sign-in");
+  static Uri _endpoint(String? endpoint) {
+    return Uri.parse("$baseUri/auth/$endpoint");
+  }
+
+  static Future<HttpResponse> signIn(String email, String password) async {
     final res = await http.post(
-      url,
+      _endpoint("sign-in"),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
         'email': email,
@@ -26,12 +27,11 @@ class AuthService {
     return _handleStatus(res.statusCode);
   }
 
-  static Future<AuthResponse> signUp(String email, String password) async {
-    final url = Uri.http(domain, "$authBaseUrl/sign-up");
+  static Future<HttpResponse> signUp(String email, String password) async {
     final res = await http.post(
-      url,
+      _endpoint("sign-up"),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
         'email': email,
@@ -46,10 +46,9 @@ class AuthService {
     return _handleStatus(res.statusCode);
   }
 
-  static Future<AuthResponse> signOut(String token) async {
-    final url = Uri.http(domain, "$authBaseUrl/sign-out");
+  static Future<HttpResponse> signOut(String token) async {
     final res = await http.delete(
-      url,
+      _endpoint("sign-out"),
       headers: <String, String>{
         HttpHeaders.authorizationHeader: "Bearer $token",
       },
@@ -62,30 +61,16 @@ class AuthService {
     return _handleStatus(res.statusCode);
   }
 
-  static AuthResponse _handleStatus(int statusCode) {
+  static HttpResponse _handleStatus(int statusCode) {
     if (statusCode == 401) {
-      return const AuthInvalidCredentials();
+      return const InvalidCredentials();
     }
 
-    return const AuthUnexpectedException();
+    return const UnexpectedException();
   }
 }
 
-abstract class AuthResponse {}
-
-class AuthInvalidCredentials implements AuthResponse {
-  const AuthInvalidCredentials();
-}
-
-class AuthNoInternetConnection implements AuthResponse {
-  const AuthNoInternetConnection();
-}
-
-class AuthUnexpectedException implements AuthResponse {
-  const AuthUnexpectedException();
-}
-
-class SignInSuccess implements AuthResponse {
+class SignInSuccess implements ResponseSuccess {
   final String authToken;
   const SignInSuccess(this.authToken);
 
@@ -94,10 +79,10 @@ class SignInSuccess implements AuthResponse {
   }
 }
 
-class SignUpSuccess implements AuthResponse {
+class SignUpSuccess implements ResponseSuccess {
   const SignUpSuccess();
 }
 
-class SignOutSuccess implements AuthResponse {
+class SignOutSuccess implements ResponseSuccess {
   const SignOutSuccess();
 }
