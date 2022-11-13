@@ -1,5 +1,5 @@
-import 'package:event_app/features/auth/auth_service.dart';
-import 'package:flutter/material.dart';
+import "package:event_app/features/auth/auth_service.dart";
+import "package:flutter/material.dart";
 
 class AuthState extends ChangeNotifier {
   String? get userToken => _userToken;
