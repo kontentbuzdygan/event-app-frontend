@@ -13,12 +13,8 @@ class SignInScreen extends StatefulWidget {
 
 class SignInScreenState extends State<SignInScreen>
     with TickerProviderStateMixin {
-  bool? proceedSignIn;
-
-  static const transitionTime = Duration(milliseconds: 300);
-
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 300),
+    duration: _transitionTime,
     vsync: this,
   );
 
@@ -27,6 +23,8 @@ class SignInScreenState extends State<SignInScreen>
     curve: Curves.fastOutSlowIn,
   );
 
+  static const _transitionTime = Duration(milliseconds: 300);
+  bool? _proceedSignIn;
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _form = GlobalKey<FormState>();
@@ -73,7 +71,7 @@ class SignInScreenState extends State<SignInScreen>
       try {
         final userExists = await authState.userExists(email);
         setState(() {
-          proceedSignIn = userExists;
+          _proceedSignIn = userExists;
         });
         _controller.forward();
       } catch (e) {
@@ -108,23 +106,23 @@ class SignInScreenState extends State<SignInScreen>
               Stack(
                 children: [
                   AnimatedOpacity(
-                    duration: transitionTime,
-                    opacity: proceedSignIn == null ? 0.0 : 1.0,
+                    duration: _transitionTime,
+                    opacity: _proceedSignIn == null ? 0.0 : 1.0,
                     child: AnimatedAlign(
                       curve: Curves.fastOutSlowIn,
-                      alignment: proceedSignIn == null
+                      alignment: _proceedSignIn == null
                           ? Alignment.center
                           : Alignment.centerLeft,
-                      duration: transitionTime,
+                      duration: _transitionTime,
                       child: buildGoBackButton(),
                     ),
                   ),
                   AnimatedAlign(
                     curve: Curves.fastOutSlowIn,
-                    alignment: proceedSignIn == null
+                    alignment: _proceedSignIn == null
                         ? Alignment.center
                         : Alignment.centerRight,
-                    duration: transitionTime,
+                    duration: _transitionTime,
                     child: buildContinueButton(
                       authState,
                       userExists,
@@ -144,15 +142,15 @@ class SignInScreenState extends State<SignInScreen>
   IconButton buildGoBackButton() {
     void goBack() {
       setState(() {
-        proceedSignIn = null;
+        _proceedSignIn = null;
+        _autovalidate = false;
       });
       _controller.reverse();
     }
 
     return IconButton(
-      onPressed: proceedSignIn != null ? goBack : null,
+      onPressed: _proceedSignIn != null ? goBack : null,
       icon: const Icon(Icons.arrow_back_rounded),
-      // color: Colors.blue,
     );
   }
 
@@ -164,15 +162,15 @@ class SignInScreenState extends State<SignInScreen>
   ) {
     void handleClick() {
       if (_form.currentState!.validate()) {
-        if (proceedSignIn == null) {
+        if (_proceedSignIn == null) {
           userExists(_email.text);
         }
 
-        if (proceedSignIn == true) {
+        if (_proceedSignIn == true) {
           signIn(_email.text, _password.text);
         }
 
-        if (proceedSignIn == false) {
+        if (_proceedSignIn == false) {
           signUp(_email.text, _password.text);
         }
       }
@@ -180,9 +178,9 @@ class SignInScreenState extends State<SignInScreen>
 
     return ElevatedButton(
       onPressed: authState.canLogIn ? handleClick : null,
-      child: (proceedSignIn == null)
+      child: (_proceedSignIn == null)
           ? const Text("Continue")
-          : proceedSignIn!
+          : _proceedSignIn!
               ? const Text("Sign In")
               : const Text("Sign Up"),
     );
@@ -190,7 +188,7 @@ class SignInScreenState extends State<SignInScreen>
 
   TextFormField buildPassword(AuthState authState) {
     String? validate(String? value) {
-      if (proceedSignIn != null) {
+      if (_proceedSignIn != null) {
         if (value == null || value.isEmpty) {
           return "Please enter some text";
         }
@@ -218,7 +216,7 @@ class SignInScreenState extends State<SignInScreen>
         border: const OutlineInputBorder(),
         labelText: "Password",
       ),
-      validator: (value) => proceedSignIn == true ? null : validate(value),
+      validator: (value) => _proceedSignIn == true ? null : validate(value),
     );
   }
 
@@ -239,8 +237,9 @@ class SignInScreenState extends State<SignInScreen>
 
     return TextFormField(
       controller: _email,
-      enabled: proceedSignIn == null,
-      style: proceedSignIn != null ? const TextStyle(color: Colors.grey) : null,
+      enabled: _proceedSignIn == null,
+      style:
+          _proceedSignIn != null ? const TextStyle(color: Colors.grey) : null,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
         labelText: "Email",
