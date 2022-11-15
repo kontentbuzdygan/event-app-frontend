@@ -112,7 +112,7 @@ class SignInScreenState extends State<SignInScreen>
           key: _form,
           child: Center(
             child: Container(
-              constraints: const BoxConstraints(minWidth: 100, maxWidth: 500),
+              constraints: const BoxConstraints(minWidth: 100, maxWidth: 350),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -138,7 +138,10 @@ class SignInScreenState extends State<SignInScreen>
                               ? Alignment.center
                               : Alignment.centerLeft,
                           duration: _transitionTime,
-                          child: _buildGoBackButton(),
+                          child: SizedBox(
+                            // width: doubl,
+                            child: _buildGoBackButton(),
+                          ),
                         ),
                       ),
                       AnimatedAlign(
@@ -165,7 +168,7 @@ class SignInScreenState extends State<SignInScreen>
     );
   }
 
-  IconButton _buildGoBackButton() {
+  GestureDetector _buildGoBackButton() {
     void goBack() {
       setState(() {
         _formAction = UserExists();
@@ -174,9 +177,12 @@ class SignInScreenState extends State<SignInScreen>
       _sizeAnimationController.reverse();
     }
 
-    return IconButton(
-      onPressed: _formAction is! UserExists ? goBack : null,
-      icon: const Icon(Icons.arrow_back_rounded),
+    return GestureDetector(
+      onTap: _formAction is! UserExists ? goBack : null,
+      child: const Icon(
+        Icons.arrow_back_rounded,
+        size: 30,
+      ),
     );
   }
 
