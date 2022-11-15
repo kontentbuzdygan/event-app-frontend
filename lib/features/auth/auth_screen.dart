@@ -11,21 +11,21 @@ class SignInScreen extends StatefulWidget {
   }
 }
 
-abstract class AuthFormState {
+abstract class AuthFormAction {
   String get buttonText;
 }
 
-class SignIn extends AuthFormState {
+class SignIn extends AuthFormAction {
   @override
   String buttonText = "Sign In";
 }
 
-class SignUp extends AuthFormState {
+class SignUp extends AuthFormAction {
   @override
   String buttonText = "Sign Up";
 }
 
-class UserExists extends AuthFormState {
+class UserExists extends AuthFormAction {
   @override
   String buttonText = "Continue";
 }
@@ -47,7 +47,7 @@ class SignInScreenState extends State<SignInScreen>
     curve: Curves.fastOutSlowIn,
   );
 
-  AuthFormState _formAction = UserExists();
+  AuthFormAction _formAction = UserExists();
 
   bool _autoValidate = false;
   bool _showPassword = false;
