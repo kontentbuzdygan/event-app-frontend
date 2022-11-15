@@ -110,50 +110,55 @@ class SignInScreenState extends State<SignInScreen>
           autovalidateMode:
               _autoValidate ? AutovalidateMode.onUserInteraction : null,
           key: _form,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _buildEmailField(),
-              SizeTransition(
-                sizeFactor: _sizeAnimation,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 12),
-                    _buildPasswordField(authState),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              Stack(
-                children: [
-                  AnimatedOpacity(
-                    duration: _transitionTime,
-                    opacity: _formAction is UserExists ? 0.0 : 1.0,
-                    child: AnimatedAlign(
-                      curve: Curves.fastOutSlowIn,
-                      alignment: _formAction is UserExists
-                          ? Alignment.center
-                          : Alignment.centerLeft,
-                      duration: _transitionTime,
-                      child: _buildGoBackButton(),
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(minWidth: 100, maxWidth: 500),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _buildEmailField(),
+                  SizeTransition(
+                    sizeFactor: _sizeAnimation,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 12),
+                        _buildPasswordField(authState),
+                      ],
                     ),
                   ),
-                  AnimatedAlign(
-                    curve: Curves.fastOutSlowIn,
-                    alignment: _formAction is UserExists
-                        ? Alignment.center
-                        : Alignment.centerRight,
-                    duration: _transitionTime,
-                    child: _buildContinueButton(
-                      authState,
-                      userExists,
-                      signIn,
-                      signUp,
-                    ),
+                  const SizedBox(height: 12),
+                  Stack(
+                    children: [
+                      AnimatedOpacity(
+                        duration: _transitionTime,
+                        opacity: _formAction is UserExists ? 0.0 : 1.0,
+                        child: AnimatedAlign(
+                          curve: Curves.fastOutSlowIn,
+                          alignment: _formAction is UserExists
+                              ? Alignment.center
+                              : Alignment.centerLeft,
+                          duration: _transitionTime,
+                          child: _buildGoBackButton(),
+                        ),
+                      ),
+                      AnimatedAlign(
+                        curve: Curves.fastOutSlowIn,
+                        alignment: _formAction is UserExists
+                            ? Alignment.center
+                            : Alignment.centerRight,
+                        duration: _transitionTime,
+                        child: _buildContinueButton(
+                          authState,
+                          userExists,
+                          signIn,
+                          signUp,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
