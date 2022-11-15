@@ -244,6 +244,7 @@ class SignInScreenState extends State<SignInScreen>
     }
 
     return TextFormField(
+      keyboardType: TextInputType.emailAddress,
       controller: _emailController,
       enabled: _formAction is UserExists,
       style: _formAction is! UserExists
