@@ -15,6 +15,8 @@ class SignInScreenState extends State<SignInScreen>
     with TickerProviderStateMixin {
   bool? proceedSignIn;
 
+  static const transitionTime = Duration(milliseconds: 300);
+
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 300),
     vsync: this,
@@ -28,10 +30,11 @@ class SignInScreenState extends State<SignInScreen>
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _form = GlobalKey<FormState>();
+  bool _autovalidate = false;
+  bool _showPassword = false;
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
     _email.dispose();
     _password.dispose();
     super.dispose();
@@ -59,6 +62,10 @@ class SignInScreenState extends State<SignInScreen>
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
+
+        setState(() {
+          _autovalidate = true;
+        });
       }
     }
 
@@ -78,127 +85,167 @@ class SignInScreenState extends State<SignInScreen>
 
     return Scaffold(
       appBar: AppBar(title: const Text("Welcome")),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _form,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextFormField(
-                  controller: _email,
-                  enabled: proceedSignIn == null,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "email",
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter some text";
-                    }
-
-                    final bool emailValid = RegExp(
-                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-                    ).hasMatch(value);
-
-                    if (!emailValid) {
-                      return "Invalid email";
-                    }
-
-                    return null;
-                  },
-                ),
-                SizeTransition(
-                  sizeFactor: _animation,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        obscureText: true,
-                        controller: _password,
-                        enabled: authState.canLogIn,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "password",
-                        ),
-                        validator: (value) {
-                          if (proceedSignIn != null) {
-                            if (value == null || value.isEmpty) {
-                              return "Please enter some text";
-                            }
-
-                            if (value.length < 8) {
-                              return "Password should be at least 8 characters long";
-                            }
-                          }
-
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Stack(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Form(
+          autovalidateMode:
+              _autovalidate ? AutovalidateMode.onUserInteraction : null,
+          key: _form,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              buildEmail(),
+              SizeTransition(
+                sizeFactor: _animation,
+                child: Column(
                   children: [
-                    Positioned(
-                      child: AnimatedAlign(
-                        curve: Curves.fastOutSlowIn,
-                        alignment: proceedSignIn == null
-                            ? Alignment.center
-                            : Alignment.centerLeft,
-                        duration: const Duration(milliseconds: 300),
-                        child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                proceedSignIn = null;
-                              });
-                              _controller.reverse();
-                            },
-                            icon: const Icon(Icons.arrow_back, size: 18)),
-                      ),
-                    ),
-                    Positioned(
-                      child: AnimatedAlign(
-                        curve: Curves.fastOutSlowIn,
-                        alignment: proceedSignIn == null
-                            ? Alignment.center
-                            : Alignment.centerRight,
-                        duration: const Duration(milliseconds: 300),
-                        child: ElevatedButton(
-                          onPressed: authState.canLogIn
-                              ? () {
-                                  if (_form.currentState!.validate()) {
-                                    if (proceedSignIn == null) {
-                                      userExists(_email.text);
-                                    }
-
-                                    if (proceedSignIn == true) {
-                                      signIn(_email.text, _password.text);
-                                    }
-
-                                    if (proceedSignIn == false) {
-                                      signUp(_email.text, _password.text);
-                                    }
-                                  }
-                                }
-                              : null,
-                          child: (proceedSignIn == null)
-                              ? const Text("Continue")
-                              : proceedSignIn!
-                                  ? const Text("Sign In")
-                                  : const Text("Sign Up"),
-                        ),
-                      ),
-                    ),
+                    const SizedBox(height: 12),
+                    buildPassword(authState),
                   ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 12),
+              Stack(
+                children: [
+                  AnimatedOpacity(
+                    duration: transitionTime,
+                    opacity: proceedSignIn == null ? 0.0 : 1.0,
+                    child: AnimatedAlign(
+                      curve: Curves.fastOutSlowIn,
+                      alignment: proceedSignIn == null
+                          ? Alignment.center
+                          : Alignment.centerLeft,
+                      duration: transitionTime,
+                      child: buildGoBackButton(),
+                    ),
+                  ),
+                  AnimatedAlign(
+                    curve: Curves.fastOutSlowIn,
+                    alignment: proceedSignIn == null
+                        ? Alignment.center
+                        : Alignment.centerRight,
+                    duration: transitionTime,
+                    child: buildContinueButton(
+                      authState,
+                      userExists,
+                      signIn,
+                      signUp,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  IconButton buildGoBackButton() {
+    void goBack() {
+      setState(() {
+        proceedSignIn = null;
+      });
+      _controller.reverse();
+    }
+
+    return IconButton(
+      onPressed: proceedSignIn != null ? goBack : null,
+      icon: const Icon(Icons.arrow_back_rounded),
+      // color: Colors.blue,
+    );
+  }
+
+  ElevatedButton buildContinueButton(
+    AuthState authState,
+    Future<void> Function(String email) userExists,
+    Future<void> Function(String email, String password) signIn,
+    Future<void> Function(String email, String password) signUp,
+  ) {
+    void handleClick() {
+      if (_form.currentState!.validate()) {
+        if (proceedSignIn == null) {
+          userExists(_email.text);
+        }
+
+        if (proceedSignIn == true) {
+          signIn(_email.text, _password.text);
+        }
+
+        if (proceedSignIn == false) {
+          signUp(_email.text, _password.text);
+        }
+      }
+    }
+
+    return ElevatedButton(
+      onPressed: authState.canLogIn ? handleClick : null,
+      child: (proceedSignIn == null)
+          ? const Text("Continue")
+          : proceedSignIn!
+              ? const Text("Sign In")
+              : const Text("Sign Up"),
+    );
+  }
+
+  TextFormField buildPassword(AuthState authState) {
+    String? validate(String? value) {
+      if (proceedSignIn != null) {
+        if (value == null || value.isEmpty) {
+          return "Please enter some text";
+        }
+        if (value.length < 8) {
+          return "Password should be at least 8 characters long";
+        }
+      }
+      return null;
+    }
+
+    return TextFormField(
+      obscureText: !_showPassword,
+      controller: _password,
+      enabled: authState.canLogIn,
+      style: !authState.canLogIn ? const TextStyle(color: Colors.grey) : null,
+      decoration: InputDecoration(
+        suffixIcon: IconButton(
+          icon: Icon(
+            _showPassword ? Icons.visibility_off : Icons.visibility,
+          ),
+          onPressed: () => setState(() {
+            _showPassword = !_showPassword;
+          }),
+        ),
+        border: const OutlineInputBorder(),
+        labelText: "Password",
+      ),
+      validator: (value) => proceedSignIn == true ? null : validate(value),
+    );
+  }
+
+  TextFormField buildEmail() {
+    String? validate(String? value) {
+      if (value == null || value.isEmpty) {
+        return "Please enter some text";
+      }
+      final bool emailValid = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+      ).hasMatch(value);
+
+      if (!emailValid) {
+        return "Invalid email";
+      }
+      return null;
+    }
+
+    return TextFormField(
+      controller: _email,
+      enabled: proceedSignIn == null,
+      style: proceedSignIn != null ? const TextStyle(color: Colors.grey) : null,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: "Email",
+      ),
+      validator: (value) => validate(value),
     );
   }
 }
