@@ -13,21 +13,22 @@ class SignInScreen extends StatefulWidget {
 
 class SignInScreenState extends State<SignInScreen>
     with TickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    duration: _transitionTime,
-    vsync: this,
-  );
-
-  late final Animation<double> _animation = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  );
-
   static const _transitionTime = Duration(milliseconds: 300);
-  bool? _proceedSignIn;
+
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _form = GlobalKey<FormState>();
+
+  late final AnimationController _sizeAnimationController = AnimationController(
+    duration: _transitionTime,
+    vsync: this,
+  );
+  late final Animation<double> _sizeAnimation = CurvedAnimation(
+    parent: _sizeAnimationController,
+    curve: Curves.fastOutSlowIn,
+  );
+
+  bool? _proceedSignIn;
   bool _autovalidate = false;
   bool _showPassword = false;
 
@@ -73,7 +74,7 @@ class SignInScreenState extends State<SignInScreen>
         setState(() {
           _proceedSignIn = userExists;
         });
-        _controller.forward();
+        _sizeAnimationController.forward();
       } catch (e) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context)
@@ -92,13 +93,13 @@ class SignInScreenState extends State<SignInScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              buildEmail(),
+              _buildEmail(),
               SizeTransition(
-                sizeFactor: _animation,
+                sizeFactor: _sizeAnimation,
                 child: Column(
                   children: [
                     const SizedBox(height: 12),
-                    buildPassword(authState),
+                    _buildPassword(authState),
                   ],
                 ),
               ),
@@ -114,7 +115,7 @@ class SignInScreenState extends State<SignInScreen>
                           ? Alignment.center
                           : Alignment.centerLeft,
                       duration: _transitionTime,
-                      child: buildGoBackButton(),
+                      child: _buildGoBackButton(),
                     ),
                   ),
                   AnimatedAlign(
@@ -123,7 +124,7 @@ class SignInScreenState extends State<SignInScreen>
                         ? Alignment.center
                         : Alignment.centerRight,
                     duration: _transitionTime,
-                    child: buildContinueButton(
+                    child: _buildContinueButton(
                       authState,
                       userExists,
                       signIn,
@@ -139,13 +140,13 @@ class SignInScreenState extends State<SignInScreen>
     );
   }
 
-  IconButton buildGoBackButton() {
+  IconButton _buildGoBackButton() {
     void goBack() {
       setState(() {
         _proceedSignIn = null;
         _autovalidate = false;
       });
-      _controller.reverse();
+      _sizeAnimationController.reverse();
     }
 
     return IconButton(
@@ -154,7 +155,7 @@ class SignInScreenState extends State<SignInScreen>
     );
   }
 
-  ElevatedButton buildContinueButton(
+  ElevatedButton _buildContinueButton(
     AuthState authState,
     Future<void> Function(String email) userExists,
     Future<void> Function(String email, String password) signIn,
@@ -186,7 +187,7 @@ class SignInScreenState extends State<SignInScreen>
     );
   }
 
-  TextFormField buildPassword(AuthState authState) {
+  TextFormField _buildPassword(AuthState authState) {
     String? validate(String? value) {
       if (_proceedSignIn != null) {
         if (value == null || value.isEmpty) {
@@ -220,7 +221,7 @@ class SignInScreenState extends State<SignInScreen>
     );
   }
 
-  TextFormField buildEmail() {
+  TextFormField _buildEmail() {
     String? validate(String? value) {
       if (value == null || value.isEmpty) {
         return "Please enter some text";
