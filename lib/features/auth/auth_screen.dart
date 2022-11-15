@@ -11,12 +11,31 @@ class SignInScreen extends StatefulWidget {
   }
 }
 
+abstract class AuthFormState {
+  String get buttonText;
+}
+
+class SignIn extends AuthFormState {
+  @override
+  String buttonText = "Sign In";
+}
+
+class SignUp extends AuthFormState {
+  @override
+  String buttonText = "Sign Up";
+}
+
+class UserExists extends AuthFormState {
+  @override
+  String buttonText = "Continue";
+}
+
 class SignInScreenState extends State<SignInScreen>
     with TickerProviderStateMixin {
   static const _transitionTime = Duration(milliseconds: 300);
 
-  final _email = TextEditingController();
-  final _password = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _form = GlobalKey<FormState>();
 
   late final AnimationController _sizeAnimationController = AnimationController(
@@ -28,14 +47,15 @@ class SignInScreenState extends State<SignInScreen>
     curve: Curves.fastOutSlowIn,
   );
 
-  bool? _proceedSignIn;
-  bool _autovalidate = false;
+  AuthFormState _formAction = UserExists();
+
+  bool _autoValidate = false;
   bool _showPassword = false;
 
   @override
   void dispose() {
-    _email.dispose();
-    _password.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -63,7 +83,7 @@ class SignInScreenState extends State<SignInScreen>
             .showSnackBar(SnackBar(content: Text(e.toString())));
 
         setState(() {
-          _autovalidate = true;
+          _autoValidate = true;
         });
       }
     }
@@ -72,7 +92,7 @@ class SignInScreenState extends State<SignInScreen>
       try {
         final userExists = await authState.userExists(email);
         setState(() {
-          _proceedSignIn = userExists;
+          _formAction = userExists ? SignIn() : SignUp();
         });
         _sizeAnimationController.forward();
       } catch (e) {
@@ -88,18 +108,18 @@ class SignInScreenState extends State<SignInScreen>
         padding: const EdgeInsets.all(8.0),
         child: Form(
           autovalidateMode:
-              _autovalidate ? AutovalidateMode.onUserInteraction : null,
+              _autoValidate ? AutovalidateMode.onUserInteraction : null,
           key: _form,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _buildEmail(),
+              _buildEmailField(),
               SizeTransition(
                 sizeFactor: _sizeAnimation,
                 child: Column(
                   children: [
                     const SizedBox(height: 12),
-                    _buildPassword(authState),
+                    _buildPasswordField(authState),
                   ],
                 ),
               ),
@@ -108,10 +128,10 @@ class SignInScreenState extends State<SignInScreen>
                 children: [
                   AnimatedOpacity(
                     duration: _transitionTime,
-                    opacity: _proceedSignIn == null ? 0.0 : 1.0,
+                    opacity: _formAction is UserExists ? 0.0 : 1.0,
                     child: AnimatedAlign(
                       curve: Curves.fastOutSlowIn,
-                      alignment: _proceedSignIn == null
+                      alignment: _formAction is UserExists
                           ? Alignment.center
                           : Alignment.centerLeft,
                       duration: _transitionTime,
@@ -120,7 +140,7 @@ class SignInScreenState extends State<SignInScreen>
                   ),
                   AnimatedAlign(
                     curve: Curves.fastOutSlowIn,
-                    alignment: _proceedSignIn == null
+                    alignment: _formAction is UserExists
                         ? Alignment.center
                         : Alignment.centerRight,
                     duration: _transitionTime,
@@ -143,14 +163,14 @@ class SignInScreenState extends State<SignInScreen>
   IconButton _buildGoBackButton() {
     void goBack() {
       setState(() {
-        _proceedSignIn = null;
-        _autovalidate = false;
+        _formAction = UserExists();
+        _autoValidate = false;
       });
       _sizeAnimationController.reverse();
     }
 
     return IconButton(
-      onPressed: _proceedSignIn != null ? goBack : null,
+      onPressed: _formAction is! UserExists ? goBack : null,
       icon: const Icon(Icons.arrow_back_rounded),
     );
   }
@@ -163,46 +183,36 @@ class SignInScreenState extends State<SignInScreen>
   ) {
     void handleClick() {
       if (_form.currentState!.validate()) {
-        if (_proceedSignIn == null) {
-          userExists(_email.text);
+        if (_formAction is UserExists) {
+          userExists(_emailController.text);
         }
 
-        if (_proceedSignIn == true) {
-          signIn(_email.text, _password.text);
+        if (_formAction is SignIn) {
+          signIn(_emailController.text, _passwordController.text);
         }
 
-        if (_proceedSignIn == false) {
-          signUp(_email.text, _password.text);
+        if (_formAction is SignUp) {
+          signUp(_emailController.text, _passwordController.text);
         }
       }
     }
 
     return ElevatedButton(
-      onPressed: authState.canLogIn ? handleClick : null,
-      child: (_proceedSignIn == null)
-          ? const Text("Continue")
-          : _proceedSignIn!
-              ? const Text("Sign In")
-              : const Text("Sign Up"),
-    );
+        onPressed: authState.canLogIn ? handleClick : null,
+        child: Text(_formAction.buttonText));
   }
 
-  TextFormField _buildPassword(AuthState authState) {
+  TextFormField _buildPasswordField(AuthState authState) {
     String? validate(String? value) {
-      if (_proceedSignIn != null) {
-        if (value == null || value.isEmpty) {
-          return "Please enter some text";
-        }
-        if (value.length < 8) {
-          return "Password should be at least 8 characters long";
-        }
+      if (_formAction is SignUp && (value == null || value.length < 8)) {
+        return "Password should be at least 8 characters long";
       }
       return null;
     }
 
     return TextFormField(
       obscureText: !_showPassword,
-      controller: _password,
+      controller: _passwordController,
       enabled: authState.canLogIn,
       style: !authState.canLogIn ? const TextStyle(color: Colors.grey) : null,
       decoration: InputDecoration(
@@ -217,18 +227,15 @@ class SignInScreenState extends State<SignInScreen>
         border: const OutlineInputBorder(),
         labelText: "Password",
       ),
-      validator: (value) => _proceedSignIn == true ? null : validate(value),
+      validator: (value) => validate(value),
     );
   }
 
-  TextFormField _buildEmail() {
+  TextFormField _buildEmailField() {
     String? validate(String? value) {
-      if (value == null || value.isEmpty) {
-        return "Please enter some text";
-      }
       final bool emailValid = RegExp(
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-      ).hasMatch(value);
+      ).hasMatch(value ?? "");
 
       if (!emailValid) {
         return "Invalid email";
@@ -237,10 +244,11 @@ class SignInScreenState extends State<SignInScreen>
     }
 
     return TextFormField(
-      controller: _email,
-      enabled: _proceedSignIn == null,
-      style:
-          _proceedSignIn != null ? const TextStyle(color: Colors.grey) : null,
+      controller: _emailController,
+      enabled: _formAction is UserExists,
+      style: _formAction is! UserExists
+          ? const TextStyle(color: Colors.grey)
+          : null,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
         labelText: "Email",
