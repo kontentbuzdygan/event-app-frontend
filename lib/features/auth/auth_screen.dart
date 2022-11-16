@@ -1,5 +1,6 @@
 import "package:event_app/features/auth/auth_state.dart";
 import "package:flutter/material.dart";
+import "package:form_validator/form_validator.dart";
 import "package:provider/provider.dart";
 
 class SignInScreen extends StatefulWidget {
@@ -15,17 +16,17 @@ abstract class AuthFormAction {
   String get buttonText;
 }
 
-class SignIn extends AuthFormAction {
+class SignIn implements AuthFormAction {
   @override
   String buttonText = "Sign In";
 }
 
-class SignUp extends AuthFormAction {
+class SignUp implements AuthFormAction {
   @override
   String buttonText = "Sign Up";
 }
 
-class UserExists extends AuthFormAction {
+class UserExists implements AuthFormAction {
   @override
   String buttonText = "Continue";
 }
@@ -47,10 +48,10 @@ class SignInScreenState extends State<SignInScreen>
     curve: Curves.fastOutSlowIn,
   );
 
-  AuthFormAction _formAction = UserExists();
-
   bool _autoValidate = false;
   bool _showPassword = false;
+
+  AuthFormAction _formAction = UserExists();
 
   @override
   void dispose() {
@@ -59,47 +60,49 @@ class SignInScreenState extends State<SignInScreen>
     super.dispose();
   }
 
+  Future<void> _withSnackbar(
+    Future<void> Function() fn, {
+    void Function()? onFail,
+  }) async {
+    try {
+      await fn();
+    } catch (e) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+
+      if (onFail != null) onFail();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = context.watch<AuthState>();
 
     Future<void> signIn(String email, String password) async {
-      try {
-        await authState.signIn(email, password);
-      } catch (e) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
-      }
+      _withSnackbar(() async => await authState.signIn(email, password));
     }
 
     Future<void> signUp(String email, String password) async {
-      try {
-        await authState.signUp(email, password);
-        await authState.signIn(email, password);
-      } catch (e) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
-
-        setState(() {
+      _withSnackbar(
+        () async {
+          await authState.signUp(email, password);
+          await authState.signIn(email, password);
+        },
+        onFail: () => setState(() {
           _autoValidate = true;
-        });
-      }
+        }),
+      );
     }
 
     Future<void> userExists(String email) async {
-      try {
+      _withSnackbar(() async {
         final userExists = await authState.userExists(email);
         setState(() {
           _formAction = userExists ? SignIn() : SignUp();
         });
         _sizeAnimationController.forward();
-      } catch (e) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
-      }
+      });
     }
 
     return Scaffold(
@@ -139,7 +142,6 @@ class SignInScreenState extends State<SignInScreen>
                               : Alignment.centerLeft,
                           duration: _transitionTime,
                           child: SizedBox(
-                            // width: doubl,
                             child: _buildGoBackButton(),
                           ),
                         ),
@@ -214,13 +216,6 @@ class SignInScreenState extends State<SignInScreen>
   }
 
   TextFormField _buildPasswordField(AuthState authState) {
-    String? validate(String? value) {
-      if (_formAction is SignUp && (value == null || value.length < 8)) {
-        return "Password should be at least 8 characters long";
-      }
-      return null;
-    }
-
     return TextFormField(
       obscureText: !_showPassword,
       controller: _passwordController,
@@ -238,22 +233,15 @@ class SignInScreenState extends State<SignInScreen>
         border: const OutlineInputBorder(),
         labelText: "Password",
       ),
-      validator: (value) => validate(value),
+      validator: _formAction is SignUp
+          ? ValidationBuilder()
+              .minLength(8, "Password should be at least 8 characters long")
+              .build()
+          : null,
     );
   }
 
   TextFormField _buildEmailField() {
-    String? validate(String? value) {
-      final bool emailValid = RegExp(
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-      ).hasMatch(value ?? "");
-
-      if (!emailValid) {
-        return "Invalid email";
-      }
-      return null;
-    }
-
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: _emailController,
@@ -265,7 +253,7 @@ class SignInScreenState extends State<SignInScreen>
         border: OutlineInputBorder(),
         labelText: "Email",
       ),
-      validator: (value) => validate(value),
+      validator: ValidationBuilder().email("Invalid email").build(),
     );
   }
 }
