@@ -7,9 +7,9 @@ import "package:event_app/main.dart";
 import "package:http/http.dart" as http;
 
 class RestClient {
-  static Future<JsonObject> post(String path, JsonObject body) async {
+  static Future<JsonObject> post(List<dynamic> path, JsonObject body) async {
     final res = await http.post(
-      Uri.parse("$baseUri/$path"),
+      Uri.parse("$baseUri/${path.join("/")}"),
       headers: _headers(),
       body: jsonEncode(body),
     );
@@ -23,9 +23,9 @@ class RestClient {
 
   // TODO: Fix the backend to always return a JSON object, never a raw array
   // and make this return `Future<JsonObject>`
-  static Future<dynamic> get(String path) async {
+  static Future<dynamic> get(List<dynamic> path) async {
     final res = await http.get(
-      Uri.parse("$baseUri/$path"),
+      Uri.parse("$baseUri/${path.join("/")}"),
       headers: _headers(),
     );
 

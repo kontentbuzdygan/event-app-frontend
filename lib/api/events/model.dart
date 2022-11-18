@@ -1,7 +1,10 @@
 import "package:event_app/api/json.dart";
+import "package:event_app/api/repository.dart";
 
-class Event {
-  final int id, authorId;
+class Event implements Identifiable {
+  @override
+  final int id;
+  final int authorId;
   final String title, description;
   final DateTime startsAt;
   final DateTime? endsAt;
