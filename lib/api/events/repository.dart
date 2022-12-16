@@ -5,6 +5,8 @@ import "package:event_app/api/repository.dart";
 import "package:event_app/api/rest_client.dart";
 
 class EventRepository extends ChangeNotifier with Repository<Event> {
+  @override
+  final Duration cacheExpiresIn = const Duration(minutes: 1);
   static const String _path = "events";
 
   Future<Event> create(NewEvent newEvent) async {
