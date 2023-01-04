@@ -19,9 +19,6 @@ mixin Repository<T extends Identifiable> on ChangeNotifier {
     _cache[model.id] = CacheEntry(
         value: model, expiration: DateTime.now().add(cacheExpiresIn));
 
-    // NOTE: This doesn't make sense yet, but I think it will be necessary
-    // If we for example update a model that we read in some widget, we update it
-    // in the cache, but we also need to rebuild that widget
     notifyListeners();
     return model;
   }

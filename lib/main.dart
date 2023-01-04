@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
-import "package:event_app/api/events/repository.dart";
+import "package:event_app/api/events/event_repository.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/home/home_screen.dart";

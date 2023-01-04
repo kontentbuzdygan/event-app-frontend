@@ -28,9 +28,14 @@ class EventRepository extends ChangeNotifier with Repository<Event> {
 
   Future<Iterable<Event>> findAll() async {
     try {
-      // TODO: Fix the backend to return an object with `events` instead of a raw array
-      final json = List<JsonObject>.from(await RestClient.get([_path]));
-      return json.map(Event.fromJson);
+      // TODO: Cache this as well?
+      final json = await RestClient.get([_path]);
+      final events = (json["events"] as Iterable<dynamic>)
+          .cast<JsonObject>()
+          .map(Event.fromJson);
+
+      events.forEach(cache);
+      return events;
     } catch (e) {
       return Future.error(e);
     }

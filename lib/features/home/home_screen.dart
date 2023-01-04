@@ -1,7 +1,7 @@
 import "package:event_app/api/events/model.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:event_app/api/events/repository.dart";
+import "package:event_app/api/events/event_repository.dart";
 import "package:event_app/features/auth/auth_state.dart";
 
 class HomeScreen extends StatefulWidget {
@@ -34,6 +34,7 @@ class _State extends State<HomeScreen> {
       ),
       body: Center(
         child: Column(children: [
+          _eventCount(eventRepository),
           _eventDisplay(eventRepository),
           ElevatedButton(
               onPressed: () async {
@@ -50,6 +51,21 @@ class _State extends State<HomeScreen> {
         ]),
       ),
     );
+  }
+
+  FutureBuilder<Iterable<Event>> _eventCount(EventRepository eventRepository) {
+    return FutureBuilder(
+        future: eventRepository.findAll(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final events = snapshot.data!;
+            return Text(events.length.toString());
+          } else if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          } else {
+            return const Text("Loading...");
+          }
+        });
   }
 
   FutureBuilder<Event> _eventDisplay(EventRepository eventRepository) {

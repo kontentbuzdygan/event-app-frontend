@@ -21,9 +21,7 @@ class RestClient {
     throw InvalidResponseStatus.of(res.statusCode);
   }
 
-  // TODO: Fix the backend to always return a JSON object, never a raw array
-  // and make this return `Future<JsonObject>`
-  static Future<dynamic> get(List<dynamic> path) async {
+  static Future<JsonObject> get(List<dynamic> path) async {
     final res = await http.get(
       Uri.parse("$baseUri/${path.join("/")}"),
       headers: _headers(),
