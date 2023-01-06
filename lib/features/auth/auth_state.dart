@@ -18,6 +18,9 @@ class AuthState extends ChangeNotifier {
   Future<void> signUp(String email, String password) =>
       _transition(() => AuthService.signUp(email, password));
 
+  // FIXME: Do not clear _userToken before the router finishes transitioning
+  // to the signed-out state. On logout, this causes an attempt to refetch data
+  // when the token has already been cleared.
   Future<void> signOut() => _transition(() async {
         if (_userToken == null) return;
         await AuthService.signOut(_userToken!);
