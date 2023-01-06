@@ -43,8 +43,8 @@ mixin Repository<T extends Identifiable> on ChangeNotifier {
 
   /// Checks if the last fetched index is valid, and returns all cached records,
   /// or if not - calls the given callback which is supposed to fetch the index.
-  /// The new collection of records is then returned. Before the callback is
-  /// called, the cache is cleared to get rid of records which no longer exist.
+  /// The new collection of records is then returned. Before the cache is
+  /// repopulated, it is cleared to get rid of records which no longer exist.
   Future<Iterable<T>> fetchAllCached(
       Future<Iterable<T>> Function() fetch) async {
     if (_indexExpiration != null && _indexExpiration!.isAfter(DateTime.now())) {
