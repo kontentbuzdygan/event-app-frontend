@@ -16,7 +16,7 @@ class EventRepository extends ChangeNotifier with Repository<Event> {
 
   Future<Event> find(int id) async {
     try {
-      return fetchCached(
+      return await fetchCached(
           id, () async => Event.fromJson(await RestClient.get([_path, id])));
     } catch (e) {
       return Future.error(e);

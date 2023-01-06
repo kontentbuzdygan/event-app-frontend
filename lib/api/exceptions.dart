@@ -16,6 +16,7 @@ class InvalidResponseStatus extends ApiException {
   factory InvalidResponseStatus.of(int code) {
     if (code == 401) return const Unauthorized();
     if (code == 409) return const AlreadyExists();
+    if (code == 404) return const NotFound();
     return InvalidResponseStatus(code: code);
   }
 }
@@ -28,4 +29,9 @@ class Unauthorized extends InvalidResponseStatus {
 class AlreadyExists extends InvalidResponseStatus {
   const AlreadyExists({String? message})
       : super(code: 409, message: message ?? "Record already exists");
+}
+
+class NotFound extends InvalidResponseStatus {
+  const NotFound({String? message})
+      : super(code: 404, message: message ?? "Resource not found");
 }
