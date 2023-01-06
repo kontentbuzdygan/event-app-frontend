@@ -1,10 +1,9 @@
-import "package:flutter/material.dart";
 import "package:event_app/api/events/event.dart";
 import "package:event_app/api/json.dart";
 import "package:event_app/api/repository.dart";
 import "package:event_app/api/rest_client.dart";
 
-class EventRepository extends ChangeNotifier with Repository<Event> {
+class EventRepository extends Repository<Event> {
   @override
   final Duration cacheExpiresIn = const Duration(minutes: 1);
   static const String _path = "events";

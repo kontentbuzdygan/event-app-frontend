@@ -11,7 +11,7 @@ class CacheEntry<T> {
   CacheEntry({required this.value, required this.expiration});
 }
 
-mixin Repository<T extends Identifiable> on ChangeNotifier {
+abstract class Repository<T extends Identifiable> extends ChangeNotifier {
   Duration get cacheExpiresIn;
   DateTime? _indexExpiration;
   final Map<int, CacheEntry<T>> _cache = {};
