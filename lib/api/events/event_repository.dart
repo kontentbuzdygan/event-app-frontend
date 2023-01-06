@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:event_app/api/events/model.dart";
+import "package:event_app/api/events/event.dart";
 import "package:event_app/api/json.dart";
 import "package:event_app/api/repository.dart";
 import "package:event_app/api/rest_client.dart";

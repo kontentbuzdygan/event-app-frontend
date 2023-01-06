@@ -1,4 +1,4 @@
-import "package:event_app/api/events/model.dart";
+import "package:event_app/api/events/event.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:event_app/api/events/event_repository.dart";
