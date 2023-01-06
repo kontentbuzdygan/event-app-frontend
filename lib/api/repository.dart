@@ -14,8 +14,6 @@ class CacheEntry<T> {
 mixin Repository<T extends Identifiable> on ChangeNotifier {
   Duration get cacheExpiresIn;
   DateTime? _indexExpiration;
-  // TODO: We might need to additionally distinguish between "simple" and "detailed" views
-  // Should just involve extending the key
   final Map<int, CacheEntry<T>> _cache = {};
 
   T cache(T model, {bool notifyListeners = false}) {
