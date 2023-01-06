@@ -19,24 +19,18 @@ class EventRepository extends ChangeNotifier with Repository<Event> {
       return fetchCached(
           id, () async => Event.fromJson(await RestClient.get([_path, id])));
     } catch (e) {
-      // We have to manually do this because throwing an error from a future isn't
-      // the same as Future.error :(
       return Future.error(e);
     }
   }
 
   Future<Iterable<Event>> findAll() async {
     try {
-      final ids = await fetchIdsCached(() async {
+      return await fetchAllCached(() async {
         final json = await RestClient.get([_path]);
-        final events = (json["events"] as Iterable<dynamic>)
+        return (json["events"] as Iterable<dynamic>)
             .cast<JsonObject>()
             .map(Event.fromJson);
-
-        return events.map((e) => cache(e).id).toList();
       });
-
-      return Future.wait(ids.map(find));
     } catch (e) {
       return Future.error(e);
     }

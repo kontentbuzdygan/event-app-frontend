@@ -13,56 +13,60 @@ class CacheEntry<T> {
 
 mixin Repository<T extends Identifiable> on ChangeNotifier {
   Duration get cacheExpiresIn;
-  CacheEntry<List<int>>? _idsCache;
+  DateTime? _indexExpiration;
   // TODO: We might need to additionally distinguish between "simple" and "detailed" views
   // Should just involve extending the key
   final Map<int, CacheEntry<T>> _cache = {};
 
-  T cache(T model) {
+  T cache(T model, {bool notifyListeners = false}) {
     _cache[model.id] = CacheEntry(
         value: model, expiration: DateTime.now().add(cacheExpiresIn));
 
-    _idsCache?.value.add(model.id);
-    notifyListeners();
+    if (notifyListeners) this.notifyListeners();
+
     return model;
   }
 
-  Future<T> fetchCached(int id, Future<T> Function() otherwise) async {
+  Future<T> fetchCached(int id, Future<T> Function() fetch) async {
     // This is basically _cache.putIfAbsent but async
     if (_cache.containsKey(id) &&
         _cache[id]!.expiration.isAfter(DateTime.now())) {
       return _cache[id]!.value;
-    } else {
-      try {
-        return cache(await otherwise());
-      } catch (error) {
-        if (_cache.containsKey(id)) {
-          // Return stale cache if refetching fails
-          return _cache[id]!.value;
-        } else {
-          rethrow;
-        }
-      }
+    }
+
+    try {
+      return cache(await fetch());
+    } catch (error) {
+      // Return stale cache if refetching fails
+      if (_cache.containsKey(id)) return _cache[id]!.value;
+      rethrow;
     }
   }
 
-  Future<List<int>> fetchIdsCached(
-      Future<List<int>> Function() otherwise) async {
-    if (_idsCache != null && _idsCache!.expiration.isAfter(DateTime.now())) {
-      return _idsCache!.value;
-    } else {
-      try {
-        final ids = await otherwise();
-        _idsCache = CacheEntry(
-            value: ids, expiration: DateTime.now().add(cacheExpiresIn));
-        return _idsCache!.value;
-      } catch (error) {
-        if (_idsCache != null) {
-          return _idsCache!.value;
-        } else {
-          rethrow;
-        }
-      }
+  /// Checks if the last fetched index is valid, and returns all cached records,
+  /// or if not - calls the given callback which is supposed to fetch the index.
+  /// The new collection of records is then returned. Before the callback is
+  /// called, the cache is cleared to get rid of records which no longer exist.
+  Future<Iterable<T>> fetchAllCached(
+      Future<Iterable<T>> Function() fetch) async {
+    if (_indexExpiration != null && _indexExpiration!.isAfter(DateTime.now())) {
+      return _cache.values.map((e) => e.value);
     }
+
+    try {
+      final records = await fetch();
+      _cache.clear();
+
+      for (final record in records) {
+        cache(record, notifyListeners: false);
+      }
+
+      _indexExpiration = DateTime.now().add(cacheExpiresIn);
+      notifyListeners();
+    } catch (error) {
+      if (_indexExpiration == null) rethrow;
+    }
+
+    return _cache.values.map((e) => e.value);
   }
 }
