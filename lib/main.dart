@@ -18,7 +18,7 @@ class App extends StatelessWidget {
       GoRoute(
         path: "/",
         builder: (BuildContext context, GoRouterState state) =>
-            const HomeScreen(title: "Dom"),
+            const HomeScreen(),
       ),
       GoRoute(
         path: "/auth",

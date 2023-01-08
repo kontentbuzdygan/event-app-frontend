@@ -4,9 +4,7 @@ import "package:provider/provider.dart";
 import "package:event_app/features/auth/auth_state.dart";
 
 class HomeScreen extends StatefulWidget {
-  final String title;
-
-  const HomeScreen({super.key, required this.title});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _State();
@@ -14,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 
 class _State extends State<HomeScreen> {
   final Future<Iterable<Event>> allEvents = Event.findAll();
-  Future<Event> currentEvent = Event.find(1);
 
   @override
   Widget build(BuildContext context) {
@@ -22,64 +19,54 @@ class _State extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text("Feed"),
         actions: <Widget>[
           IconButton(
             onPressed: authState.signOut,
-            tooltip: "Logout: ${authState.userToken}",
+            tooltip: "Log out",
             icon: const Icon(Icons.logout),
           )
         ],
       ),
-      body: Center(
-        child: Column(children: [
-          allEventsCountWidget,
-          currentEventWidget,
-          ElevatedButton(
-              onPressed: () async {
-                final createdEvent = await NewEvent(
-                        title: "New event at ${DateTime.now()}",
-                        description: "Lorem ipsum",
-                        startsAt: DateTime.now())
-                    .save();
+      body: FutureBuilder(
+          future: allEvents,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return eventsListView(snapshot.requireData);
+            }
 
-                setState(() {
-                  currentEvent = Future.value(createdEvent);
-                });
-              },
-              child: const Text("Create another event")),
-        ]),
-      ),
+            return const Text("Loading...");
+          }),
     );
   }
 
-  FutureBuilder<Iterable<Event>> get allEventsCountWidget {
-    return FutureBuilder(
-        future: allEvents,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final events = snapshot.data!;
-            return Text(events.length.toString());
-          } else if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            return const Text("Loading...");
-          }
-        });
+  Widget eventsListView(Iterable<Event> events) {
+    return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      children: events.map(eventListItem).toList(),
+    );
   }
 
-  FutureBuilder<Event> get currentEventWidget {
-    return FutureBuilder(
-        future: currentEvent,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final event = snapshot.data!;
-            return Text(event.title);
-          } else if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            return const Text("Loading...");
-          }
-        });
+  Widget eventListItem(Event event) {
+    return MaterialButton(
+        onPressed: () {/* TODO: Navigate to event view */},
+        child: Container(
+            padding: const EdgeInsets.all(20.0),
+            alignment: Alignment.topLeft,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(event.title,
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.bold)),
+              Text(
+                  event.endsAt != null
+                      ? "from ${event.startsAt} to ${event.endsAt}"
+                      : "starts at ${event.startsAt}",
+                  style: TextStyle(color: Colors.blue[700])),
+              Container(
+                margin: const EdgeInsets.only(top: 10.0),
+                child: Text(event.description),
+              ),
+            ])));
   }
 }
