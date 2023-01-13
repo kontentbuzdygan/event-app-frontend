@@ -1,10 +1,10 @@
 import "package:event_app/api/json.dart";
-import "package:event_app/api/repository.dart";
+import "package:event_app/api/rest_client.dart";
 
-class Event implements Identifiable {
-  @override
-  final int id;
-  final int authorId;
+const String _apiPath = "events";
+
+class Event {
+  final int id, authorId;
   final String title, description;
   final DateTime startsAt;
   final DateTime? endsAt;
@@ -27,6 +27,25 @@ class Event implements Identifiable {
         endsAt:
             json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
       );
+
+  static Future<Event> find(int id) async {
+    try {
+      return Event.fromJson(await RestClient.get([_apiPath, id]));
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+  static Future<Iterable<Event>> findAll() async {
+    try {
+      final json = await RestClient.get([_apiPath]);
+      return (json["events"] as Iterable<dynamic>)
+          .cast<JsonObject>()
+          .map(Event.fromJson);
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
 }
 
 class NewEvent {
@@ -47,4 +66,9 @@ class NewEvent {
         "starts_at": startsAt.toUtc().toIso8601String(),
         "ends_at": endsAt?.toUtc().toIso8601String(),
       };
+
+  Future<Event> save() async {
+    final createdJson = await RestClient.post([_apiPath], toJson());
+    return Event.fromJson(createdJson);
+  }
 }
