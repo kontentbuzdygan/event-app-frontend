@@ -42,7 +42,6 @@ class _State extends State<HomeScreen> {
 
   Widget eventsListView(Iterable<Event> events) {
     return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
       children: events.map(eventListItem).toList(),
     );
   }
