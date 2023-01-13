@@ -1,7 +1,6 @@
-import "package:event_app/api/events/event.dart";
+import "package:event_app/api/models/event.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:event_app/api/events/event_repository.dart";
 import "package:event_app/features/auth/auth_state.dart";
 
 class HomeScreen extends StatefulWidget {
@@ -14,12 +13,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _State extends State<HomeScreen> {
-  int _lastInsertedId = 1;
+  final Future<Iterable<Event>> allEvents = Event.findAll();
+  Future<Event> currentEvent = Event.find(1);
 
   @override
   Widget build(BuildContext context) {
     final AuthState authState = context.watch<AuthState>();
-    final eventRepository = context.watch<EventRepository>();
 
     return Scaffold(
       appBar: AppBar(
@@ -34,17 +33,18 @@ class _State extends State<HomeScreen> {
       ),
       body: Center(
         child: Column(children: [
-          _eventCount(eventRepository),
-          _eventDisplay(eventRepository),
+          allEventsCountWidget,
+          currentEventWidget,
           ElevatedButton(
               onPressed: () async {
-                final createdEvent = await eventRepository.create(NewEvent(
-                    title: "New event at ${DateTime.now()}",
-                    description: "Lorem ipsum",
-                    startsAt: DateTime.now()));
+                final createdEvent = await NewEvent(
+                        title: "New event at ${DateTime.now()}",
+                        description: "Lorem ipsum",
+                        startsAt: DateTime.now())
+                    .save();
 
                 setState(() {
-                  _lastInsertedId = createdEvent.id;
+                  currentEvent = Future.value(createdEvent);
                 });
               },
               child: const Text("Create another event")),
@@ -53,9 +53,9 @@ class _State extends State<HomeScreen> {
     );
   }
 
-  FutureBuilder<Iterable<Event>> _eventCount(EventRepository eventRepository) {
+  FutureBuilder<Iterable<Event>> get allEventsCountWidget {
     return FutureBuilder(
-        future: eventRepository.findAll(),
+        future: allEvents,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final events = snapshot.data!;
@@ -68,9 +68,9 @@ class _State extends State<HomeScreen> {
         });
   }
 
-  FutureBuilder<Event> _eventDisplay(EventRepository eventRepository) {
+  FutureBuilder<Event> get currentEventWidget {
     return FutureBuilder(
-        future: eventRepository.find(_lastInsertedId),
+        future: currentEvent,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final event = snapshot.data!;
