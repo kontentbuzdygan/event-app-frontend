@@ -1,7 +1,9 @@
+import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/auth/slide_out_buttons.dart";
 import "package:event_app/main.dart";
 import "package:flutter/material.dart";
 import "package:form_validator/form_validator.dart";
+import "package:provider/provider.dart";
 
 abstract class AuthFormAction {
   String get buttonText;
@@ -118,6 +120,8 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthState>();
+
     return Scaffold(
       appBar: AppBar(title: const Text("Welcome")),
       body: Padding(
@@ -138,7 +142,7 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
                     child: Column(
                       children: [
                         const SizedBox(height: 12),
-                        passwordField,
+                        passwordField(authState),
                       ],
                     ),
                   ),
@@ -147,7 +151,7 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
                     transitionTime: transitionTime,
                     expanded: formAction is! UserExists,
                     leftChild: goBackButton,
-                    rightChild: continueButton,
+                    rightChild: continueButton(authState),
                   ),
                 ],
               ),
@@ -175,13 +179,12 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget get passwordField {
+  Widget passwordField(AuthState authState) {
     return TextFormField(
       obscureText: !showPassword,
       controller: passwordController,
-      enabled: App.authState.canLogIn,
-      style:
-          !App.authState.canLogIn ? const TextStyle(color: Colors.grey) : null,
+      enabled: authState.canLogIn,
+      style: !authState.canLogIn ? const TextStyle(color: Colors.grey) : null,
       decoration: InputDecoration(
         suffixIcon: IconButton(
           icon: Icon(
@@ -203,9 +206,9 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget get continueButton {
+  Widget continueButton(AuthState authState) {
     return ElevatedButton(
-      onPressed: App.authState.canLogIn ? advanceFormState : null,
+      onPressed: authState.canLogIn ? advanceFormState : null,
       child: Text(formAction.buttonText),
     );
   }
