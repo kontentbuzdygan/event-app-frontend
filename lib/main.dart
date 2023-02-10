@@ -1,3 +1,4 @@
+import "package:event_app/features/event/event_view_screen.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
@@ -24,6 +25,11 @@ class App extends StatelessWidget {
         path: "/auth",
         builder: (BuildContext context, GoRouterState state) =>
             const AuthScreen(),
+      ),
+      GoRoute(
+        path: "/event/:eventId",
+        builder: (context, state) =>
+            EventViewScreen(id: state.params["eventId"] as String),
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {

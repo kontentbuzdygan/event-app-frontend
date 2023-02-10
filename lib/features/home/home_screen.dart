@@ -1,5 +1,6 @@
 import "package:event_app/api/models/event.dart";
 import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:event_app/features/auth/auth_state.dart";
 
@@ -48,7 +49,7 @@ class _State extends State<HomeScreen> {
 
   Widget eventListItem(Event event) {
     return MaterialButton(
-        onPressed: () {/* TODO: Navigate to event view */},
+        onPressed: () => context.push("/event/${event.id}"),
         child: Container(
             padding: const EdgeInsets.all(20.0),
             alignment: Alignment.topLeft,
