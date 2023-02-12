@@ -49,6 +49,7 @@ class _State extends State<HomeScreen> {
 
   Widget eventListItem(Event event) {
     return MaterialButton(
+        // TODO: Handle hardcoded links :(
         onPressed: () => context.push("/event/${event.id}"),
         child: Container(
             padding: const EdgeInsets.all(20.0),
