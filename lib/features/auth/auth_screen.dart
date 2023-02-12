@@ -5,25 +5,6 @@ import "package:flutter/material.dart";
 import "package:form_validator/form_validator.dart";
 import "package:provider/provider.dart";
 
-abstract class AuthFormAction {
-  String get buttonText;
-}
-
-class SignIn implements AuthFormAction {
-  @override
-  String buttonText = "Sign In";
-}
-
-class SignUp implements AuthFormAction {
-  @override
-  String buttonText = "Sign Up";
-}
-
-class UserExists implements AuthFormAction {
-  @override
-  String buttonText = "Continue";
-}
-
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -31,6 +12,16 @@ class SignInScreen extends StatefulWidget {
   State<SignInScreen> createState() {
     return _State();
   }
+}
+
+enum _FormState {
+  emailPrompt("Continue", false),
+  signingIn("Sign In", true),
+  signingUp("Sign Up", true);
+
+  final String buttonText;
+  final bool canGoBack;
+  const _FormState(this.buttonText, this.canGoBack);
 }
 
 class _State extends State<SignInScreen> with TickerProviderStateMixin {
@@ -52,7 +43,7 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
   bool autoValidate = false;
   bool showPassword = false;
 
-  AuthFormAction formAction = UserExists();
+  _FormState formState = _FormState.emailPrompt;
 
   @override
   void dispose() {
@@ -96,7 +87,7 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
     withSnackbar(() async {
       final userExists = await App.authState.userExists(email);
       setState(() {
-        formAction = userExists ? SignIn() : SignUp();
+        formState = userExists ? _FormState.signingIn : _FormState.signingUp;
       });
       sizeAnimationController.forward();
     });
@@ -104,16 +95,16 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
 
   void advanceFormState() {
     if (form.currentState!.validate()) {
-      if (formAction is UserExists) {
-        userExists(emailController.text);
-      }
-
-      if (formAction is SignIn) {
-        signIn(emailController.text, passwordController.text);
-      }
-
-      if (formAction is SignUp) {
-        signUp(emailController.text, passwordController.text);
+      switch (formState) {
+        case _FormState.emailPrompt:
+          userExists(emailController.text);
+          break;
+        case _FormState.signingIn:
+          signIn(emailController.text, passwordController.text);
+          break;
+        case _FormState.signingUp:
+          signUp(emailController.text, passwordController.text);
+          break;
       }
     }
   }
@@ -149,7 +140,7 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
                   const SizedBox(height: 12),
                   SlideOutButtons(
                     transitionTime: transitionTime,
-                    expanded: formAction is! UserExists,
+                    expanded: formState.canGoBack,
                     leftChild: goBackButton,
                     rightChild: continueButton(authState),
                   ),
@@ -166,8 +157,8 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: emailController,
-      enabled: formAction is UserExists,
-      style: formAction is! UserExists
+      enabled: formState == _FormState.emailPrompt,
+      style: formState != _FormState.emailPrompt
           ? const TextStyle(color: Colors.grey)
           : null,
       decoration: const InputDecoration(
@@ -198,7 +189,7 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
         labelText: "Password",
       ),
       onFieldSubmitted: (value) => advanceFormState(),
-      validator: formAction is SignUp
+      validator: formState == _FormState.signingUp
           ? ValidationBuilder()
               .minLength(8, "Password should be at least 8 characters long")
               .build()
@@ -209,21 +200,21 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
   Widget continueButton(AuthState authState) {
     return ElevatedButton(
       onPressed: authState.canLogIn ? advanceFormState : null,
-      child: Text(formAction.buttonText),
+      child: Text(formState.buttonText),
     );
   }
 
   Widget get goBackButton {
     void goBack() {
       setState(() {
-        formAction = UserExists();
+        formState = _FormState.emailPrompt;
         autoValidate = false;
       });
       sizeAnimationController.reverse();
     }
 
     return IconButton(
-      onPressed: formAction is! UserExists ? goBack : null,
+      onPressed: formState.canGoBack ? goBack : null,
       icon: const Icon(Icons.arrow_back_rounded),
       iconSize: 30,
       splashRadius: 20,
