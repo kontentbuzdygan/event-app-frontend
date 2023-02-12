@@ -5,12 +5,13 @@ class SlideOutButtons extends StatelessWidget {
   final bool expanded;
   final Widget leftChild, rightChild;
 
-  const SlideOutButtons(
-      {super.key,
-      required this.transitionTime,
-      required this.expanded,
-      required this.leftChild,
-      required this.rightChild});
+  const SlideOutButtons({
+    super.key,
+    required this.transitionTime,
+    required this.expanded,
+    required this.leftChild,
+    required this.rightChild,
+  });
 
   @override
   Widget build(BuildContext context) {
