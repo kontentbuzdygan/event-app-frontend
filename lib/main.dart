@@ -23,7 +23,7 @@ class App extends StatelessWidget {
       GoRoute(
         path: "/auth",
         builder: (BuildContext context, GoRouterState state) =>
-            const SignInScreen(),
+            const AuthScreen(),
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {

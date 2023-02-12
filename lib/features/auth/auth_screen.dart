@@ -5,17 +5,17 @@ import "package:flutter/material.dart";
 import "package:form_validator/form_validator.dart";
 import "package:provider/provider.dart";
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
 
   @override
-  State<SignInScreen> createState() {
+  State<AuthScreen> createState() {
     return _State();
   }
 }
 
 enum _FormState {
-  emailPrompt("Continue", false),
+  enteringEmail("Continue", false),
   signingIn("Sign In", true),
   signingUp("Sign Up", true);
 
@@ -24,7 +24,7 @@ enum _FormState {
   const _FormState(this.buttonText, this.canGoBack);
 }
 
-class _State extends State<SignInScreen> with TickerProviderStateMixin {
+class _State extends State<AuthScreen> with TickerProviderStateMixin {
   static const transitionTime = Duration(milliseconds: 300);
 
   final emailController = TextEditingController();
@@ -43,7 +43,7 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
   bool autoValidate = false;
   bool showPassword = false;
 
-  _FormState formState = _FormState.emailPrompt;
+  _FormState formState = _FormState.enteringEmail;
 
   @override
   void dispose() {
@@ -96,7 +96,7 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
   void advanceFormState() {
     if (form.currentState!.validate()) {
       switch (formState) {
-        case _FormState.emailPrompt:
+        case _FormState.enteringEmail:
           userExists(emailController.text);
           break;
         case _FormState.signingIn:
@@ -157,8 +157,8 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: emailController,
-      enabled: formState == _FormState.emailPrompt,
-      style: formState != _FormState.emailPrompt
+      enabled: formState == _FormState.enteringEmail,
+      style: formState != _FormState.enteringEmail
           ? const TextStyle(color: Colors.grey)
           : null,
       decoration: const InputDecoration(
@@ -207,7 +207,7 @@ class _State extends State<SignInScreen> with TickerProviderStateMixin {
   Widget get goBackButton {
     void goBack() {
       setState(() {
-        formState = _FormState.emailPrompt;
+        formState = _FormState.enteringEmail;
         autoValidate = false;
       });
       sizeAnimationController.reverse();
