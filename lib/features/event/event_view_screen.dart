@@ -2,6 +2,7 @@ import "package:event_app/api/models/event.dart";
 import "package:event_app/features/shared/loading_screen.dart";
 import "package:event_app/features/shared/not_found_screen.dart";
 import "package:flutter/material.dart";
+import "package:intl/intl.dart";
 
 class EventViewScreen extends StatelessWidget {
   EventViewScreen({super.key, required this.id});
@@ -12,7 +13,7 @@ class EventViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.delayed(Duration(seconds: 3), () => event),
+        future: event,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return NotFoundScreen("Seems like this event does not exist");
@@ -23,12 +24,22 @@ class EventViewScreen extends StatelessWidget {
             return const LoadingScreen();
           }
 
+          final DateFormat formatter = DateFormat("yyyy-MM-dd");
+
           return Scaffold(
             appBar: AppBar(
               title: Text(snapshot.data!.title),
             ),
             body: Center(
-              child: Text(snapshot.data!.description),
+              child: Column(
+                children: [
+                  Text(snapshot.data!.authorId.toString()),
+                  Text(formatter.format(snapshot.data!.startsAt)),
+                  if (snapshot.data!.endsAt != null)
+                    Text(snapshot.data!.endsAt.toString()),
+                  Text(snapshot.data!.description),
+                ],
+              ),
             ),
           );
         });
