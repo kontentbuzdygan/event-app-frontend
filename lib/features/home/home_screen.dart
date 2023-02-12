@@ -1,6 +1,7 @@
 import "package:event_app/api/models/event.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:intl/intl.dart";
 import "package:provider/provider.dart";
 import "package:event_app/features/auth/auth_state.dart";
 
@@ -48,6 +49,8 @@ class _State extends State<HomeScreen> {
   }
 
   Widget eventListItem(Event event) {
+    final formatter = DateFormat("yyyy-MM-dd");
+
     return MaterialButton(
         // TODO: Handle hardcoded links :(
         onPressed: () => context.push("/event/${event.id}"),
@@ -61,8 +64,8 @@ class _State extends State<HomeScreen> {
                       fontSize: 20.0, fontWeight: FontWeight.bold)),
               Text(
                   event.endsAt != null
-                      ? "from ${event.startsAt} to ${event.endsAt}"
-                      : "starts at ${event.startsAt}",
+                      ? "from ${formatter.format(event.startsAt)} to ${formatter.format(event.endsAt!)}"
+                      : "starts at ${formatter.format(event.startsAt)}",
                   style: TextStyle(color: Colors.blue[700])),
               Container(
                 margin: const EdgeInsets.only(top: 10.0),

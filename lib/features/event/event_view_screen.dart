@@ -8,6 +8,8 @@ class EventViewScreen extends StatelessWidget {
   EventViewScreen({super.key, required this.id});
 
   final String id;
+
+  // TODO: Chain event fetching with author profile fetching
   late final Future<Event> event = Event.find(id);
 
   @override
@@ -19,7 +21,6 @@ class EventViewScreen extends StatelessWidget {
             return NotFoundScreen("Seems like this event does not exist");
           }
 
-          // TODO: Make this a skeleton loading?
           if (!snapshot.hasData) {
             return const LoadingScreen();
           }
@@ -30,18 +31,44 @@ class EventViewScreen extends StatelessWidget {
             appBar: AppBar(
               title: Text(snapshot.data!.title),
             ),
-            body: Center(
-              child: Column(
-                children: [
-                  Text(snapshot.data!.authorId.toString()),
-                  Text(formatter.format(snapshot.data!.startsAt)),
-                  if (snapshot.data!.endsAt != null)
-                    Text(snapshot.data!.endsAt.toString()),
-                  Text(snapshot.data!.description),
-                ],
+            body: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(
+                child: Column(
+                  children: [
+                    rowInfo("Author ID: ", snapshot.data!.authorId.toString()),
+                    rowInfo(
+                      "starts at ",
+                      formatter.format(snapshot.data!.startsAt),
+                      TextStyle(
+                        color: Colors.blue[700],
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    if (snapshot.data!.endsAt != null)
+                      rowInfo(
+                        "Ends At: ",
+                        formatter.format(snapshot.data!.endsAt!),
+                      ),
+                    rowInfo("Description: ", snapshot.data!.description),
+                  ],
+                ),
               ),
             ),
           );
         });
+  }
+
+  Widget rowInfo(String label, String info, [TextStyle? style]) {
+    return Row(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
+              .merge(style),
+        ),
+        Text(info, style: style),
+      ],
+    );
   }
 }
