@@ -19,13 +19,11 @@ class SlideOutButtons extends StatelessWidget {
         AnimatedOpacity(
           duration: transitionTime,
           opacity: expanded ? 1.0 : 0.0,
-          child: Positioned.fill(
-            child: AnimatedAlign(
-              curve: Curves.fastOutSlowIn,
-              alignment: expanded ? Alignment.centerLeft : Alignment.center,
-              duration: transitionTime,
-              child: leftChild,
-            ),
+          child: AnimatedAlign(
+            curve: Curves.fastOutSlowIn,
+            alignment: expanded ? Alignment.centerLeft : Alignment.center,
+            duration: transitionTime,
+            child: leftChild,
           ),
         ),
         Positioned.fill(
