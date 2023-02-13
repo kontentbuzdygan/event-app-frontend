@@ -1,66 +1,58 @@
 import "package:event_app/features/auth/auth_state.dart";
+import "package:event_app/features/auth/slide_out_buttons.dart";
+import "package:event_app/main.dart";
 import "package:flutter/material.dart";
 import "package:form_validator/form_validator.dart";
 import "package:provider/provider.dart";
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
 
   @override
-  State<SignInScreen> createState() {
-    return SignInScreenState();
+  State<AuthScreen> createState() {
+    return _State();
   }
 }
 
-abstract class AuthFormAction {
-  String get buttonText;
+enum _FormState {
+  enteringEmail("Continue", false),
+  signingIn("Sign In", true),
+  signingUp("Sign Up", true);
+
+  final String buttonText;
+  final bool canGoBack;
+  const _FormState(this.buttonText, this.canGoBack);
 }
 
-class SignIn implements AuthFormAction {
-  @override
-  String buttonText = "Sign In";
-}
+class _State extends State<AuthScreen> with TickerProviderStateMixin {
+  static const transitionTime = Duration(milliseconds: 300);
 
-class SignUp implements AuthFormAction {
-  @override
-  String buttonText = "Sign Up";
-}
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final form = GlobalKey<FormState>();
 
-class UserExists implements AuthFormAction {
-  @override
-  String buttonText = "Continue";
-}
-
-class SignInScreenState extends State<SignInScreen>
-    with TickerProviderStateMixin {
-  static const _transitionTime = Duration(milliseconds: 300);
-
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _form = GlobalKey<FormState>();
-
-  late final AnimationController _sizeAnimationController = AnimationController(
-    duration: _transitionTime,
+  late final AnimationController sizeAnimationController = AnimationController(
+    duration: transitionTime,
     vsync: this,
   );
-  late final Animation<double> _sizeAnimation = CurvedAnimation(
-    parent: _sizeAnimationController,
+  late final Animation<double> sizeAnimation = CurvedAnimation(
+    parent: sizeAnimationController,
     curve: Curves.fastOutSlowIn,
   );
 
-  bool _autoValidate = false;
-  bool _showPassword = false;
+  bool autoValidate = false;
+  bool showPassword = false;
 
-  AuthFormAction _formAction = UserExists();
+  _FormState formState = _FormState.enteringEmail;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
-  Future<void> _withSnackbar(
+  Future<void> withSnackbar(
     Future<void> Function() fn, {
     void Function()? onFail,
   }) async {
@@ -71,7 +63,49 @@ class SignInScreenState extends State<SignInScreen>
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
 
-      if (onFail != null) onFail();
+      onFail?.call();
+    }
+  }
+
+  Future<void> signIn(String email, String password) async {
+    withSnackbar(() async => await App.authState.signIn(email, password));
+  }
+
+  Future<void> signUp(String email, String password) async {
+    withSnackbar(
+      () async {
+        await App.authState.signUp(email, password);
+        await App.authState.signIn(email, password);
+      },
+      onFail: () => setState(() {
+        autoValidate = true;
+      }),
+    );
+  }
+
+  Future<void> userExists(String email) async {
+    withSnackbar(() async {
+      final userExists = await App.authState.userExists(email);
+      setState(() {
+        formState = userExists ? _FormState.signingIn : _FormState.signingUp;
+      });
+      sizeAnimationController.forward();
+    });
+  }
+
+  void advanceFormState() {
+    if (form.currentState!.validate()) {
+      switch (formState) {
+        case _FormState.enteringEmail:
+          userExists(emailController.text);
+          break;
+        case _FormState.signingIn:
+          signIn(emailController.text, passwordController.text);
+          break;
+        case _FormState.signingUp:
+          signUp(emailController.text, passwordController.text);
+          break;
+      }
     }
   }
 
@@ -79,87 +113,36 @@ class SignInScreenState extends State<SignInScreen>
   Widget build(BuildContext context) {
     final authState = context.watch<AuthState>();
 
-    Future<void> signIn(String email, String password) async {
-      _withSnackbar(() async => await authState.signIn(email, password));
-    }
-
-    Future<void> signUp(String email, String password) async {
-      _withSnackbar(
-        () async {
-          await authState.signUp(email, password);
-          await authState.signIn(email, password);
-        },
-        onFail: () => setState(() {
-          _autoValidate = true;
-        }),
-      );
-    }
-
-    Future<void> userExists(String email) async {
-      _withSnackbar(() async {
-        final userExists = await authState.userExists(email);
-        setState(() {
-          _formAction = userExists ? SignIn() : SignUp();
-        });
-        _sizeAnimationController.forward();
-      });
-    }
-
     return Scaffold(
       appBar: AppBar(title: const Text("Welcome")),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Form(
           autovalidateMode:
-              _autoValidate ? AutovalidateMode.onUserInteraction : null,
-          key: _form,
+              autoValidate ? AutovalidateMode.onUserInteraction : null,
+          key: form,
           child: Center(
             child: Container(
               constraints: const BoxConstraints(minWidth: 100, maxWidth: 350),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  _buildEmailField(),
+                  emailField,
                   SizeTransition(
-                    sizeFactor: _sizeAnimation,
+                    sizeFactor: sizeAnimation,
                     child: Column(
                       children: [
                         const SizedBox(height: 12),
-                        _buildPasswordField(authState),
+                        passwordField(authState),
                       ],
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Stack(
-                    children: [
-                      AnimatedOpacity(
-                        duration: _transitionTime,
-                        opacity: _formAction is UserExists ? 0.0 : 1.0,
-                        child: AnimatedAlign(
-                          curve: Curves.fastOutSlowIn,
-                          alignment: _formAction is UserExists
-                              ? Alignment.center
-                              : Alignment.centerLeft,
-                          duration: _transitionTime,
-                          child: SizedBox(
-                            child: _buildGoBackButton(),
-                          ),
-                        ),
-                      ),
-                      AnimatedAlign(
-                        curve: Curves.fastOutSlowIn,
-                        alignment: _formAction is UserExists
-                            ? Alignment.center
-                            : Alignment.centerRight,
-                        duration: _transitionTime,
-                        child: _buildContinueButton(
-                          authState,
-                          userExists,
-                          signIn,
-                          signUp,
-                        ),
-                      ),
-                    ],
+                  SlideOutButtons(
+                    transitionTime: transitionTime,
+                    expanded: formState.canGoBack,
+                    leftChild: goBackButton,
+                    rightChild: continueButton(authState),
                   ),
                 ],
               ),
@@ -170,70 +153,43 @@ class SignInScreenState extends State<SignInScreen>
     );
   }
 
-  GestureDetector _buildGoBackButton() {
-    void goBack() {
-      setState(() {
-        _formAction = UserExists();
-        _autoValidate = false;
-      });
-      _sizeAnimationController.reverse();
-    }
-
-    return GestureDetector(
-      onTap: _formAction is! UserExists ? goBack : null,
-      child: const Icon(
-        Icons.arrow_back_rounded,
-        size: 30,
+  Widget get emailField {
+    return TextFormField(
+      keyboardType: TextInputType.emailAddress,
+      controller: emailController,
+      enabled: formState == _FormState.enteringEmail,
+      style: formState != _FormState.enteringEmail
+          ? const TextStyle(color: Colors.grey)
+          : null,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: "Email",
       ),
+      onFieldSubmitted: (value) => advanceFormState(),
+      validator: ValidationBuilder().email("Invalid email").build(),
     );
   }
 
-  ElevatedButton _buildContinueButton(
-    AuthState authState,
-    Future<void> Function(String email) userExists,
-    Future<void> Function(String email, String password) signIn,
-    Future<void> Function(String email, String password) signUp,
-  ) {
-    void handleClick() {
-      if (_form.currentState!.validate()) {
-        if (_formAction is UserExists) {
-          userExists(_emailController.text);
-        }
-
-        if (_formAction is SignIn) {
-          signIn(_emailController.text, _passwordController.text);
-        }
-
-        if (_formAction is SignUp) {
-          signUp(_emailController.text, _passwordController.text);
-        }
-      }
-    }
-
-    return ElevatedButton(
-        onPressed: authState.canLogIn ? handleClick : null,
-        child: Text(_formAction.buttonText));
-  }
-
-  TextFormField _buildPasswordField(AuthState authState) {
+  Widget passwordField(AuthState authState) {
     return TextFormField(
-      obscureText: !_showPassword,
-      controller: _passwordController,
+      obscureText: !showPassword,
+      controller: passwordController,
       enabled: authState.canLogIn,
       style: !authState.canLogIn ? const TextStyle(color: Colors.grey) : null,
       decoration: InputDecoration(
         suffixIcon: IconButton(
           icon: Icon(
-            _showPassword ? Icons.visibility_off : Icons.visibility,
+            showPassword ? Icons.visibility_off : Icons.visibility,
           ),
           onPressed: () => setState(() {
-            _showPassword = !_showPassword;
+            showPassword = !showPassword;
           }),
         ),
         border: const OutlineInputBorder(),
         labelText: "Password",
       ),
-      validator: _formAction is SignUp
+      onFieldSubmitted: (value) => advanceFormState(),
+      validator: formState == _FormState.signingUp
           ? ValidationBuilder()
               .minLength(8, "Password should be at least 8 characters long")
               .build()
@@ -241,19 +197,28 @@ class SignInScreenState extends State<SignInScreen>
     );
   }
 
-  TextFormField _buildEmailField() {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      controller: _emailController,
-      enabled: _formAction is UserExists,
-      style: _formAction is! UserExists
-          ? const TextStyle(color: Colors.grey)
-          : null,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: "Email",
-      ),
-      validator: ValidationBuilder().email("Invalid email").build(),
+  Widget continueButton(AuthState authState) {
+    return ElevatedButton(
+      onPressed: authState.canLogIn ? advanceFormState : null,
+      child: Text(formState.buttonText),
+    );
+  }
+
+  Widget get goBackButton {
+    void goBack() {
+      setState(() {
+        formState = _FormState.enteringEmail;
+        autoValidate = false;
+      });
+      sizeAnimationController.reverse();
+    }
+
+    return IconButton(
+      onPressed: formState.canGoBack ? goBack : null,
+      icon: const Icon(Icons.arrow_back_rounded),
+      iconSize: 30,
+      splashRadius: 20,
+      padding: EdgeInsets.zero,
     );
   }
 }
