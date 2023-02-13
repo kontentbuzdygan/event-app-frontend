@@ -53,7 +53,10 @@ class _State extends State<HomeScreen> {
 
     return MaterialButton(
         // TODO: Handle hardcoded links :(
-        onPressed: () => context.push("/event/${event.id}"),
+        onPressed: () => context.pushNamed(
+              "eventView",
+              params: {"eventId": event.id.toString()},
+            ),
         child: Container(
             padding: const EdgeInsets.all(20.0),
             alignment: Alignment.topLeft,

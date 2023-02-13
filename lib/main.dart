@@ -17,19 +17,22 @@ class App extends StatelessWidget {
   late final GoRouter _router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
+        name: "home",
         path: "/",
         builder: (BuildContext context, GoRouterState state) =>
             const HomeScreen(),
       ),
       GoRoute(
+        name: "auth",
         path: "/auth",
         builder: (BuildContext context, GoRouterState state) =>
             const AuthScreen(),
       ),
       GoRoute(
+        name: "eventView",
         path: "/event/:eventId",
         builder: (context, state) =>
-            EventViewScreen(id: state.params["eventId"] as String),
+            EventViewScreen(id: int.tryParse(state.params["eventId"]!) ?? 0),
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {

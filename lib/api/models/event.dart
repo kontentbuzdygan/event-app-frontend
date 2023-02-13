@@ -28,7 +28,7 @@ class Event {
             json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
       );
 
-  static Future<Event> find(String id) async {
+  static Future<Event> find(int id) async {
     try {
       return Event.fromJson(await RestClient.get([_apiPath, id]));
     } catch (e) {

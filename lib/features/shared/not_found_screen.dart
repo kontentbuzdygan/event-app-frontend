@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 
 class NotFoundScreen extends StatelessWidget {
-  NotFoundScreen(String message, {super.key});
+  const NotFoundScreen({super.key, required this.message});
 
-  late final String message;
+  final String message;
 
   @override
   Widget build(BuildContext context) {

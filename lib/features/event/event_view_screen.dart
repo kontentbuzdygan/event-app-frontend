@@ -5,12 +5,12 @@ import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 
 class EventViewScreen extends StatelessWidget {
-  EventViewScreen({super.key, required this.id});
-
-  final String id;
+  EventViewScreen({super.key, required int id}) {
+    event = Event.find(id);
+  }
 
   // TODO: Chain event fetching with author profile fetching
-  late final Future<Event> event = Event.find(id);
+  late final Future<Event> event;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,9 @@ class EventViewScreen extends StatelessWidget {
         future: event,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return NotFoundScreen("Seems like this event does not exist");
+            return const NotFoundScreen(
+              message: "Seems like this event does not exist",
+            );
           }
 
           if (!snapshot.hasData) {
@@ -36,8 +38,8 @@ class EventViewScreen extends StatelessWidget {
               child: Center(
                 child: Column(
                   children: [
-                    rowInfo("Author ID: ", snapshot.data!.authorId.toString()),
-                    rowInfo(
+                    infoRow("Author ID: ", snapshot.data!.authorId.toString()),
+                    infoRow(
                       "starts at ",
                       formatter.format(snapshot.data!.startsAt),
                       TextStyle(
@@ -46,11 +48,11 @@ class EventViewScreen extends StatelessWidget {
                       ),
                     ),
                     if (snapshot.data!.endsAt != null)
-                      rowInfo(
+                      infoRow(
                         "Ends At: ",
                         formatter.format(snapshot.data!.endsAt!),
                       ),
-                    rowInfo("Description: ", snapshot.data!.description),
+                    infoRow("Description: ", snapshot.data!.description),
                   ],
                 ),
               ),
@@ -59,7 +61,7 @@ class EventViewScreen extends StatelessWidget {
         });
   }
 
-  Widget rowInfo(String label, String info, [TextStyle? style]) {
+  Widget infoRow(String label, String info, [TextStyle? style]) {
     return Row(
       children: [
         Text(
