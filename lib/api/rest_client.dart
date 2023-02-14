@@ -14,7 +14,7 @@ class RestClient {
       body: jsonEncode(body),
     );
 
-    if (res.statusCode == HttpStatus.created) {
+    if (res.statusCode >= 200 && res.statusCode < 300) {
       return jsonDecode(res.body);
     }
 
@@ -25,6 +25,20 @@ class RestClient {
     final res = await http.get(
       Uri.parse("$baseUri/${path.join("/")}"),
       headers: _headers(),
+    );
+
+    if (res.statusCode == HttpStatus.ok) {
+      return jsonDecode(res.body);
+    }
+
+    throw InvalidResponseStatus.of(res.statusCode);
+  }
+
+  static Future<JsonObject> delete(List<dynamic> path, JsonObject body) async {
+    final res = await http.delete(
+      Uri.parse("$baseUri/${path.join("/")}"),
+      headers: _headers(),
+      body: jsonEncode(body),
     );
 
     if (res.statusCode == HttpStatus.ok) {

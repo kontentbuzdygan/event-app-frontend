@@ -1,4 +1,4 @@
-import "package:event_app/features/auth/auth_service.dart";
+import "package:event_app/api/models/user.dart";
 import "package:flutter/material.dart";
 
 class AuthState extends ChangeNotifier {
@@ -12,28 +12,28 @@ class AuthState extends ChangeNotifier {
   bool get loggedIn => _userToken != null;
 
   Future<void> signIn(String email, String password) => _transition(() async {
-        _userToken = await AuthService.signIn(email, password);
+        _userToken = await User.signIn(email, password);
       });
 
   Future<void> signUp(String email, String password) =>
-      _transition(() => AuthService.signUp(email, password));
+      _transition(() => NewUser(email: email, password: password).signUp());
 
   // FIXME: Do not clear _userToken before the router finishes transitioning
   // to the signed-out state. On logout, this causes an attempt to refetch data
   // when the token has already been cleared.
   Future<void> signOut() => _transition(() async {
         if (_userToken == null) return;
-        await AuthService.signOut(_userToken!);
+        await User.signOut();
         _userToken = null;
       });
 
   Future<void> refreshToken() => _transition(() async {
         if (_userToken == null) return;
-        _userToken = await AuthService.refreshToken(_userToken!);
+        _userToken = await User.refreshToken();
       });
 
   Future<bool> userExists(String email) =>
-      _transition(() => AuthService.userExists(email));
+      _transition(() => User.exists(email));
 
   Future<T> _transition<T>(Future<T> Function() f) async {
     _loading = true;
