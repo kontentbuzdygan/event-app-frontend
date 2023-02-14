@@ -1,24 +1,20 @@
 import "dart:convert";
 import "dart:io";
-import "package:event_app/api/exceptions.dart";
 import "package:event_app/config.dart";
 import "package:event_app/api/json.dart";
 import "package:event_app/main.dart";
+import "package:event_app/utils.dart";
 import "package:http/http.dart" as http;
 
 class RestClient {
-  static Future<JsonObject> post(List<dynamic> path, JsonObject body) async {
+  static Future<JsonObject> post(List<dynamic> path, [JsonObject body = const {}]) async {
     final res = await http.post(
       Uri.parse("$baseUri/${path.join("/")}"),
       headers: _headers(),
       body: jsonEncode(body),
     );
 
-    if (res.statusCode >= 200 && res.statusCode < 300) {
-      return jsonDecode(res.body);
-    }
-
-    throw InvalidResponseStatus.of(res.statusCode);
+    return res.json();
   }
 
   static Future<JsonObject> get(List<dynamic> path) async {
@@ -27,25 +23,17 @@ class RestClient {
       headers: _headers(),
     );
 
-    if (res.statusCode == HttpStatus.ok) {
-      return jsonDecode(res.body);
-    }
-
-    throw InvalidResponseStatus.of(res.statusCode);
+    return res.json();
   }
 
-  static Future<JsonObject> delete(List<dynamic> path, JsonObject body) async {
+  static Future<JsonObject> delete(List<dynamic> path, [JsonObject body = const {}]) async {
     final res = await http.delete(
       Uri.parse("$baseUri/${path.join("/")}"),
       headers: _headers(),
       body: jsonEncode(body),
     );
 
-    if (res.statusCode == HttpStatus.ok) {
-      return jsonDecode(res.body);
-    }
-
-    throw InvalidResponseStatus.of(res.statusCode);
+    return res.json();
   }
 
   static Map<String, String> _headers() => {

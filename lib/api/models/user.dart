@@ -16,7 +16,7 @@ class User {
 
   static Future<String> refreshToken() async {
     try {
-      final res = await RestClient.post([_apiPath, "refresh-token"], {});
+      final res = await RestClient.post([_apiPath, "refresh-token"]);
       return res["token"];
     } catch (e) {
       return Future.error(e);
@@ -25,7 +25,7 @@ class User {
 
   static Future<void> signOut() async {
     try {
-      await RestClient.delete([_apiPath, "sign-out"], {});
+      await RestClient.delete([_apiPath, "sign-out"]);
     } catch (e) {
       return Future.error(e);
     }
