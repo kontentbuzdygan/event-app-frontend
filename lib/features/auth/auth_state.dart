@@ -7,7 +7,11 @@ const userTokenStorageKey = "event-app-user-token";
 class AuthState extends ChangeNotifier {
   Future<void> restoreToken() => _transition(() async {
         _userToken = await App.storage.read(key: userTokenStorageKey);
-        notifyListeners();
+      });
+
+  Future<void> clearToken() => _transition(() async {
+        await App.storage.delete(key: userTokenStorageKey);
+        _userToken = null;
       });
 
   String? get userToken => _userToken;
