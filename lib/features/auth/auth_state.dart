@@ -1,3 +1,4 @@
+import "package:event_app/api/exceptions.dart";
 import "package:event_app/api/models/user.dart";
 import "package:event_app/main.dart";
 import "package:flutter/material.dart";
@@ -5,15 +6,6 @@ import "package:flutter/material.dart";
 const userTokenStorageKey = "event-app-user-token";
 
 class AuthState extends ChangeNotifier {
-  Future<void> restoreToken() => _transition(() async {
-        _userToken = await App.storage.read(key: userTokenStorageKey);
-      });
-
-  Future<void> clearToken() => _transition(() async {
-        await App.storage.delete(key: userTokenStorageKey);
-        _userToken = null;
-      });
-
   String? get userToken => _userToken;
   String? _userToken;
 
@@ -23,10 +15,17 @@ class AuthState extends ChangeNotifier {
   bool get canLogIn => _userToken == null && !_loading;
   bool get loggedIn => _userToken != null;
 
-  Future<void> signIn(String email, String password) => _transition(() async {
-        _userToken = await User.signIn(email, password);
-        await App.storage.write(key: userTokenStorageKey, value: _userToken);
+  Future<void> restoreAndRefreshToken() => _transition(() async {
+        _userToken = await App.storage.read(key: userTokenStorageKey);
+        try {
+          await refreshToken();
+        } on Unauthorized {
+          await _setUserToken(null);
+        }
       });
+
+  Future<void> signIn(String email, String password) =>
+      _transition(() => User.signIn(email, password).then(_setUserToken));
 
   Future<void> signUp(String email, String password) =>
       _transition(() => NewUser(email: email, password: password).signUp());
@@ -37,15 +36,11 @@ class AuthState extends ChangeNotifier {
   Future<void> signOut() => _transition(() async {
         if (_userToken == null) return;
         await User.signOut();
-        await App.storage.delete(key: userTokenStorageKey);
-        _userToken = null;
+        _setUserToken(null);
       });
 
-  Future<void> refreshToken() => _transition(() async {
-        if (_userToken == null) return;
-        _userToken = await User.refreshToken();
-        await App.storage.write(key: userTokenStorageKey, value: _userToken);
-      });
+  Future<void> refreshToken() =>
+      _transition(() => User.refreshToken().then(_setUserToken));
 
   Future<bool> userExists(String email) =>
       _transition(() => User.exists(email));
@@ -59,6 +54,15 @@ class AuthState extends ChangeNotifier {
     } finally {
       _loading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> _setUserToken(String? userToken) async {
+    _userToken = userToken;
+    if (userToken == null) {
+      await App.storage.delete(key: userTokenStorageKey);
+    } else {
+      await App.storage.write(key: userTokenStorageKey, value: _userToken);
     }
   }
 }

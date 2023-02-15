@@ -1,4 +1,3 @@
-import "package:event_app/api/exceptions.dart";
 import "package:event_app/features/event/event_view_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
@@ -13,13 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load();
-  await App.authState.restoreToken();
-
-  try {
-    await App.authState.refreshToken();
-  } on Unauthorized {
-    await App.authState.clearToken();
-  }
+  await App.authState.restoreAndRefreshToken();
 
   runApp(App());
 }
