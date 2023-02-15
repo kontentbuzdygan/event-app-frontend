@@ -34,10 +34,10 @@
 
 ## 🤼 Contributing
 
-Branches related to tickets from the issue tracker should be named `username/ticket-id`, e.g. `john-doe/eve-123`.
+Branches related to tickets from the issue tracker should be named `username/ticket-id`. Ideally just copy the branch name from Linear directly.
 
-1. When publishing a branch, open a PR for it, self-assign it and mark it as `draft`.
-2. Try to push 📤 as often as possible and rebase your branch as often as possible.
+1. When publishing a branch, open a PR for it, self-assign it and mark it as ✏️ `draft`.
+2. Try to push 📤 as often as possible and rebase 🔄 your branch as often as possible.
 3. When your changes are complete and your PR passes all CI checks ✅, remove the `draft` label and request a review 👀.
 4. After getting an approval ✅, remember to rebase your branch and feel free to squash 🫂 and merge 📥.
 5. 🤑 💸 💰 📈
