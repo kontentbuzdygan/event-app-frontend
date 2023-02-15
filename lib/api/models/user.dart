@@ -16,7 +16,7 @@ class User {
 
   static Future<String> refreshToken() async {
     try {
-      final res = await RestClient.post([_apiPath, "refresh-token"]);
+      final res = await RestClient.post([_apiPath, "refresh"]);
       return res["token"];
     } catch (e) {
       return Future.error(e);

@@ -1,1 +1,1 @@
-const baseUri = "http://localhost:8000/api/v0";
+const baseUri = "https://event-app-backend.hop.sh/api/v0";

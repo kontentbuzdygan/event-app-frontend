@@ -5,10 +5,10 @@ import "package:flutter/material.dart";
 const userTokenStorageKey = "event-app-user-token";
 
 class AuthState extends ChangeNotifier {
-  Future<void> restoreToken() async {
-    _userToken = await App.storage.read(key: userTokenStorageKey);
-    notifyListeners();
-  }
+  Future<void> restoreToken() => _transition(() async {
+        _userToken = await App.storage.read(key: userTokenStorageKey);
+        notifyListeners();
+      });
 
   String? get userToken => _userToken;
   String? _userToken;
