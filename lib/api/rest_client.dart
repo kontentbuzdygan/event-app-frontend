@@ -8,7 +8,7 @@ import "package:http/http.dart" as http;
 
 class RestClient {
   static Future<JsonObject> post(List<dynamic> path, [JsonObject body = const {}]) async {
-    final baseUrl = dotenv.env["API_URL"];
+    final baseUrl = dotenv.get("API_URL");
     final res = await http.post(
       Uri.parse("$baseUrl/${path.join("/")}"),
       headers: _headers(),
@@ -19,7 +19,7 @@ class RestClient {
   }
 
   static Future<JsonObject> get(List<dynamic> path) async {
-    final baseUrl = dotenv.env["API_URL"];
+    final baseUrl = dotenv.get("API_URL");
     final res = await http.get(
       Uri.parse("$baseUrl/${path.join("/")}"),
       headers: _headers(),
@@ -29,7 +29,7 @@ class RestClient {
   }
 
   static Future<JsonObject> delete(List<dynamic> path, [JsonObject body = const {}]) async {
-    final baseUrl = dotenv.env["API_URL"];
+    final baseUrl = dotenv.get("API_URL");
     final res = await http.delete(
       Uri.parse("$baseUrl/${path.join("/")}"),
       headers: _headers(),
