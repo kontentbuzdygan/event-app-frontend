@@ -13,13 +13,12 @@ void main() async {
   runApp(App());
 }
 
-const storage = FlutterSecureStorage();
-
 class App extends StatelessWidget {
   App({super.key});
 
-  static const String title = "Event App";
-  static final AuthState authState = AuthState();
+  static const title = "Event App";
+  static const storage = FlutterSecureStorage();
+  static final authState = AuthState();
 
   late final GoRouter _router = GoRouter(
     routes: <GoRoute>[

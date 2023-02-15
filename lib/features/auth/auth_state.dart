@@ -7,7 +7,7 @@ const userTokenStorageKey = "event-app-user-token";
 
 class AuthState extends ChangeNotifier {
   Future<void> restoreToken() async {
-    _userToken = await storage.read(key: userTokenStorageKey);
+    _userToken = await App.storage.read(key: userTokenStorageKey);
     notifyListeners();
   }
 
@@ -35,14 +35,13 @@ class AuthState extends ChangeNotifier {
   Future<void> signOut() => _transition(() async {
         if (_userToken == null) return;
         await User.signOut();
-        await storage.delete(key: userTokenStorageKey);
+        await App.storage.delete(key: userTokenStorageKey);
         _userToken = null;
       });
 
   Future<void> refreshToken() => _transition(() async {
         if (_userToken == null) return;
-        const storage = FlutterSecureStorage();
-        await storage.write(key: userTokenStorageKey, value: _userToken);
+        await App.storage.write(key: userTokenStorageKey, value: _userToken);
       });
 
   Future<bool> userExists(String email) =>
