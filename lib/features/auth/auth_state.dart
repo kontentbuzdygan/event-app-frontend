@@ -1,7 +1,16 @@
 import "package:event_app/api/models/user.dart";
+import "package:event_app/main.dart";
 import "package:flutter/material.dart";
+import "package:flutter_secure_storage/flutter_secure_storage.dart";
+
+const userTokenStorageKey = "event-app-user-token";
 
 class AuthState extends ChangeNotifier {
+  Future<void> restoreToken() async {
+    _userToken = await storage.read(key: userTokenStorageKey);
+    notifyListeners();
+  }
+
   String? get userToken => _userToken;
   String? _userToken;
 
@@ -13,6 +22,8 @@ class AuthState extends ChangeNotifier {
 
   Future<void> signIn(String email, String password) => _transition(() async {
         _userToken = await User.signIn(email, password);
+        const storage = FlutterSecureStorage();
+        await storage.write(key: userTokenStorageKey, value: _userToken);
       });
 
   Future<void> signUp(String email, String password) =>
@@ -24,12 +35,14 @@ class AuthState extends ChangeNotifier {
   Future<void> signOut() => _transition(() async {
         if (_userToken == null) return;
         await User.signOut();
+        await storage.delete(key: userTokenStorageKey);
         _userToken = null;
       });
 
   Future<void> refreshToken() => _transition(() async {
         if (_userToken == null) return;
-        _userToken = await User.refreshToken();
+        const storage = FlutterSecureStorage();
+        await storage.write(key: userTokenStorageKey, value: _userToken);
       });
 
   Future<bool> userExists(String email) =>

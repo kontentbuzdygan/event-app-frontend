@@ -1,12 +1,19 @@
 import "package:event_app/features/event/event_view_screen.dart";
 import "package:flutter/material.dart";
+import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/home/home_screen.dart";
 
-void main() => runApp(App());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await App.authState.restoreToken();
+  runApp(App());
+}
+
+const storage = FlutterSecureStorage();
 
 class App extends StatelessWidget {
   App({super.key});

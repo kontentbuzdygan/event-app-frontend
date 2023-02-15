@@ -40,6 +40,7 @@ dependencies:
   http: ^0.13.5
   form_validator: ^1.0.3
   intl: ^0.18.0
+  flutter_secure_storage: ^8.0.0
 
 dev_dependencies:
   flutter_test:
