@@ -5,11 +5,12 @@ import "package:http/http.dart";
 
 /// Converts the given elements to strings and joins them with slashes, ensuring
 /// there is no consecutive or leading/trailing slashes
-String joinUrl(List<dynamic> parts) => parts
-    .expand(
-      (part) =>
-          part.toString().split("/").where((innerPart) => innerPart.isNotEmpty),
-    )
+String joinUrl(List<dynamic> parts) =>
+  parts
+    .expand((part) => part
+      .toString()
+      .split("/")
+      .where((innerPart) => innerPart.isNotEmpty))
     .join("/");
 
 extension StatusClasses on BaseResponse {
