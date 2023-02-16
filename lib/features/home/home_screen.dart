@@ -31,14 +31,15 @@ class _State extends State<HomeScreen> {
         ],
       ),
       body: FutureBuilder(
-          future: allEvents,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return eventsListView(snapshot.requireData);
-            }
+        future: allEvents,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return eventsListView(snapshot.requireData);
+          }
 
-            return const Text("Loading...");
-          }),
+          return const Text("Loading...");
+        },
+      ),
     );
   }
 
@@ -52,28 +53,32 @@ class _State extends State<HomeScreen> {
     final formatter = DateFormat("yyyy-MM-dd");
 
     return MaterialButton(
-        // TODO: Handle hardcoded links :(
-        onPressed: () => context.pushNamed(
-              "eventView",
-              params: {"eventId": event.id.toString()},
+      // TODO: Handle hardcoded links :(
+      onPressed: () => context.pushNamed(
+        "eventView",
+        params: {"eventId": event.id.toString()},
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(20.0),
+        alignment: Alignment.topLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(event.title,
+                style: const TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.bold,),),
+            Text(
+                event.endsAt != null
+                    ? "from ${formatter.format(event.startsAt)} to ${formatter.format(event.endsAt!)}"
+                    : "starts at ${formatter.format(event.startsAt)}",
+                style: TextStyle(color: Colors.blue[700]),),
+            Container(
+              margin: const EdgeInsets.only(top: 10.0),
+              child: Text(event.description),
             ),
-        child: Container(
-            padding: const EdgeInsets.all(20.0),
-            alignment: Alignment.topLeft,
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(event.title,
-                  style: const TextStyle(
-                      fontSize: 20.0, fontWeight: FontWeight.bold)),
-              Text(
-                  event.endsAt != null
-                      ? "from ${formatter.format(event.startsAt)} to ${formatter.format(event.endsAt!)}"
-                      : "starts at ${formatter.format(event.startsAt)}",
-                  style: TextStyle(color: Colors.blue[700])),
-              Container(
-                margin: const EdgeInsets.only(top: 10.0),
-                child: Text(event.description),
-              ),
-            ])));
+          ],
+        ),
+      ),
+    );
   }
 }

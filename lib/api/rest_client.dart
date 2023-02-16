@@ -1,5 +1,6 @@
 import "dart:convert";
 import "dart:io";
+import "package:event_app/api/exceptions.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:event_app/api/json.dart";
 import "package:event_app/main.dart";
@@ -15,7 +16,12 @@ class RestClient {
       body: jsonEncode(body),
     );
 
-    return res.json();
+    try {
+      return res.json();
+    } on Unauthorized {
+      App.authState.deleteUserToken();
+      rethrow;
+    }
   }
 
   static Future<JsonObject> get(List<dynamic> path) async {
@@ -25,7 +31,12 @@ class RestClient {
       headers: _headers(),
     );
 
-    return res.json();
+    try {
+      return res.json();
+    } on Unauthorized {
+      App.authState.deleteUserToken();
+      rethrow;
+    }
   }
 
   static Future<JsonObject> delete(List<dynamic> path, [JsonObject body = const {}]) async {
@@ -36,7 +47,12 @@ class RestClient {
       body: jsonEncode(body),
     );
 
-    return res.json();
+    try {
+      return res.json();
+    } on Unauthorized {
+      App.authState.deleteUserToken();
+      rethrow;
+    }
   }
 
   static Map<String, String> _headers() => {

@@ -10,9 +10,10 @@ import "package:event_app/features/home/home_screen.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await dotenv.load();
-  await App.authState.restoreToken();
-  await App.authState.refreshToken();
+  await App.authState.restoreAndRefreshToken();
+
   runApp(App());
 }
 
