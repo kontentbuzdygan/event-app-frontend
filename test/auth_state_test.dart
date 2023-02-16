@@ -8,7 +8,7 @@ import "utils/mock_secure_storage.dart";
 late MockRestClient restMock;
 
 void main() {
-  late RestMock signIn, signUp, signOut, refresh, userExists;
+  late MockRestEndpoint signIn, signUp, signOut, refresh, userExists;
   late AuthState authState;
 
   setUp(() {
@@ -33,8 +33,8 @@ void main() {
   test("signIn", () async {
     await authState.signIn("john.doe@example.com", "password1234");
 
-    expect(authState.userToken, equals("DUMMY-TOKEN"));
     expect(signIn, hasBeenCalled());
+    expect(authState.userToken, equals("DUMMY-TOKEN"));
     expect(signIn.lastRequest?.body, equals({
       "email": "john.doe@example.com",
       "password": "password1234",
@@ -55,16 +55,16 @@ void main() {
     await authState.signIn("john.doe@example.com", "password1234");
     await authState.signOut();
 
-    expect(authState.userToken, isNull);
     expect(signOut, hasBeenCalled());
+    expect(authState.userToken, isNull);
   });
 
   test("refreshToken", () async {
     await authState.signIn("john.doe@example.com", "password1234");
     await authState.refreshToken();
 
-    expect(authState.userToken, equals("FRESH-TOKEN"));
     expect(refresh, hasBeenCalled());
+    expect(authState.userToken, equals("FRESH-TOKEN"));
   });
 
   test("userExists", () async {

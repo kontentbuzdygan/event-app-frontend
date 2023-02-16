@@ -16,10 +16,10 @@ import "package:flutter_test/flutter_test.dart";
 /// expect(mockedEndpoint, hasBeenCalled());
 /// ```
 class MockRestClient extends RestClient {
-  final List<RestMock> _mocks = [];
+  final List<MockRestEndpoint> _mocks = [];
 
-  RestMock mock(String method, List<dynamic> path, RestMockCallback callback) {
-    final mock = RestMock._(method, path, callback);
+  MockRestEndpoint mock(String method, List<dynamic> path, MockRestEndpointCallback callback) {
+    final mock = MockRestEndpoint._(method, path, callback);
     _mocks.add(mock);
     return mock;
   }
@@ -35,9 +35,9 @@ class MockRestClient extends RestClient {
   }
 }
 
-typedef RestMockCallback = JsonObject Function(JsonObject? requestBody);
+typedef MockRestEndpointCallback = JsonObject Function(JsonObject? requestBody);
 
-class RestMock {
+class MockRestEndpoint {
   final String _method;
   final List<dynamic> _path;
   final JsonObject Function(JsonObject? requestBody) _callback;
@@ -46,7 +46,7 @@ class RestMock {
   MockedRequest? get lastRequest =>
       _requests.isNotEmpty ? _requests.last : null;
 
-  RestMock._(this._method, this._path, this._callback);
+  MockRestEndpoint._(this._method, this._path, this._callback);
 
   bool matches(String method, List<dynamic> path) =>
       method.toLowerCase() == _method.toLowerCase() &&
@@ -65,6 +65,7 @@ class RestMock {
   }
 }
 
+/// A recorded mocked REST interaction
 class MockedRequest {
   final JsonObject? body;
   final JsonObject response;
@@ -72,9 +73,11 @@ class MockedRequest {
   MockedRequest._(this.body, this.response);
 }
 
+/// Tests whether a [MockRestEndpoint] has been called (optionally matches the
+/// specific number of times it was called)
 Matcher hasBeenCalled({int? times}) => _HasBeenCalledMatcher(times);
 
-class _HasBeenCalledMatcher extends TypeMatcher<RestMock> {
+class _HasBeenCalledMatcher extends TypeMatcher<MockRestEndpoint> {
   final int? _times;
 
   _HasBeenCalledMatcher(this._times);
@@ -83,8 +86,8 @@ class _HasBeenCalledMatcher extends TypeMatcher<RestMock> {
   bool matches(Object? item, Map matchState) =>
       super.matches(item, matchState) &&
       (_times == null
-          ? (item as RestMock)._requests.isNotEmpty
-          : (item as RestMock)._requests.length == _times);
+          ? (item as MockRestEndpoint)._requests.isNotEmpty
+          : (item as MockRestEndpoint)._requests.length == _times);
 
   @override
   Description describe(Description description) => super
@@ -98,7 +101,7 @@ class _HasBeenCalledMatcher extends TypeMatcher<RestMock> {
     Map matchState,
     bool verbose,
   ) {
-    if (item is RestMock) {
+    if (item is MockRestEndpoint) {
       return mismatchDescription.add(
         item._requests.isEmpty
             ? "was never called"
