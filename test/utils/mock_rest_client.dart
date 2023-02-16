@@ -1,6 +1,7 @@
 import "package:event_app/api/json.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/utils.dart";
+import "package:flutter_test/flutter_test.dart";
 
 /// Used to test interactions with the [RestClient]
 ///
@@ -42,6 +43,9 @@ class RestMock {
   final JsonObject Function(JsonObject? requestBody) _callback;
   final List<MockedRequest> _requests = [];
 
+  MockedRequest? get lastRequest =>
+      _requests.isNotEmpty ? _requests.last : null;
+
   RestMock._(this._method, this._path, this._callback);
 
   bool matches(String method, List<dynamic> path) =>
@@ -66,4 +70,30 @@ class MockedRequest {
   final JsonObject response;
 
   MockedRequest._(this.body, this.response);
+}
+
+Matcher get hasBeenCalled => _HasBeenCalledMatcher();
+
+class _HasBeenCalledMatcher extends TypeMatcher<RestMock> {
+  @override
+  bool matches(Object? item, Map matchState) =>
+      super.matches(item, matchState) &&
+      (item as RestMock)._requests.isNotEmpty;
+
+  @override
+  Description describe(Description description) =>
+      super.describe(description).add(" which has been called");
+
+  @override
+  Description describeMismatch(
+    item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (item is RestMock) return mismatchDescription.add("was never called");
+
+    return super
+        .describeMismatch(item, mismatchDescription, matchState, verbose);
+  }
 }

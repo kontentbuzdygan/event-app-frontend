@@ -15,17 +15,21 @@ void main() {
   });
 
   test("signIn", () async {
-    restMock.add(
-      RequestMock("POST", ["auth", "sign-in"], (requestBody) {
-        expect(requestBody["email"], equals("john.doe@example.com"));
-        expect(requestBody["password"], equals("password1234"));
-        return {"token": "DUMMY-TOKEN"};
-      }),
-    );
+    final signIn = restMock.mock(
+        "POST", ["auth", "sign-in"], (_) => {"token": "DUMMY-TOKEN"});
 
     final authState = AuthState();
     await authState.signIn("john.doe@example.com", "password1234");
+
     expect(authState.userToken, equals("DUMMY-TOKEN"));
+    expect(signIn, hasBeenCalled);
+    expect(
+      signIn.lastRequest?.body,
+      equals({
+        "email": "john.doe@example.com",
+        "password": "password1234",
+      }),
+    );
   });
 
   // TODO: Add tests for remaining methods
