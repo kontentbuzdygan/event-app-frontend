@@ -1,6 +1,4 @@
-import 'package:event_app/api/exceptions.dart';
 import "package:event_app/api/models/event.dart";
-import 'package:event_app/main.dart';
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:intl/intl.dart";
@@ -39,10 +37,6 @@ class _State extends State<HomeScreen> {
             return eventsListView(snapshot.requireData);
           }
 
-          if (snapshot.hasError) {
-            print("erra");
-          }
-
           return const Text("Loading...");
         },
       ),
@@ -72,12 +66,12 @@ class _State extends State<HomeScreen> {
           children: [
             Text(event.title,
                 style: const TextStyle(
-                    fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    fontSize: 20.0, fontWeight: FontWeight.bold,),),
             Text(
                 event.endsAt != null
                     ? "from ${formatter.format(event.startsAt)} to ${formatter.format(event.endsAt!)}"
                     : "starts at ${formatter.format(event.startsAt)}",
-                style: TextStyle(color: Colors.blue[700])),
+                style: TextStyle(color: Colors.blue[700]),),
             Container(
               margin: const EdgeInsets.only(top: 10.0),
               child: Text(event.description),

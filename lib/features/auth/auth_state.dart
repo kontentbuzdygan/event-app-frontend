@@ -45,6 +45,8 @@ class AuthState extends ChangeNotifier {
   Future<bool> userExists(String email) =>
       _transition(() => User.exists(email));
 
+  Future<void> deleteUserToken() => _transition(() => _setUserToken(null));
+
   Future<T> _transition<T>(Future<T> Function() f) async {
     _loading = true;
     notifyListeners();
@@ -56,8 +58,6 @@ class AuthState extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  void deleteUserToken() => _transition(() => _setUserToken(null));
 
   Future<void> _setUserToken(String? userToken) async {
     _userToken = userToken;
