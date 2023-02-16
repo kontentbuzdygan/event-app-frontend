@@ -20,7 +20,7 @@ class AuthState extends ChangeNotifier {
     try {
       await refreshToken();
     } on Unauthorized {
-      await _setUserToken(null);
+      // RestClient will handle Unauthorized and call `deleteUserToken`
     }
   });
 

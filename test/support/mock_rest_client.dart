@@ -52,9 +52,14 @@ class MockRestEndpoint {
     joinUrl(path) == joinUrl(_path);
 
   JsonObject call(JsonObject? requestBody) {
-    final responseBody = _callback(requestBody);
-    _requests.add(MockedRequest._(requestBody, responseBody));
-    return responseBody;
+    try {
+      final responseBody = _callback(requestBody);
+      _requests.add(MockedRequest._(requestBody, responseBody));
+      return responseBody;
+    } catch (e) {
+      _requests.add(MockedRequest._(requestBody, null));
+      rethrow;
+    }
   }
 
   @override
@@ -67,7 +72,7 @@ class MockRestEndpoint {
 /// A recorded mocked REST interaction
 class MockedRequest {
   final JsonObject? body;
-  final JsonObject response;
+  final JsonObject? response;
 
   MockedRequest._(this.body, this.response);
 }
@@ -92,7 +97,7 @@ class _HasBeenCalledMatcher extends TypeMatcher<MockRestEndpoint> {
   Description describe(Description description) {
     return super
       .describe(description)
-      .add(" which has been called${_times != null ? " $_times times" : ""}");
+      .add(" to have been called${_times != null ? " $_times times" : ""}");
   }
 
   @override
