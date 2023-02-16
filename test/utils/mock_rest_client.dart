@@ -13,7 +13,7 @@ import "package:flutter_test/flutter_test.dart";
 ///
 /// // make some requests using the global `rest` client
 ///
-/// expect(mockedEndpoint, hasBeenCalled);
+/// expect(mockedEndpoint, hasBeenCalled());
 /// ```
 class MockRestClient extends RestClient {
   final List<RestMock> _mocks = [];
@@ -72,17 +72,24 @@ class MockedRequest {
   MockedRequest._(this.body, this.response);
 }
 
-Matcher get hasBeenCalled => _HasBeenCalledMatcher();
+Matcher hasBeenCalled({int? times}) => _HasBeenCalledMatcher(times);
 
 class _HasBeenCalledMatcher extends TypeMatcher<RestMock> {
+  final int? _times;
+
+  _HasBeenCalledMatcher(this._times);
+
   @override
   bool matches(Object? item, Map matchState) =>
       super.matches(item, matchState) &&
-      (item as RestMock)._requests.isNotEmpty;
+      (_times == null
+          ? (item as RestMock)._requests.isNotEmpty
+          : (item as RestMock)._requests.length == _times);
 
   @override
-  Description describe(Description description) =>
-      super.describe(description).add(" which has been called");
+  Description describe(Description description) => super
+      .describe(description)
+      .add(" which has been called${_times != null ? " $_times times" : ""}");
 
   @override
   Description describeMismatch(
@@ -91,7 +98,13 @@ class _HasBeenCalledMatcher extends TypeMatcher<RestMock> {
     Map matchState,
     bool verbose,
   ) {
-    if (item is RestMock) return mismatchDescription.add("was never called");
+    if (item is RestMock) {
+      return mismatchDescription.add(
+        item._requests.isEmpty
+            ? "was never called"
+            : "was called ${item._requests.length} times",
+      );
+    }
 
     return super
         .describeMismatch(item, mismatchDescription, matchState, verbose);
