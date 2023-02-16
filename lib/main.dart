@@ -1,3 +1,4 @@
+import 'package:event_app/api/exceptions.dart';
 import "package:event_app/features/event/event_view_screen.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -16,7 +17,7 @@ void main() async {
   await App.authState.restoreAndRefreshToken();
 
   PlatformDispatcher.instance.onError = (error, stack) {
-    if (error is Exception) {
+    if (error is InvalidResponseStatus) {
       errorNotifier.error = error;
       return true;
     }
