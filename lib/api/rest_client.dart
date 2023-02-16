@@ -7,7 +7,7 @@ import "package:event_app/main.dart";
 import "package:event_app/utils.dart";
 import "package:http/http.dart" as http;
 
-RestClient _rest = const RestClient();
+RestClient _rest = RestClient();
 RestClient get rest => _rest;
 
 void overrideRestClient(RestClient value) {
@@ -15,49 +15,31 @@ void overrideRestClient(RestClient value) {
 }
 
 class RestClient {
-  const RestClient();
+  final _http = http.Client();
 
-  Future<JsonObject> post(List<dynamic> path, [JsonObject body = const {}]) async {
+  Future<JsonObject> post(List<dynamic> path, [JsonObject body = const {}]) =>
+      makeRequest("POST", path, body);
+
+  Future<JsonObject> get(List<dynamic> path) => makeRequest("GET", path);
+
+  Future<JsonObject> delete(List<dynamic> path, [JsonObject body = const {}]) =>
+      makeRequest("DELETE", path, body);
+
+  Future<JsonObject> makeRequest(
+    String method,
+    List<dynamic> path, [
+    JsonObject? body,
+  ]) async {
     final baseUrl = dotenv.get("API_URL");
-    final res = await http.post(
-      Uri.parse("$baseUrl/${path.join("/")}"),
-      headers: _headers,
-      body: jsonEncode(body),
-    );
 
+    final request =
+        http.Request(method, Uri.parse("$baseUrl/${path.join("/")}"));
+    request.headers.addAll(_headers);
+    request.body = jsonEncode(body);
+
+    final res = await _http.send(request);
     try {
-      return res.json();
-    } on Unauthorized {
-      App.authState.deleteUserToken();
-      rethrow;
-    }
-  }
-
-  Future<JsonObject> get(List<dynamic> path) async {
-    final baseUrl = dotenv.get("API_URL");
-    final res = await http.get(
-      Uri.parse("$baseUrl/${path.join("/")}"),
-      headers: _headers,
-    );
-
-    try {
-      return res.json();
-    } on Unauthorized {
-      App.authState.deleteUserToken();
-      rethrow;
-    }
-  }
-
-  Future<JsonObject> delete(List<dynamic> path, [JsonObject body = const {}]) async {
-    final baseUrl = dotenv.get("API_URL");
-    final res = await http.delete(
-      Uri.parse("$baseUrl/${path.join("/")}"),
-      headers: _headers,
-      body: jsonEncode(body),
-    );
-
-    try {
-      return res.json();
+      return await res.json();
     } on Unauthorized {
       App.authState.deleteUserToken();
       rethrow;

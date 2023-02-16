@@ -1,50 +1,69 @@
 import "package:event_app/api/json.dart";
 import "package:event_app/api/rest_client.dart";
+import "package:event_app/utils.dart";
 
+/// Used to test interactions with the [RestClient]
+///
+/// ### Example
+/// ```
+/// final restMock = MockRestClient();
+/// overrideRestClient(restMock);
+/// final mockedEndpoint = restMock.mock(...);
+///
+/// // make some requests using the global `rest` client
+///
+/// expect(mockedEndpoint, hasBeenCalled);
+/// ```
 class MockRestClient extends RestClient {
-  final List<RequestMock> _requestMocks = [];
+  final List<RestMock> _mocks = [];
 
-  void add(RequestMock mock) {
-    _requestMocks.add(mock);
+  RestMock mock(String method, List<dynamic> path, RestMockCallback callback) {
+    final mock = RestMock._(method, path, callback);
+    _mocks.add(mock);
+    return mock;
   }
 
   @override
-  Future<JsonObject> get(List<dynamic> path) {
-    return Future.value(_performRequest("GET", path, {}));
-  }
-
-  @override
-  Future<JsonObject> post(
+  Future<JsonObject> makeRequest(
+    String method,
     List<dynamic> path, [
-    JsonObject body = const {},
+    JsonObject? body,
   ]) {
-    return Future.value(_performRequest("POST", path, body));
-  }
-
-  @override
-  Future<JsonObject> delete(
-    List<dynamic> path, [
-    JsonObject body = const {},
-  ]) {
-    return Future.value(_performRequest("DELETE", path, body));
-  }
-
-  JsonObject _performRequest(
-      String method, List<dynamic> path, JsonObject body) {
-    final mock =
-        _requestMocks.firstWhere((element) => element.matches(method, path));
-    return mock.response(body);
+    final mock = _mocks.firstWhere((mock) => mock.matches(method, path));
+    return Future.value(mock.call(body));
   }
 }
 
-class RequestMock {
-  final String method;
-  final List<dynamic> path;
-  final JsonObject Function(JsonObject requestBody) response;
+typedef RestMockCallback = JsonObject Function(JsonObject? requestBody);
 
-  const RequestMock(this.method, this.path, this.response);
+class RestMock {
+  final String _method;
+  final List<dynamic> _path;
+  final JsonObject Function(JsonObject? requestBody) _callback;
+  final List<MockedRequest> _requests = [];
+
+  RestMock._(this._method, this._path, this._callback);
 
   bool matches(String method, List<dynamic> path) =>
-      method.toLowerCase() == this.method.toLowerCase() &&
-      path.join("/") == this.path.join("/");
+      method.toLowerCase() == _method.toLowerCase() &&
+      joinUrl(path) == joinUrl(_path);
+
+  JsonObject call(JsonObject? requestBody) {
+    final responseBody = _callback(requestBody);
+    _requests.add(MockedRequest._(requestBody, responseBody));
+    return responseBody;
+  }
+
+  @override
+  String toString() {
+    final url = joinUrl(_path);
+    return "RestMock $_method $url";
+  }
+}
+
+class MockedRequest {
+  final JsonObject? body;
+  final JsonObject response;
+
+  MockedRequest._(this.body, this.response);
 }
