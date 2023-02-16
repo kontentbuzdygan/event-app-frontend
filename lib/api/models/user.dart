@@ -5,8 +5,7 @@ const String _apiPath = "auth";
 
 class User {
   static Future<bool> exists(String email) async {
-    final res =
-        await RestClient.post([_apiPath, "user-exists"], {"email": email});
+    final res = await RestClient.post([_apiPath, "user-exists"], {"email": email});
     return res["user_exists"];
   }
 
@@ -15,13 +14,13 @@ class User {
     return res["token"];
   }
 
-  static Future<void> signOut() async {
-    await RestClient.delete([_apiPath, "sign-out"]);
-  }
+  static Future<void> signOut() => RestClient.delete([_apiPath, "sign-out"]);
 
   static Future<String> signIn(String email, String password) async {
-    final res = await RestClient.post(
-        [_apiPath, "sign-in"], {"email": email, "password": password});
+    final res = await RestClient.post([_apiPath, "sign-in"], {
+      "email": email,
+      "password": password,
+    });
     return res["token"];
   }
 }
