@@ -3,7 +3,7 @@ import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/secure_storage.dart";
 import "package:flutter_test/flutter_test.dart";
 import "../../support/mock_rest_client.dart";
-import "../../support/mock_secure_storage.dart";
+import "../../support/in_memory_storage.dart";
 
 void main() {
   late MockRestClient restMock;
@@ -14,7 +14,7 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
 
     overrideRestClient(restMock = MockRestClient());
-    overrideSecureStorage(const MockSecureStorage());
+    overrideSecureStorage(const InMemoryStorage());
 
     signIn = restMock.mock("POST", ["auth", "sign-in"], (_) => {"token": "DUMMY-TOKEN"});
     signUp = restMock.mock("POST", ["auth", "sign-up"], (_) => {});

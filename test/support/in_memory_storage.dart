@@ -1,9 +1,10 @@
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 
-class MockSecureStorage extends FlutterSecureStorage {
+/// Mock of [FlutterSecureStorage] which stores everything in a map in-memory
+class InMemoryStorage extends FlutterSecureStorage {
   static final Map<String, String?> _values = {};
 
-  const MockSecureStorage();
+  const InMemoryStorage();
 
   @override
   Future<void> write({
