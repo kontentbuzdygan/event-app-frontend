@@ -57,6 +57,8 @@ class AuthState extends ChangeNotifier {
     }
   }
 
+  void deleteUserToken() => _transition(() => _setUserToken(null));
+
   Future<void> _setUserToken(String? userToken) async {
     _userToken = userToken;
     if (userToken == null) {

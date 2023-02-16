@@ -29,22 +29,14 @@ class Event {
       );
 
   static Future<Event> find(int id) async {
-    try {
-      return Event.fromJson(await RestClient.get([_apiPath, id]));
-    } catch (e) {
-      return Future.error(e);
-    }
+    return Event.fromJson(await RestClient.get([_apiPath, id]));
   }
 
   static Future<Iterable<Event>> findAll() async {
-    try {
-      final json = await RestClient.get([_apiPath]);
-      return (json["events"] as Iterable<dynamic>)
-          .cast<JsonObject>()
-          .map(Event.fromJson);
-    } catch (e) {
-      return Future.error(e);
-    }
+    final json = await RestClient.get([_apiPath]);
+    return (json["events"] as Iterable<dynamic>)
+        .cast<JsonObject>()
+        .map(Event.fromJson);
   }
 }
 
