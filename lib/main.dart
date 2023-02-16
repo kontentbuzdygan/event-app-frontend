@@ -1,6 +1,4 @@
-import "package:event_app/api/exceptions.dart";
 import "package:event_app/features/event/event_view_screen.dart";
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:go_router/go_router.dart";
@@ -15,14 +13,6 @@ void main() async {
 
   await dotenv.load();
   await App.authState.restoreAndRefreshToken();
-
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (error is Unauthorized) {
-      App.authState.deleteUserToken();
-      return true;
-    }
-    return false;
-  };
 
   runApp(App());
 }
