@@ -7,12 +7,21 @@ import "package:event_app/main.dart";
 import "package:event_app/utils.dart";
 import "package:http/http.dart" as http;
 
+RestClient _rest = const RestClient();
+RestClient get rest => _rest;
+
+void overrideRestClient(RestClient value) {
+  _rest = value;
+}
+
 class RestClient {
-  static Future<JsonObject> post(List<dynamic> path, [JsonObject body = const {}]) async {
+  const RestClient();
+
+  Future<JsonObject> post(List<dynamic> path, [JsonObject body = const {}]) async {
     final baseUrl = dotenv.get("API_URL");
     final res = await http.post(
       Uri.parse("$baseUrl/${path.join("/")}"),
-      headers: _headers(),
+      headers: _headers,
       body: jsonEncode(body),
     );
 
@@ -24,11 +33,11 @@ class RestClient {
     }
   }
 
-  static Future<JsonObject> get(List<dynamic> path) async {
+  Future<JsonObject> get(List<dynamic> path) async {
     final baseUrl = dotenv.get("API_URL");
     final res = await http.get(
       Uri.parse("$baseUrl/${path.join("/")}"),
-      headers: _headers(),
+      headers: _headers,
     );
 
     try {
@@ -39,11 +48,11 @@ class RestClient {
     }
   }
 
-  static Future<JsonObject> delete(List<dynamic> path, [JsonObject body = const {}]) async {
+  Future<JsonObject> delete(List<dynamic> path, [JsonObject body = const {}]) async {
     final baseUrl = dotenv.get("API_URL");
     final res = await http.delete(
       Uri.parse("$baseUrl/${path.join("/")}"),
-      headers: _headers(),
+      headers: _headers,
       body: jsonEncode(body),
     );
 
@@ -55,7 +64,7 @@ class RestClient {
     }
   }
 
-  static Map<String, String> _headers() => {
+  Map<String, String> get _headers => {
         HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8",
         HttpHeaders.acceptHeader: "application/json",
         if (App.authState.loggedIn)
