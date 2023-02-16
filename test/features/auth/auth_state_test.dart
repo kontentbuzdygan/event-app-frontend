@@ -2,12 +2,11 @@ import "package:event_app/api/rest_client.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/secure_storage.dart";
 import "package:flutter_test/flutter_test.dart";
-import "utils/mock_rest_client.dart";
-import "utils/mock_secure_storage.dart";
-
-late MockRestClient restMock;
+import "../../support/mock_rest_client.dart";
+import "../../support/mock_secure_storage.dart";
 
 void main() {
+  late MockRestClient restMock;
   late MockRestEndpoint signIn, signUp, signOut, refresh, userExists;
   late AuthState authState;
 
