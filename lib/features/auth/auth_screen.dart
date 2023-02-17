@@ -52,45 +52,21 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<void> withSnackbar(
-    Future<void> Function() fn, {
-    void Function()? onFail,
-  }) async {
-    try {
-      await fn();
-    } catch (e) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
-
-      onFail?.call();
-    }
-  }
-
   Future<void> signIn(String email, String password) async {
-    withSnackbar(() async => await App.authState.signIn(email, password));
+    await App.authState.signIn(email, password);
   }
 
   Future<void> signUp(String email, String password) async {
-    withSnackbar(
-      () async {
-        await App.authState.signUp(email, password);
-        await App.authState.signIn(email, password);
-      },
-      onFail: () => setState(() {
-        autoValidate = true;
-      }),
-    );
+    await App.authState.signUp(email, password);
+    await App.authState.signIn(email, password);
   }
 
   Future<void> userExists(String email) async {
-    withSnackbar(() async {
-      final userExists = await App.authState.userExists(email);
-      setState(() {
-        formState = userExists ? _FormState.signingIn : _FormState.signingUp;
-      });
-      sizeAnimationController.forward();
+    final userExists = await App.authState.userExists(email);
+    setState(() {
+      formState = userExists ? _FormState.signingIn : _FormState.signingUp;
     });
+    sizeAnimationController.forward();
   }
 
   void advanceFormState() {

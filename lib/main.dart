@@ -1,3 +1,4 @@
+import "package:event_app/errors.dart";
 import "package:event_app/features/event/event_view_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
@@ -10,6 +11,7 @@ import "package:event_app/features/home/home_screen.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  registerAppErrorHandler(App._errorNotifier);
 
   await dotenv.load();
   await App.authState.restoreAndRefreshToken();
@@ -20,29 +22,51 @@ void main() async {
 class App extends StatelessWidget {
   App({super.key});
 
-  static const title = "Event App";
+  final title = "Event App";
   static const storage = FlutterSecureStorage();
   static final authState = AuthState();
 
+  static final ErrorNotifier _errorNotifier = ErrorNotifier();
+
   late final GoRouter _router = GoRouter(
-    routes: <GoRoute>[
-      GoRoute(
-        name: "home",
-        path: "/",
-        builder: (BuildContext context, GoRouterState state) =>
-            const HomeScreen(),
-      ),
-      GoRoute(
-        name: "auth",
-        path: "/auth",
-        builder: (BuildContext context, GoRouterState state) =>
-            const AuthScreen(),
-      ),
-      GoRoute(
-        name: "eventView",
-        path: "/event/:eventId",
-        builder: (context, state) =>
-            EventViewScreen(id: int.tryParse(state.params["eventId"]!) ?? 0),
+    routes: [
+      ShellRoute(
+        builder: (context, state, child) {
+          final errorNotifier = context.watch<ErrorNotifier>();
+
+          final error = errorNotifier.consumeError();
+          if (error != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(error.toString())),
+              );
+            });
+          }
+
+          return Scaffold(body: child);
+        },
+        routes: [
+          GoRoute(
+            name: "home",
+            path: "/",
+            builder: (BuildContext context, GoRouterState state) =>
+                const HomeScreen(),
+          ),
+          GoRoute(
+            name: "auth",
+            path: "/auth",
+            builder: (BuildContext context, GoRouterState state) =>
+                const AuthScreen(),
+          ),
+          GoRoute(
+            name: "eventView",
+            path: "/event/:eventId",
+            builder: (context, state) => EventViewScreen(
+              id: int.tryParse(state.params["eventId"]!) ?? 0,
+            ),
+          ),
+        ],
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
@@ -58,6 +82,7 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: authState),
+        ChangeNotifierProvider.value(value: _errorNotifier),
       ],
       child: MaterialApp.router(
         routerConfig: _router,

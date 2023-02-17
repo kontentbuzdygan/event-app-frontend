@@ -15,50 +15,51 @@ class EventViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: event,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const NotFoundScreen(
-              message: "Seems like this event does not exist",
-            );
-          }
+      future: event,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const NotFoundScreen(
+            message: "Seems like this event does not exist",
+          );
+        }
 
-          if (!snapshot.hasData) {
-            return const LoadingScreen();
-          }
+        if (!snapshot.hasData) {
+          return const LoadingScreen();
+        }
 
-          final DateFormat formatter = DateFormat("yyyy-MM-dd");
+        final DateFormat formatter = DateFormat("yyyy-MM-dd");
 
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(snapshot.data!.title),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Center(
-                child: Column(
-                  children: [
-                    infoRow("Author ID: ", snapshot.data!.authorId.toString()),
-                    infoRow(
-                      "starts at ",
-                      formatter.format(snapshot.data!.startsAt),
-                      TextStyle(
-                        color: Colors.blue[700],
-                        fontWeight: FontWeight.normal,
-                      ),
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(snapshot.data!.title),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Center(
+              child: Column(
+                children: [
+                  infoRow("Author ID: ", snapshot.data!.authorId.toString()),
+                  infoRow(
+                    "starts at ",
+                    formatter.format(snapshot.data!.startsAt),
+                    TextStyle(
+                      color: Colors.blue[700],
+                      fontWeight: FontWeight.normal,
                     ),
-                    if (snapshot.data!.endsAt != null)
-                      infoRow(
-                        "Ends At: ",
-                        formatter.format(snapshot.data!.endsAt!),
-                      ),
-                    infoRow("Description: ", snapshot.data!.description),
-                  ],
-                ),
+                  ),
+                  if (snapshot.data!.endsAt != null)
+                    infoRow(
+                      "Ends At: ",
+                      formatter.format(snapshot.data!.endsAt!),
+                    ),
+                  infoRow("Description: ", snapshot.data!.description),
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   Widget infoRow(String label, String info, [TextStyle? style]) {
