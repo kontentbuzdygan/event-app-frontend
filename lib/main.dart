@@ -37,7 +37,7 @@ class App extends StatelessWidget {
 
   static Exception? _error;
   static get hasError => _error != null;
-  static get error {
+  static Exception? consumeError() {
     final error = _error;
     _error = null;
 
@@ -56,7 +56,7 @@ class App extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(App.error!.toString())),
+                SnackBar(content: Text(App.consumeError()!.toString())),
               );
             });
           }
