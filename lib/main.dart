@@ -55,12 +55,15 @@ class _AppState extends State<App> {
     routes: [
       ShellRoute(
         builder: (context, state, child) {
-          errorNotifier.addListener(() {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(errorNotifier.error.toString())),
-            );
-          });
+          if (errorNotifier.error != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(errorNotifier.error.toString())),
+              );
+              errorNotifier.error = null;
+            });
+          }
           return Scaffold(body: child);
         },
         routes: [
