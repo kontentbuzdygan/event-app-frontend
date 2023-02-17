@@ -83,7 +83,8 @@ class _AppState extends State<App> {
             name: "eventView",
             path: "/event/:eventId",
             builder: (context, state) => EventViewScreen(
-                id: int.tryParse(state.params["eventId"]!) ?? 0),
+              id: int.tryParse(state.params["eventId"]!) ?? 0,
+            ),
           ),
         ],
       ),

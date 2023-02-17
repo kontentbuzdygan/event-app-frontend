@@ -1,4 +1,3 @@
-import "package:event_app/api/exceptions.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/auth/slide_out_buttons.dart";
 import "package:event_app/main.dart";
