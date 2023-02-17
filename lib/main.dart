@@ -1,5 +1,6 @@
 import "package:event_app/api/exceptions.dart";
 import "package:event_app/features/event/event_view_screen.dart";
+import 'package:event_app/features/shared/loading_screen.dart';
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
@@ -17,53 +18,50 @@ void main() async {
   await App.authState.restoreAndRefreshToken();
 
   PlatformDispatcher.instance.onError = (error, stack) {
-    if (error is InvalidResponseStatus) {
-      errorNotifier.error = error;
+    if (error is ApplicationException) {
+      App.error = error;
       return true;
     }
 
     return false;
   };
 
-  runApp(const App());
+  runApp(App());
 }
 
-final errorNotifier = ErrorNotifier();
-
-class ErrorNotifier extends ChangeNotifier {
-  Exception? _error;
-  Exception? get error => _error;
-  set error(Exception? value) {
-    _error = value;
-    notifyListeners();
-  }
-}
-
-class App extends StatefulWidget {
-  const App({super.key});
+class App extends StatelessWidget {
+  App({super.key});
 
   static const title = "Event App";
   static const storage = FlutterSecureStorage();
   static final authState = AuthState();
 
-  @override
-  State<App> createState() => _AppState();
-}
+  static Exception? _error;
+  static get hasError => _error != null;
+  static get error {
+    final error = _error;
+    _error = null;
 
-class _AppState extends State<App> {
+    return error;
+  }
+
+  static set error(value) {
+    _error = value;
+  }
+
   late final GoRouter _router = GoRouter(
     routes: [
       ShellRoute(
         builder: (context, state, child) {
-          if (errorNotifier.error != null) {
+          if (App.hasError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(errorNotifier.error.toString())),
+                SnackBar(content: Text(App.error!.toString())),
               );
-              errorNotifier.error = null;
             });
           }
+
           return Scaffold(body: child);
         },
         routes: [
@@ -90,22 +88,22 @@ class _AppState extends State<App> {
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
-      if (!App.authState.loggedIn) return "/auth";
+      if (!authState.loggedIn) return "/auth";
       if (state.subloc == "/auth") return "/";
       return null;
     },
-    refreshListenable: App.authState,
+    refreshListenable: authState,
   );
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: App.authState),
+        ChangeNotifierProvider.value(value: authState),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
-        title: App.title,
+        title: title,
         debugShowCheckedModeBanner: false,
       ),
     );

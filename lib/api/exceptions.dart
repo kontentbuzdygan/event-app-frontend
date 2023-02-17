@@ -1,4 +1,6 @@
-abstract class ApiException implements Exception {
+abstract class ApplicationException implements Exception {}
+
+abstract class ApiException implements ApplicationException {
   final String message;
 
   const ApiException({required this.message});
