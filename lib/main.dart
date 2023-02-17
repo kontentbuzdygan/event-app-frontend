@@ -44,7 +44,7 @@ class App extends StatelessWidget {
     return error;
   }
 
-  static set error(value) {
+  static set error(Exception? value) {
     _error = value;
   }
 
