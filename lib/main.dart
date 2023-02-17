@@ -31,12 +31,12 @@ void main() async {
 class App extends StatelessWidget {
   App({super.key});
 
-  static const title = "Event App";
+  final title = "Event App";
   static const storage = FlutterSecureStorage();
   static final authState = AuthState();
 
   static Exception? _error;
-  static get hasError => _error != null;
+  static bool get hasError => _error != null;
   static Exception? consumeError() {
     final error = _error;
     _error = null;
