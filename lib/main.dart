@@ -1,6 +1,5 @@
-import "package:event_app/api/exceptions.dart";
+import "package:event_app/errors.dart";
 import "package:event_app/features/event/event_view_screen.dart";
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:go_router/go_router.dart";
@@ -12,18 +11,10 @@ import "package:event_app/features/home/home_screen.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  registerAppErrorHandler(App._errorNotifier);
 
   await dotenv.load();
   await App.authState.restoreAndRefreshToken();
-
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (error is ApplicationException) {
-      App.error = error;
-      return true;
-    }
-
-    return false;
-  };
 
   runApp(App());
 }
@@ -35,28 +26,20 @@ class App extends StatelessWidget {
   static const storage = FlutterSecureStorage();
   static final authState = AuthState();
 
-  static Exception? _error;
-  static bool get hasError => _error != null;
-  static Exception? consumeError() {
-    final error = _error;
-    _error = null;
-
-    return error;
-  }
-
-  static set error(Exception? value) {
-    _error = value;
-  }
+  static final ErrorNotifier _errorNotifier = ErrorNotifier();
 
   late final GoRouter _router = GoRouter(
     routes: [
       ShellRoute(
         builder: (context, state, child) {
-          if (App.hasError) {
+          final errorNotifier = context.watch<ErrorNotifier>();
+
+          final error = errorNotifier.consumeError();
+          if (error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(App.consumeError()!.toString())),
+                SnackBar(content: Text(error.toString())),
               );
             });
           }
@@ -99,6 +82,7 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: authState),
+        ChangeNotifierProvider.value(value: _errorNotifier),
       ],
       child: MaterialApp.router(
         routerConfig: _router,

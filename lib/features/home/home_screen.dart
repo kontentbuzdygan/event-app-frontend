@@ -1,4 +1,5 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/errors.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:intl/intl.dart";
@@ -24,10 +25,15 @@ class _State extends State<HomeScreen> {
         title: const Text("Feed"),
         actions: <Widget>[
           IconButton(
+            onPressed: () => throw const ApplicationException(message: "Kurwa"),
+            tooltip: "Throw",
+            icon: const Icon(Icons.sports_basketball),
+          ),
+          IconButton(
             onPressed: authState.signOut,
             tooltip: "Log out",
             icon: const Icon(Icons.logout),
-          )
+          ),
         ],
       ),
       body: FutureBuilder(

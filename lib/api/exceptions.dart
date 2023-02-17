@@ -1,12 +1,7 @@
-abstract class ApplicationException implements Exception {}
+import "package:event_app/errors.dart";
 
-abstract class ApiException implements ApplicationException {
-  final String message;
-
-  const ApiException({required this.message});
-
-  @override
-  String toString() => message;
+abstract class ApiException extends ApplicationException {
+  const ApiException({required super.message});
 }
 
 class InvalidResponseStatus extends ApiException {
