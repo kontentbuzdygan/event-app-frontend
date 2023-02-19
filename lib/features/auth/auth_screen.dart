@@ -2,6 +2,7 @@ import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/auth/slide_out_buttons.dart";
 import "package:event_app/main.dart";
 import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:form_validator/form_validator.dart";
 import "package:provider/provider.dart";
 
@@ -14,14 +15,15 @@ class AuthScreen extends StatefulWidget {
   }
 }
 
-enum _FormState {
-  enteringEmail("Continue", false),
-  signingIn("Sign In", true),
-  signingUp("Sign Up", true);
+class _FormState {
+  static final enteringEmail = _FormState._((l10n) => l10n.continue_, false);
+  static final signingIn = _FormState._((l10n) => l10n.signIn, true);
+  static final signingUp = _FormState._((l10n) => l10n.signUp, true);
 
-  final String buttonText;
+  final String Function(AppLocalizations) getButtonText;
   final bool canGoBack;
-  const _FormState(this.buttonText, this.canGoBack);
+
+  _FormState._(this.getButtonText, this.canGoBack);
 }
 
 class _State extends State<AuthScreen> with TickerProviderStateMixin {
@@ -42,14 +44,15 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
   bool showPassword = false;
 
-  late final ValueNotifier<_FormState> formState = ValueNotifier(_FormState.enteringEmail)
-    ..addListener(() {
-      if (formState.value == _FormState.enteringEmail) {
-        sizeAnimationController.reverse();
-      } else {
-        sizeAnimationController.forward();
-      }
-    });
+  late final ValueNotifier<_FormState> formState =
+      ValueNotifier(_FormState.enteringEmail)
+        ..addListener(() {
+          if (formState.value == _FormState.enteringEmail) {
+            sizeAnimationController.reverse();
+          } else {
+            sizeAnimationController.forward();
+          }
+        });
 
   @override
   void dispose() {
@@ -77,16 +80,12 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
   void advanceFormState() {
     if (form.currentState!.validate()) {
-      switch (formState.value) {
-        case _FormState.enteringEmail:
-          userExists(emailController.text);
-          break;
-        case _FormState.signingIn:
-          signIn(emailController.text, passwordController.text);
-          break;
-        case _FormState.signingUp:
-          signUp(emailController.text, passwordController.text);
-          break;
+      if (formState == _FormState.enteringEmail) {
+        userExists(emailController.text);
+      } else if (formState == _FormState.signingIn) {
+        signIn(emailController.text, passwordController.text);
+      } else if (formState == _FormState.signingUp) {
+        signUp(emailController.text, passwordController.text);
       }
     }
   }
@@ -179,9 +178,11 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
   }
 
   Widget continueButton(AuthState authState) {
+    final l10n = AppLocalizations.of(context)!;
+
     return ElevatedButton(
       onPressed: authState.canLogIn ? advanceFormState : null,
-      child: Text(formState.value.buttonText),
+      child: Text(formState.value.getButtonText(l10n)),
     );
   }
 
