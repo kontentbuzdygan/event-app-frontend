@@ -16,33 +16,34 @@ class AuthState extends ChangeNotifier {
   bool get loggedIn => _userToken != null;
 
   Future<void> restoreAndRefreshToken() => _transition(() async {
-    _userToken = await secureStorage.read(key: userTokenStorageKey);
-    try {
-      await refreshToken();
-    } on Unauthorized {
-      // RestClient will handle Unauthorized and call `deleteUserToken`
-    }
-  });
+        _userToken = await secureStorage.read(key: userTokenStorageKey);
+        try {
+          await refreshToken();
+        } on Unauthorized {
+          await _setUserToken(null);
+        }
+      });
 
   Future<void> signIn(String email, String password) =>
-    _transition(() => User.signIn(email, password).then(_setUserToken));
+      _transition(() => User.signIn(email, password).then(_setUserToken));
 
   Future<void> signUp(String email, String password) =>
-    _transition(() => NewUser(email: email, password: password).signUp());
+      _transition(() => NewUser(email: email, password: password).signUp());
 
   // FIXME: Do not clear _userToken before the router finishes transitioning
   // to the signed-out state. On logout, this causes an attempt to refetch data
   // when the token has already been cleared.
   Future<void> signOut() => _transition(() async {
-    if (_userToken == null) return;
-    await User.signOut();
-    _setUserToken(null);
-  });
+        if (_userToken == null) return;
+        await User.signOut();
+        _setUserToken(null);
+      });
 
   Future<void> refreshToken() =>
-    _transition(() => User.refreshToken().then(_setUserToken));
+      _transition(() => User.refreshToken().then(_setUserToken));
 
-  Future<bool> userExists(String email) => _transition(() => User.exists(email));
+  Future<bool> userExists(String email) =>
+      _transition(() => User.exists(email));
 
   Future<void> deleteUserToken() => _transition(() => _setUserToken(null));
 

@@ -19,13 +19,14 @@ class Event {
   });
 
   factory Event.fromJson(JsonObject json) => Event(
-    id: json["id"],
-    authorId: json["author_id"],
-    title: json["title"],
-    description: json["description"],
-    startsAt: DateTime.parse(json["starts_at"]),
-    endsAt: json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
-  );
+        id: json["id"],
+        authorId: json["author_id"],
+        title: json["title"],
+        description: json["description"],
+        startsAt: DateTime.parse(json["starts_at"]),
+        endsAt:
+            json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
+      );
 
   static Future<Event> find(int id) async {
     return Event.fromJson(await rest.get([_apiPath, id]));
@@ -34,8 +35,8 @@ class Event {
   static Future<Iterable<Event>> findAll() async {
     final json = await rest.get([_apiPath]);
     return (json["events"] as Iterable<dynamic>)
-      .cast<JsonObject>()
-      .map(Event.fromJson);
+        .cast<JsonObject>()
+        .map(Event.fromJson);
   }
 }
 
@@ -52,11 +53,11 @@ class NewEvent {
   });
 
   JsonObject toJson() => {
-    "title": title,
-    "description": description,
-    "starts_at": startsAt.toUtc().toIso8601String(),
-    "ends_at": endsAt?.toUtc().toIso8601String(),
-  };
+        "title": title,
+        "description": description,
+        "starts_at": startsAt.toUtc().toIso8601String(),
+        "ends_at": endsAt?.toUtc().toIso8601String(),
+      };
 
   Future<Event> save() async {
     final createdJson = await rest.post([_apiPath], toJson());

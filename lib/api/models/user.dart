@@ -31,9 +31,9 @@ class NewUser {
   NewUser({required this.email, required this.password});
 
   JsonObject toJson() => {
-    "email": email,
-    "password": password,
-  };
+        "email": email,
+        "password": password,
+      };
 
   Future<void> signUp() async {
     await rest.post([_apiPath, "sign-up"], toJson());
