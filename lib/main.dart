@@ -1,5 +1,6 @@
 import "package:event_app/errors.dart";
 import "package:event_app/features/event/event_view_screen.dart";
+import "package:event_app/features/event/create_event_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:go_router/go_router.dart";
@@ -65,6 +66,11 @@ class App extends StatelessWidget {
             builder: (context, state) => EventViewScreen(
               id: int.tryParse(state.params["eventId"]!) ?? 0,
             ),
+          ),
+          GoRoute(
+            name: "createEvent",
+            path: "/create-event",
+            builder: (context, state) => const CreateEventScreen(),
           ),
         ],
       ),

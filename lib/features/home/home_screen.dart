@@ -46,6 +46,10 @@ class _State extends State<HomeScreen> {
           return const Text("Loading...");
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => context.pushNamed("createEvent"),
+      ),
     );
   }
 
