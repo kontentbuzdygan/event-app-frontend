@@ -40,10 +40,16 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
     curve: Curves.fastOutSlowIn,
   );
 
-  bool autoValidate = false;
   bool showPassword = false;
 
-  _FormState formState = _FormState.enteringEmail;
+  late final ValueNotifier<_FormState> formState = ValueNotifier(_FormState.enteringEmail)
+    ..addListener(() {
+      if (formState.value == _FormState.enteringEmail) {
+        sizeAnimationController.reverse();
+      } else {
+        sizeAnimationController.forward();
+      }
+    });
 
   @override
   void dispose() {
@@ -64,14 +70,14 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
   Future<void> userExists(String email) async {
     final userExists = await App.authState.userExists(email);
     setState(() {
-      formState = userExists ? _FormState.signingIn : _FormState.signingUp;
+      formState.value =
+          userExists ? _FormState.signingIn : _FormState.signingUp;
     });
-    sizeAnimationController.forward();
   }
 
   void advanceFormState() {
     if (form.currentState!.validate()) {
-      switch (formState) {
+      switch (formState.value) {
         case _FormState.enteringEmail:
           userExists(emailController.text);
           break;
@@ -94,8 +100,6 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Form(
-          autovalidateMode:
-              autoValidate ? AutovalidateMode.onUserInteraction : null,
           key: form,
           child: Center(
             child: Container(
@@ -103,7 +107,7 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  emailField,
+                  emailField(authState),
                   SizeTransition(
                     sizeFactor: sizeAnimation,
                     child: Column(
@@ -116,7 +120,7 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
                   const SizedBox(height: 12),
                   SlideOutButtons(
                     transitionTime: transitionTime,
-                    expanded: formState.canGoBack,
+                    expanded: formState.value.canGoBack,
                     leftChild: goBackButton,
                     rightChild: continueButton(authState),
                   ),
@@ -129,12 +133,13 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget get emailField {
+  Widget emailField(AuthState authState) {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: emailController,
-      enabled: formState == _FormState.enteringEmail,
-      style: formState != _FormState.enteringEmail
+      enabled:
+          formState.value == _FormState.enteringEmail && authState.canLogIn,
+      style: formState.value != _FormState.enteringEmail && authState.canLogIn
           ? const TextStyle(color: Colors.grey)
           : null,
       decoration: const InputDecoration(
@@ -165,7 +170,7 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
         labelText: "Password",
       ),
       onFieldSubmitted: (value) => advanceFormState(),
-      validator: formState == _FormState.signingUp
+      validator: formState.value == _FormState.signingUp
           ? ValidationBuilder()
               .minLength(8, "Password should be at least 8 characters long")
               .build()
@@ -176,21 +181,19 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
   Widget continueButton(AuthState authState) {
     return ElevatedButton(
       onPressed: authState.canLogIn ? advanceFormState : null,
-      child: Text(formState.buttonText),
+      child: Text(formState.value.buttonText),
     );
   }
 
   Widget get goBackButton {
     void goBack() {
       setState(() {
-        formState = _FormState.enteringEmail;
-        autoValidate = false;
+        formState.value = _FormState.enteringEmail;
       });
-      sizeAnimationController.reverse();
     }
 
     return IconButton(
-      onPressed: formState.canGoBack ? goBack : null,
+      onPressed: formState.value.canGoBack ? goBack : null,
       icon: const Icon(Icons.arrow_back_rounded),
       iconSize: 30,
       splashRadius: 20,
