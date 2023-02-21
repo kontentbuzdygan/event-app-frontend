@@ -1,0 +1,44 @@
+{
+  "feedTitle": "Aktualności",
+  "continue_": "Kontynuuj",
+  "loading": "Ładowanie…",
+  "signIn": "Zaloguj się",
+  "signUp": "Stwórz  konto",
+  "logOut": "Wyloguj się",
+  "creator": "Twórca",
+  "description": "Opis",
+  "startsAt": "zaczyna się",
+  "endsAt": "kończy się",
+  "date": "{date}",
+  "@date": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "startsAtTime": "zaczyna się {start}",
+  "@startsAtTime": {
+    "placeholders": {
+      "start": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "eventFromTo": "od {start} do {end}",
+  "@eventFromTo": {
+    "placeholders": {
+      "start": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "end": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "eventNotFound": "To wydarzenie nie istnieje."
+}
