@@ -92,10 +92,11 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = context.watch<AuthState>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Welcome")),
+      appBar: AppBar(title: Text(l10n.welcome)),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Form(
@@ -133,6 +134,8 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
   }
 
   Widget emailField(AuthState authState) {
+    final l10n = AppLocalizations.of(context)!;
+
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: emailController,
@@ -141,16 +144,19 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
       style: formState.value != _FormState.enteringEmail && authState.canLogIn
           ? const TextStyle(color: Colors.grey)
           : null,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: "Email",
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(),
+        labelText: l10n.email,
       ),
       onFieldSubmitted: (value) => advanceFormState(),
-      validator: ValidationBuilder().email("Invalid email").build(),
+      validator: ValidationBuilder().email(l10n.emailInvalid).build(),
     );
   }
 
   Widget passwordField(AuthState authState) {
+    const minPasswordLength = 8;
+    final l10n = AppLocalizations.of(context)!;
+
     return TextFormField(
       obscureText: !showPassword,
       controller: passwordController,
@@ -166,12 +172,15 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
           }),
         ),
         border: const OutlineInputBorder(),
-        labelText: "Password",
+        labelText: l10n.password,
       ),
       onFieldSubmitted: (value) => advanceFormState(),
       validator: formState.value == _FormState.signingUp
           ? ValidationBuilder()
-              .minLength(8, "Password should be at least 8 characters long")
+              .minLength(
+                minPasswordLength,
+                l10n.passwordTooShort(minPasswordLength),
+              )
               .build()
           : null,
     );

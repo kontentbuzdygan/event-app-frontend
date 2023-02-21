@@ -1,10 +1,13 @@
 {
+  "welcome": "Witaj",
   "feedTitle": "Aktualności",
   "continue_": "Kontynuuj",
   "loading": "Ładowanie…",
   "signIn": "Zaloguj się",
   "signUp": "Stwórz  konto",
   "logOut": "Wyloguj się",
+  "email": "Email",
+  "password": "Hasło",
   "creator": "Twórca",
   "description": "Opis",
   "startsAt": "zaczyna się",
@@ -12,5 +15,7 @@
   "date": "{date}",
   "startsAtDate": "zaczyna się {start}",
   "eventFromTo": "od {start} do {end}",
+  "emailInvalid": "Invalid email",
+  "passwordTooShort": "The password must be at least {min_length} characters long",
   "eventNotFound": "To wydarzenie nie istnieje."
 }
