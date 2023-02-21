@@ -1,7 +1,25 @@
 {
   "feedTitle": "Feed",
-  "eventStartsAt": "starts at {start}",
-  "@eventStartsAt": {
+  "continue_": "Continue",
+  "loading": "Loading…",
+  "signIn": "Sign in",
+  "signUp": "Sign up",
+  "logOut": "Log out",
+  "creator": "Creator",
+  "description": "Description",
+  "startsAt": "starts at",
+  "endsAt": "ends at",
+  "date": "{date}",
+  "@date": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "startsAtTime": "starts at {start}",
+  "@startsAtTime": {
     "placeholders": {
       "start": {
         "type": "DateTime",
@@ -9,8 +27,8 @@
       }
     }
   },
-  "eventTimeframe": "from {start} to {end}",
-  "@eventTimeframe": {
+  "eventFromTo": "from {start} to {end}",
+  "@eventFromTo": {
     "placeholders": {
       "start": {
         "type": "DateTime",
@@ -22,9 +40,5 @@
       }
     }
   },
-  "continue_": "Continue",
-  "signIn": "Sign in",
-  "signUp": "Sign up",
-  "logOut": "Log out",
-  "loading": "Loading…"
+  "eventNotFound": "This event doesn't exist."
 }

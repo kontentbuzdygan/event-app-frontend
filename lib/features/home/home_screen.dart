@@ -18,8 +18,8 @@ class _State extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthState>();
     final l10n = AppLocalizations.of(context)!;
+    final authState = context.watch<AuthState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -80,8 +80,8 @@ class _State extends State<HomeScreen> {
             ),
             Text(
               event.endsAt != null
-                  ? l10n.eventTimeframe(event.startsAt, event.endsAt!)
-                  : l10n.eventStartsAt(event.startsAt),
+                  ? l10n.eventFromTo(event.startsAt, event.endsAt!)
+                  : l10n.startsAtTime(event.startsAt),
               style: TextStyle(color: Colors.blue[700]),
             ),
             Container(
