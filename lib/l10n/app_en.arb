@@ -18,8 +18,8 @@
       }
     }
   },
-  "startsAtTime": "starts at {start}",
-  "@startsAtTime": {
+  "startsAtDate": "starts at {start}",
+  "@startsAtDate": {
     "placeholders": {
       "start": {
         "type": "DateTime",

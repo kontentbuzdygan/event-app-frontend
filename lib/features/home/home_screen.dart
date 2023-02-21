@@ -81,7 +81,7 @@ class _State extends State<HomeScreen> {
             Text(
               event.endsAt != null
                   ? l10n.eventFromTo(event.startsAt, event.endsAt!)
-                  : l10n.startsAtTime(event.startsAt),
+                  : l10n.startsAtDate(event.startsAt),
               style: TextStyle(color: Colors.blue[700]),
             ),
             Container(
