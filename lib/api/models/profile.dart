@@ -8,14 +8,13 @@ class Profile {
   final String displayName;
   final String? bio;
 
-
-  const Profile({
+  const Profile._({
     required this.id,
     required this.displayName,
     this.bio,
   });
 
-  factory Profile.fromJson(JsonObject json) => Profile(
+  factory Profile.fromJson(JsonObject json) => Profile._(
         id: json["id"],
         displayName: json["display_name"],
         bio: json["bio"],

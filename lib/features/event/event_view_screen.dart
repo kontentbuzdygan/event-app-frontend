@@ -1,34 +1,20 @@
 import "package:event_app/api/models/event.dart";
-import "package:event_app/api/models/profile.dart";
 import "package:event_app/features/shared/loading_screen.dart";
 import "package:event_app/features/shared/not_found_screen.dart";
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 
-
-class EventData {
-  Event event;
-  Profile author;
-
-  EventData({required this.event, required this.author});
-}
-
 class EventViewScreen extends StatelessWidget {
-  const EventViewScreen({super.key, required this.id});
-
-  final int id;
-
-  Future<EventData> fetchEventData() async {
-    final event = await Event.find(id);
-    final author = await Profile.find(event.authorId);
-
-    return EventData(event: event, author: author);
+  EventViewScreen({super.key, required int id}) {
+    event = Event.find(id).then((event) => event.fetchAuthor());
   }
+
+  late final Future<Event> event;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: fetchEventData(),
+      future: event,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const NotFoundScreen(
@@ -41,9 +27,7 @@ class EventViewScreen extends StatelessWidget {
         }
 
         final DateFormat formatter = DateFormat("yyyy-MM-dd");
-
-        final event = snapshot.data!.event;
-        final author = snapshot.data!.author;
+        final event = snapshot.data!;
 
         return Scaffold(
           appBar: AppBar(
@@ -54,7 +38,7 @@ class EventViewScreen extends StatelessWidget {
             child: Center(
               child: Column(
                 children: [
-                  infoRow("Author display name: ", author.displayName),
+                  infoRow("Author display name: ", event.author!.displayName),
                   infoRow(
                     "starts at ",
                     formatter.format(event.startsAt),
