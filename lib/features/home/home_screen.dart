@@ -1,10 +1,10 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/errors.dart";
-import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
-import "package:intl/intl.dart";
-import "package:provider/provider.dart";
 import "package:event_app/features/auth/auth_state.dart";
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:go_router/go_router.dart";
+import "package:provider/provider.dart";
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,15 +14,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _State extends State<HomeScreen> {
-  final Future<Iterable<Event>> allEvents = Event.findAll();
+  final allEvents = Event.findAll();
 
   @override
   Widget build(BuildContext context) {
-    final AuthState authState = context.watch<AuthState>();
+    final l10n = AppLocalizations.of(context)!;
+    final authState = context.watch<AuthState>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Feed"),
+        title: Text(l10n.feedTitle),
         actions: <Widget>[
           IconButton(
             onPressed: () => throw const ApplicationException(message: "Kurwa"),
@@ -31,7 +32,7 @@ class _State extends State<HomeScreen> {
           ),
           IconButton(
             onPressed: authState.signOut,
-            tooltip: "Log out",
+            tooltip: l10n.logOut,
             icon: const Icon(Icons.logout),
           ),
         ],
@@ -43,7 +44,7 @@ class _State extends State<HomeScreen> {
             return eventsListView(snapshot.requireData);
           }
 
-          return const Text("Loading...");
+          return Text(l10n.loading);
         },
       ),
     );
@@ -56,7 +57,7 @@ class _State extends State<HomeScreen> {
   }
 
   Widget eventListItem(Event event) {
-    final formatter = DateFormat("yyyy-MM-dd");
+    final l10n = AppLocalizations.of(context)!;
 
     return MaterialButton(
       // TODO: Handle hardcoded links :(
@@ -70,14 +71,19 @@ class _State extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(event.title,
-                style: const TextStyle(
-                    fontSize: 20.0, fontWeight: FontWeight.bold,),),
             Text(
-                event.endsAt != null
-                    ? "from ${formatter.format(event.startsAt)} to ${formatter.format(event.endsAt!)}"
-                    : "starts at ${formatter.format(event.startsAt)}",
-                style: TextStyle(color: Colors.blue[700]),),
+              event.title,
+              style: const TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              event.endsAt != null
+                  ? l10n.eventFromTo(event.startsAt, event.endsAt!)
+                  : l10n.startsAtDate(event.startsAt),
+              style: TextStyle(color: Colors.blue[700]),
+            ),
             Container(
               margin: const EdgeInsets.only(top: 10.0),
               child: Text(event.description),

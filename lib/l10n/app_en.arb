@@ -1,0 +1,56 @@
+{
+  "welcome": "Welcome",
+  "feedTitle": "Feed",
+  "continue_": "Continue",
+  "loading": "Loading…",
+  "signIn": "Sign in",
+  "signUp": "Sign up",
+  "logOut": "Log out",
+  "email": "Email",
+  "password": "Password",
+  "author": "Author",
+  "description": "Description",
+  "startsAt": "starts at",
+  "endsAt": "ends at",
+  "date": "{date}",
+  "@date": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "startsAtDate": "starts at {start}",
+  "@startsAtDate": {
+    "placeholders": {
+      "start": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "eventFromTo": "from {start} to {end}",
+  "@eventFromTo": {
+    "placeholders": {
+      "start": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "end": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "emailInvalid": "Invalid email",
+  "passwordTooShort": "The password must be at least {min_length} characters long",
+  "@passwordTooShort": {
+    "placeholders": {
+      "min_length": {
+        "type": "int"
+      }
+    }
+  },
+  "eventNotFound": "This event doesn't exist."
+}
