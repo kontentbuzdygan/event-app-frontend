@@ -80,11 +80,11 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
   void advanceFormState() {
     if (form.currentState!.validate()) {
-      if (formState == _FormState.enteringEmail) {
+      if (formState.value == _FormState.enteringEmail) {
         userExists(emailController.text);
-      } else if (formState == _FormState.signingIn) {
+      } else if (formState.value == _FormState.signingIn) {
         signIn(emailController.text, passwordController.text);
-      } else if (formState == _FormState.signingUp) {
+      } else if (formState.value == _FormState.signingUp) {
         signUp(emailController.text, passwordController.text);
       }
     }
