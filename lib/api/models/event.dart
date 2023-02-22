@@ -29,11 +29,11 @@ class Event {
       );
 
   static Future<Event> find(int id) async {
-    return Event.fromJson(await RestClient.get([_apiPath, id]));
+    return Event.fromJson(await rest.get([_apiPath, id]));
   }
 
   static Future<Iterable<Event>> findAll() async {
-    final json = await RestClient.get([_apiPath]);
+    final json = await rest.get([_apiPath]);
     return (json["events"] as Iterable<dynamic>)
         .cast<JsonObject>()
         .map(Event.fromJson);
@@ -60,7 +60,7 @@ class NewEvent {
       };
 
   Future<Event> save() async {
-    final createdJson = await RestClient.post([_apiPath], toJson());
+    final createdJson = await rest.post([_apiPath], toJson());
     return Event.fromJson(createdJson);
   }
 }

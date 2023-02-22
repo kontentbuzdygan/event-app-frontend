@@ -2,7 +2,6 @@ import "package:event_app/errors.dart";
 import "package:event_app/features/event/event_view_screen.dart";
 import "package:event_app/features/event/create_event_screen.dart";
 import "package:flutter/material.dart";
-import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
@@ -24,7 +23,6 @@ class App extends StatelessWidget {
   App({super.key});
 
   final title = "Event App";
-  static const storage = FlutterSecureStorage();
   static final authState = AuthState();
 
   static final ErrorNotifier _errorNotifier = ErrorNotifier();

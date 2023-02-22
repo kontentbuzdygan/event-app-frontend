@@ -1,6 +1,6 @@
 import "package:event_app/api/exceptions.dart";
 import "package:event_app/api/models/user.dart";
-import "package:event_app/main.dart";
+import "package:event_app/secure_storage.dart";
 import "package:flutter/material.dart";
 
 const userTokenStorageKey = "event-app-user-token";
@@ -16,7 +16,7 @@ class AuthState extends ChangeNotifier {
   bool get loggedIn => _userToken != null;
 
   Future<void> restoreAndRefreshToken() => _transition(() async {
-        _userToken = await App.storage.read(key: userTokenStorageKey);
+        _userToken = await secureStorage.read(key: userTokenStorageKey);
         try {
           await refreshToken();
         } on Unauthorized {
@@ -62,9 +62,9 @@ class AuthState extends ChangeNotifier {
   Future<void> _setUserToken(String? userToken) async {
     _userToken = userToken;
     if (userToken == null) {
-      await App.storage.delete(key: userTokenStorageKey);
+      await secureStorage.delete(key: userTokenStorageKey);
     } else {
-      await App.storage.write(key: userTokenStorageKey, value: _userToken);
+      await secureStorage.write(key: userTokenStorageKey, value: _userToken);
     }
   }
 }
