@@ -49,7 +49,7 @@ class MockRestEndpoint {
 
   bool matches(String method, List<dynamic> path) =>
     method.toLowerCase() == _method.toLowerCase() &&
-    joinUrl(path) == joinUrl(_path);
+    joinPath(path) == joinPath(_path);
 
   JsonObject call(JsonObject? requestBody) {
     try {
@@ -64,7 +64,7 @@ class MockRestEndpoint {
 
   @override
   String toString() {
-    final url = joinUrl(_path);
+    final url = joinPath(_path);
     return "RestMock $_method $url";
   }
 }

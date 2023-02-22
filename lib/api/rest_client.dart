@@ -29,7 +29,7 @@ class RestClient {
     JsonObject? body,
   ]) async {
     final baseUrl = dotenv.get("API_URL");
-    final uri = Uri.parse("$baseUrl/${path.join("/")}");
+    final uri = Uri.parse("$baseUrl/${joinPath(path)}");
     final request = http.Request(method, uri);
     request.headers.addAll(_headers);
     request.body = jsonEncode(body);

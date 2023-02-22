@@ -5,7 +5,7 @@ import "package:http/http.dart";
 
 /// Converts the given elements to strings and joins them with slashes, ensuring
 /// there is no consecutive or leading/trailing slashes
-String joinUrl(List<dynamic> parts) =>
+String joinPath(List<dynamic> parts) =>
   parts
     .expand((part) => part
       .toString()
