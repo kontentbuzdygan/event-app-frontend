@@ -8,7 +8,7 @@
   "logOut": "Log out",
   "email": "Email",
   "password": "Password",
-  "creator": "Creator",
+  "author": "Author",
   "description": "Description",
   "startsAt": "starts at",
   "endsAt": "ends at",

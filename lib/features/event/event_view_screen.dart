@@ -38,7 +38,7 @@ class EventViewScreen extends StatelessWidget {
             child: Center(
               child: Column(
                 children: [
-                  infoRow(l10n.creator, snapshot.data!.authorId.toString()),
+                  infoRow(l10n.author, snapshot.data!.authorId.toString()),
                   infoRow(
                     l10n.startsAt,
                     l10n.date(snapshot.data!.startsAt),
