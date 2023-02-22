@@ -43,6 +43,21 @@ class _State extends State<CreateEventScreen> {
               currentStep += 1;
             });
           },
+          controlsBuilder: (BuildContext context, ControlsDetails details) {
+            return Row(
+              children: <Widget>[
+                TextButton(
+                  onPressed: details.onStepCancel,
+                  child: Text(currentStep == 0 ? "" : "Back"),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: details.onStepContinue,
+                  child: const Text("Next"),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
