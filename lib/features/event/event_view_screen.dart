@@ -49,7 +49,7 @@ class EventViewScreen extends StatelessWidget {
                   if (snapshot.data!.endsAt != null)
                     infoRow(
                       l10n.endsAt,
-                      l10n.date(snapshot.data!.startsAt),
+                      l10n.date(snapshot.data!.endsAt!),
                       TextStyle(
                         color: Colors.blue[700],
                       ),

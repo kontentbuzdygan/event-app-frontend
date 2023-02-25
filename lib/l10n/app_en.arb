@@ -44,10 +44,10 @@
     }
   },
   "emailInvalid": "Invalid email",
-  "passwordTooShort": "The password must be at least {min_length} characters long",
+  "passwordTooShort": "The password must be at least {minLength} characters long",
   "@passwordTooShort": {
     "placeholders": {
-      "min_length": {
+      "minLength": {
         "type": "int"
       }
     }
