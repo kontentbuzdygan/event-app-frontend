@@ -5,7 +5,7 @@ void registerAppErrorHandler(ErrorNotifier errorNotifier) {
     if (error.exception is ApplicationException) {
       errorNotifier.error = error.exception as Exception;
     } else {
-      throw error;
+      FlutterError.dumpErrorToConsole(error);
     }
   };
 
