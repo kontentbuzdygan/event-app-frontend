@@ -21,7 +21,7 @@ void overrideRestClient(RestClient value) {
 class RestClient {
   final _http = http.Client();
 
-  /// Runs the given callback while caching all API requests made by any RestClient
+  /// Runs the given callback while caching all GET requests made by any RestClient
   /// instance. Meant to be used in the scope of a single view or widget, where
   /// you might perform many requests to the same endpoint within a short period
   /// of time.
