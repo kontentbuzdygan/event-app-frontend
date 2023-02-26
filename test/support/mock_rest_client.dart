@@ -5,6 +5,9 @@ import "package:flutter_test/flutter_test.dart";
 
 /// Used to test interactions with the [RestClient]
 ///
+/// This implementation of [RestClient] never respects the cache set by [RestClient.runCached]
+/// and always calls the mocked endpoints when they're requested.
+///
 /// ### Example
 /// ```
 /// final restMock = MockRestClient();
@@ -27,9 +30,10 @@ class MockRestClient extends RestClient {
   @override
   Future<JsonObject> makeRequest(
     String method,
-    List<dynamic> path, [
+    dynamic pathOrParts, [
     JsonObject? body,
   ]) {
+    final path = pathOrParts is String ? pathOrParts.split("/") : pathOrParts;
     final mock = _mocks.firstWhere((mock) => mock.matches(method, path));
     return Future.value(mock.call(body));
   }
