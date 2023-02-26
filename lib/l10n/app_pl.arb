@@ -15,7 +15,7 @@
   "date": "{date}",
   "startsAtDate": "zaczyna się {start}",
   "eventFromTo": "od {start} do {end}",
-  "emailInvalid": "Invalid email",
-  "passwordTooShort": "The password must be at least {minLength} characters long",
+  "emailInvalid": "Nieprawidłowy email",
+  "passwordTooShort": "Hasło musi mieć przynajmniej {minLength} znaków",
   "eventNotFound": "To wydarzenie nie istnieje."
 }
