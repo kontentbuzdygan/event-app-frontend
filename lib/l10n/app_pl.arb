@@ -15,6 +15,7 @@
   "date": "{date}",
   "startsAtDate": "zaczyna się {start}",
   "eventFromTo": "od {start} do {end}",
+  "createdBy": "stworzone przez {user}",
   "emailInvalid": "Nieprawidłowy email",
   "passwordTooShort": "Hasło musi mieć przynajmniej {minLength} znaków",
   "eventNotFound": "To wydarzenie nie istnieje."
