@@ -21,26 +21,6 @@ class Profile {
       );
 
   static Future<Profile> find(int id) async {
-    return Profile.fromJson(await RestClient.get([_apiPath, id]));
-  }
-}
-
-class NewProfile {
-  String displayName;
-  String? bio;
-
-  NewProfile({
-    required this.displayName,
-    this.bio,
-  });
-
-  JsonObject toJson() => {
-        "bio": bio,
-        "display_name": displayName,
-      };
-
-  Future<Profile> save() async {
-    final createdJson = await RestClient.patch([_apiPath], toJson());
-    return Profile.fromJson(createdJson);
+    return Profile.fromJson(await rest.get([_apiPath, id]));
   }
 }

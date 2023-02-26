@@ -2,7 +2,7 @@ import "package:event_app/api/models/event.dart";
 import "package:event_app/features/shared/loading_screen.dart";
 import "package:event_app/features/shared/not_found_screen.dart";
 import "package:flutter/material.dart";
-import "package:intl/intl.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class EventViewScreen extends StatelessWidget {
   EventViewScreen({super.key, required int id}) {
@@ -13,20 +13,20 @@ class EventViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return FutureBuilder(
       future: event,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const NotFoundScreen(
-            message: "Seems like this event does not exist",
+          return NotFoundScreen(
+            message: l10n.eventNotFound,
           );
         }
 
         if (!snapshot.hasData) {
           return const LoadingScreen();
         }
-
-        final DateFormat formatter = DateFormat("yyyy-MM-dd");
         final event = snapshot.data!;
 
         return Scaffold(
@@ -38,21 +38,23 @@ class EventViewScreen extends StatelessWidget {
             child: Center(
               child: Column(
                 children: [
-                  infoRow("Author display name: ", event.author!.displayName),
+                  infoRow(l10n.author, event.author!.displayName),
                   infoRow(
-                    "starts at ",
-                    formatter.format(event.startsAt),
+                    l10n.startsAt,
+                    l10n.date(event.startsAt),
                     TextStyle(
                       color: Colors.blue[700],
-                      fontWeight: FontWeight.normal,
                     ),
                   ),
                   if (event.endsAt != null)
                     infoRow(
-                      "Ends At: ",
-                      formatter.format(event.endsAt!),
+                      l10n.endsAt,
+                      l10n.date(event.endsAt!),
+                      TextStyle(
+                        color: Colors.blue[700],
+                      ),
                     ),
-                  infoRow("Description: ", event.description),
+                  infoRow(l10n.description, event.description),
                 ],
               ),
             ),
@@ -66,8 +68,8 @@ class EventViewScreen extends StatelessWidget {
     return Row(
       children: [
         Text(
-          label,
-          style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
+          "$label: ",
+          style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.w600)
               .merge(style),
         ),
         Text(info, style: style),

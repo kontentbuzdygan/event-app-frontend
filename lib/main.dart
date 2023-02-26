@@ -1,13 +1,14 @@
 import "package:event_app/errors.dart";
+import "package:event_app/features/auth/auth_screen.dart";
+import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/event/event_view_screen.dart";
+import "package:event_app/features/home/home_screen.dart";
 import "package:flutter/material.dart";
+import "package:flutter_dotenv/flutter_dotenv.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
-import "package:flutter_dotenv/flutter_dotenv.dart";
-import "package:event_app/features/auth/auth_state.dart";
-import "package:event_app/features/auth/auth_screen.dart";
-import "package:event_app/features/home/home_screen.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,6 @@ void main() async {
 class App extends StatelessWidget {
   App({super.key});
 
-  final title = "Event App";
   static const storage = FlutterSecureStorage();
   static final authState = AuthState();
 
@@ -86,7 +86,9 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp.router(
         routerConfig: _router,
-        title: title,
+        title: "Event App",
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         debugShowCheckedModeBanner: false,
       ),
     );

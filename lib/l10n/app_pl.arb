@@ -1,0 +1,21 @@
+{
+  "welcome": "Witaj",
+  "feedTitle": "Aktualności",
+  "continue_": "Kontynuuj",
+  "loading": "Ładowanie…",
+  "signIn": "Zaloguj się",
+  "signUp": "Stwórz  konto",
+  "logOut": "Wyloguj się",
+  "email": "Email",
+  "password": "Hasło",
+  "author": "Autor",
+  "description": "Opis",
+  "startsAt": "zaczyna się",
+  "endsAt": "kończy się",
+  "date": "{date}",
+  "startsAtDate": "zaczyna się {start}",
+  "eventFromTo": "od {start} do {end}",
+  "emailInvalid": "Invalid email",
+  "passwordTooShort": "The password must be at least {minLength} characters long",
+  "eventNotFound": "To wydarzenie nie istnieje."
+}
