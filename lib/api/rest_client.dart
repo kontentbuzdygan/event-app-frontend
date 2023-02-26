@@ -18,6 +18,8 @@ void overrideRestClient(RestClient value) {
   _rest = value;
 }
 
+typedef Cache = Map<String, Completer<JsonObject>>;
+
 class RestClient {
   /// Runs the given callback while caching all GET requests made by any RestClient
   /// instance. Meant to be used in the scope of a single view or widget, where
@@ -26,7 +28,7 @@ class RestClient {
   ///
   /// The same cache is inherited by nested calls to this function.
   static R runCached<R>(R Function() body) {
-    final Map<String, dynamic> cache = Zone.current[#_restClientCache] ?? {};
+    final Cache cache = Zone.current[#_restClientCache] ?? {};
     return runZoned(body, zoneValues: {#_restClientCache: cache});
   }
 
@@ -75,30 +77,18 @@ class RestClient {
     String endpoint,
     Future<JsonObject> Function() body,
   ) async {
-    final Map<String, dynamic>? cache = Zone.current[#_restClientCache];
+    final Cache? cache = Zone.current[#_restClientCache];
 
     if (cache == null) return await body();
 
     if (cache.containsKey(endpoint)) {
-      if (cache[endpoint] is JsonObject) {
-        log("cache hit: $endpoint", name: _logSourceName);
-        return cache[endpoint];
-      } else if (cache[endpoint] is Future<JsonObject>) {
-        log("cache hit (already running): $endpoint", name: _logSourceName);
-        return await cache[endpoint];
-      }
+      final message = cache[endpoint]!.isCompleted ? "cache hit" : "cache hit (already running)";
+      log("$message: $endpoint", name: _logSourceName);
+
+      return await cache[endpoint]!.future;
     }
 
-    final task = () async {
-      final result = await body();
-      cache[endpoint] = result;
-      return result;
-    }();
-
-    // Store the task to signal to other accessors of this cache entry that they
-    // should await this task instead of running the callback again
-    cache[endpoint] = task;
-    return await task;
+    return await (cache[endpoint] = wrapInCompleter(body())).future;
   }
 
   Map<String, String> get _headers => {
