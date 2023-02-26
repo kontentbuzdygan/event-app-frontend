@@ -28,7 +28,7 @@ class MockRestClient extends RestClient {
   }
 
   @override
-  Future<JsonObject> makeRequest(
+  Future<JsonObject> request(
     String method,
     dynamic pathOrParts, [
     JsonObject? body,

@@ -19,8 +19,6 @@ void overrideRestClient(RestClient value) {
 }
 
 class RestClient {
-  final _http = http.Client();
-
   /// Runs the given callback while caching all GET requests made by any RestClient
   /// instance. Meant to be used in the scope of a single view or widget, where
   /// you might perform many requests to the same endpoint within a short period
@@ -32,22 +30,28 @@ class RestClient {
     return runZoned(body, zoneValues: {#_restClientCache: cache});
   }
 
-  Future<JsonObject> get(List<dynamic> pathParts) {
-    final path = joinPath(pathParts);
-    return _runCached("GET $path", () => makeRequest("GET", path));
+  Future<JsonObject> get(dynamic pathOrParts) {
+    final path =
+        pathOrParts is List ? joinPath(pathOrParts) : pathOrParts.toString();
+    return _runCached("GET $path", () => request("GET", path));
   }
 
-  Future<JsonObject> post(List<dynamic> pathParts, [JsonObject body = const {}]) =>
-      makeRequest("POST", pathParts, body);
-  Future<JsonObject> delete(List<dynamic> pathParts, [JsonObject body = const {}]) =>
-      makeRequest("DELETE", pathParts, body);
+  Future<JsonObject> post(dynamic pathOrParts, [JsonObject body = const {}]) =>
+      request("POST", pathOrParts, body);
 
-  Future<JsonObject> makeRequest(
+  Future<JsonObject> delete(
+    dynamic pathOrParts, [
+    JsonObject body = const {},
+  ]) =>
+      request("DELETE", pathOrParts, body);
+
+  Future<JsonObject> request(
     String method,
     dynamic pathOrParts, [
     JsonObject? body,
   ]) async {
-    final path = pathOrParts is List ? joinPath(pathOrParts) : pathOrParts;
+    final path =
+        pathOrParts is List ? joinPath(pathOrParts) : pathOrParts.toString();
 
     final baseUrl = dotenv.get("API_URL");
     final uri = Uri.parse("$baseUrl/$path");
@@ -57,7 +61,7 @@ class RestClient {
     request.body = jsonEncode(body);
 
     log("$method $uri", name: _logSourceName);
-    final response = await _http.send(request);
+    final response = await http.Client().send(request);
 
     try {
       return await response.json();
