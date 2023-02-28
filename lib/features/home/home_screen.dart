@@ -18,7 +18,10 @@ class _State extends State<HomeScreen> {
   final allEvents = () async {
     final events = (await Event.findAll()).toList();
     await RestClient.runCached(
-        () => Future.wait(events.map((event) => event.fetchAuthor())));
+      () => Future.wait(
+        events.map((event) => event.fetchAuthor()),
+      ),
+    );
     return events;
   }();
 

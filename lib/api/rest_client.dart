@@ -82,7 +82,9 @@ class RestClient {
     if (cache == null) return await body();
 
     if (cache.containsKey(endpoint)) {
-      final message = cache[endpoint]!.isCompleted ? "cache hit" : "cache hit (already running)";
+      final message = cache[endpoint]!.isCompleted
+          ? "cache hit"
+          : "cache hit (already running)";
       log("$message: $endpoint", name: _logSourceName);
 
       return await cache[endpoint]!.future;
