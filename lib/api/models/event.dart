@@ -1,4 +1,5 @@
 import "package:event_app/api/json.dart";
+import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 
 const String _apiPath = "events";
@@ -9,7 +10,9 @@ class Event {
   final DateTime startsAt;
   final DateTime? endsAt;
 
-  const Event({
+  Profile? author;
+
+  Event._({
     required this.id,
     required this.authorId,
     required this.title,
@@ -18,7 +21,7 @@ class Event {
     this.endsAt,
   });
 
-  factory Event.fromJson(JsonObject json) => Event(
+  factory Event.fromJson(JsonObject json) => Event._(
         id: json["id"],
         authorId: json["author_id"],
         title: json["title"],
@@ -37,6 +40,11 @@ class Event {
     return (json["events"] as Iterable<dynamic>)
         .cast<JsonObject>()
         .map(Event.fromJson);
+  }
+
+  Future<Event> fetchAuthor() async {
+    author = await Profile.find(authorId);
+    return this;
   }
 }
 

@@ -6,10 +6,9 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class EventViewScreen extends StatelessWidget {
   EventViewScreen({super.key, required int id}) {
-    event = Event.find(id);
+    event = Event.find(id).then((event) => event.fetchAuthor());
   }
 
-  // TODO: Chain event fetching with author profile fetching
   late final Future<Event> event;
 
   @override
@@ -28,33 +27,34 @@ class EventViewScreen extends StatelessWidget {
         if (!snapshot.hasData) {
           return const LoadingScreen();
         }
+        final event = snapshot.data!;
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(snapshot.data!.title),
+            title: Text(event.title),
           ),
           body: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Column(
                 children: [
-                  infoRow(l10n.author, snapshot.data!.authorId.toString()),
+                  infoRow(l10n.author, event.author!.displayName),
                   infoRow(
                     l10n.startsAt,
-                    l10n.date(snapshot.data!.startsAt),
+                    l10n.date(event.startsAt),
                     TextStyle(
                       color: Colors.blue[700],
                     ),
                   ),
-                  if (snapshot.data!.endsAt != null)
+                  if (event.endsAt != null)
                     infoRow(
                       l10n.endsAt,
-                      l10n.date(snapshot.data!.endsAt!),
+                      l10n.date(event.endsAt!),
                       TextStyle(
                         color: Colors.blue[700],
                       ),
                     ),
-                  infoRow(l10n.description, snapshot.data!.description),
+                  infoRow(l10n.description, event.description),
                 ],
               ),
             ),
