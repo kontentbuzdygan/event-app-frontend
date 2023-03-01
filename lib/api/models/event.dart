@@ -35,6 +35,11 @@ class Event {
     return Event.fromJson(await rest.get([_apiPath, id]));
   }
 
+  /// NOTE: It's important to collect the returned iterable, for example by
+  /// calling `toList()`, if you want to use mutating methods like `fetchAuthor()`.
+  /// Otherwise the actual `Event` objects yielded from the iterable will be regenerated
+  /// on every iteration due to laziness, and so their non-serialized state will
+  /// not be persisted.
   static Future<Iterable<Event>> findAll() async {
     final json = await rest.get([_apiPath]);
     return (json["events"] as Iterable<dynamic>)

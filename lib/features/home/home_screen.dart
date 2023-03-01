@@ -1,4 +1,5 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/api/rest_client.dart";
 import "package:event_app/errors.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:flutter/material.dart";
@@ -14,7 +15,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _State extends State<HomeScreen> {
-  final allEvents = Event.findAll();
+  final allEvents = () async {
+    final events = (await Event.findAll()).toList();
+    await RestClient.runCached(
+      () => Future.wait(
+        events.map((event) => event.fetchAuthor()),
+      ),
+    );
+    return events;
+  }();
 
   @override
   Widget build(BuildContext context) {
@@ -82,16 +91,20 @@ class _State extends State<HomeScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(height: 5.0),
+            Text(
+              l10n.createdBy(event.author?.displayName ?? ""),
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 5.0),
             Text(
               event.endsAt != null
                   ? l10n.eventFromTo(event.startsAt, event.endsAt!)
                   : l10n.startsAtDate(event.startsAt),
               style: TextStyle(color: Colors.blue[700]),
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 10.0),
-              child: Text(event.description),
-            ),
+            const SizedBox(height: 5.0),
+            Text(event.description),
           ],
         ),
       ),
