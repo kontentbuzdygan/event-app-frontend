@@ -43,6 +43,14 @@
       }
     }
   },
+  "createdBy": "created by {user}",
+  "@createdBy": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
   "emailInvalid": "Invalid email",
   "passwordTooShort": "The password must be at least {minLength} characters long",
   "@passwordTooShort": {

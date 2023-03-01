@@ -1,3 +1,4 @@
+import "dart:async";
 import "dart:convert";
 
 import "package:event_app/api/exceptions.dart";
@@ -12,6 +13,12 @@ String joinPath(List<dynamic> parts) =>
       .split("/")
       .where((innerPart) => innerPart.isNotEmpty))
     .join("/");
+
+Completer<T> wrapInCompleter<T>(Future<T> future) {
+  final completer = Completer<T>();
+  future.then(completer.complete).catchError(completer.completeError);
+  return completer;
+}
 
 extension StatusClasses on BaseResponse {
   /// True for 2xx status codes
