@@ -3,9 +3,6 @@ import "package:event_app/features/event/create-event-steps/time_place_step.dart
 import "package:flutter/material.dart";
 import "package:event_app/features/event/create-event-steps/description_step.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
-import "package:provider/provider.dart";
-import "package:event_app/features/auth/auth_state.dart";
-// import "package:intl/intl.dart";
 
 class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({super.key});
@@ -16,6 +13,10 @@ class CreateEventScreen extends StatefulWidget {
 
 class _State extends State<CreateEventScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
+  final List<GlobalKey<FormBuilderState>> _formKeys = [
+    GlobalKey<FormBuilderState>(),
+    GlobalKey<FormBuilderState>(),
+  ];
 
   final descriptionController = TextEditingController();
   final titleController = TextEditingController();
@@ -47,16 +48,16 @@ class _State extends State<CreateEventScreen> {
                   currentStep -= 1;
                 }),
           onStepContinue: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-            }
             bool isLastStep = currentStep == getSteps.length - 1;
             if (isLastStep) {
               //TODO: send event to backend
               return;
             }
             setState(() {
-              currentStep += 1;
+              if (_formKeys[currentStep].currentState!.saveAndValidate()) {
+                _formKey.currentState?.saveAndValidate();
+                currentStep += 1;
+              }
             });
           },
           controlsBuilder: (BuildContext context, ControlsDetails details) {
@@ -84,6 +85,7 @@ class _State extends State<CreateEventScreen> {
           state: currentStep > 0 ? StepState.complete : StepState.indexed,
           title: const Text("Description"),
           content: DescriptionStep(
+            formKey: _formKeys[0],
             descriptionController: descriptionController,
             titleController: titleController,
           ),
@@ -92,6 +94,7 @@ class _State extends State<CreateEventScreen> {
           state: currentStep > 1 ? StepState.complete : StepState.indexed,
           title: const Text("Time & Place"),
           content: TimePlaceStep(
+            formKey: _formKeys[1],
             adressController: adressController,
             dateController: dateController,
           ),
