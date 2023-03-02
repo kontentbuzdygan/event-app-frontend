@@ -35,6 +35,8 @@ class _State extends State<CreateEventScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //final authState = context.watch<AuthState>();
+    //authState.userToken!;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Event creation"),
