@@ -2,6 +2,7 @@
 import "package:event_app/features/event/create-event-steps/time_place_step.dart";
 import "package:flutter/material.dart";
 import "package:event_app/features/event/create-event-steps/description_step.dart";
+import "package:flutter_form_builder/flutter_form_builder.dart";
 import "package:provider/provider.dart";
 import "package:event_app/features/auth/auth_state.dart";
 // import "package:intl/intl.dart";
@@ -14,7 +15,7 @@ class CreateEventScreen extends StatefulWidget {
 }
 
 class _State extends State<CreateEventScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormBuilderState>();
 
   final descriptionController = TextEditingController();
   final titleController = TextEditingController();
@@ -34,7 +35,7 @@ class _State extends State<CreateEventScreen> {
       appBar: AppBar(
         title: const Text("Event creation"),
       ),
-      body: Form(
+      body: FormBuilder(
         key: _formKey,
         child: Stepper(
           type: StepperType.horizontal,
@@ -89,7 +90,7 @@ class _State extends State<CreateEventScreen> {
         ),
         Step(
           state: currentStep > 1 ? StepState.complete : StepState.indexed,
-          title: Text("Time & Place"),
+          title: const Text("Time & Place"),
           content: TimePlaceStep(
             adressController: adressController,
             dateController: dateController,

@@ -43,22 +43,21 @@ class _State extends State<TimePlaceStep> {
           ),
           const SizedBox(height: 10),
           FormBuilderDateTimePicker(
-            name: 'date',
+            name: "date",
             controller: widget.dateController,
             initialEntryMode: DatePickerEntryMode.calendar,
             initialValue: DateTime.now(),
             inputType: InputType.both,
             decoration: InputDecoration(
-              labelText: 'Appointment Time',
+              labelText: "Appointment Time",
               suffixIcon: IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () {
-                  _formKey.currentState!.fields['date']?.didChange(null);
+                  _formKey.currentState!.fields["date"]?.didChange(null);
                 },
               ),
             ),
             initialTime: const TimeOfDay(hour: 8, minute: 0),
-            // locale: const Locale.fromSubtags(languageCode: 'fr'),
           ),
         ],
       ),
