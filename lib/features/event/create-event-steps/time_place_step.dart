@@ -7,13 +7,13 @@ class TimePlaceStep extends StatefulWidget {
     super.key,
     required this.formKey,
     required this.adressController,
-    required this.startDateController,
-    required this.endDateController,
+    required this.startsAtController,
+    required this.endsAtController,
   });
 
   final TextEditingController adressController;
-  final TextEditingController startDateController;
-  final TextEditingController endDateController;
+  final TextEditingController startsAtController;
+  final TextEditingController endsAtController;
   final GlobalKey<FormBuilderState> formKey;
 
   @override
@@ -51,7 +51,7 @@ class _State extends State<TimePlaceStep> {
           FormBuilderDateTimePicker(
             name: "startsAt",
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            controller: widget.startDateController,
+            controller: widget.startsAtController,
             initialEntryMode: DatePickerEntryMode.calendarOnly,
             firstDate: DateTime.now(),
             initialValue: DateTime.now(),
@@ -65,7 +65,7 @@ class _State extends State<TimePlaceStep> {
           const SizedBox(height: 10),
           FormBuilderDateTimePicker(
             name: "endsAt",
-            controller: widget.endDateController,
+            controller: widget.endsAtController,
             initialEntryMode: DatePickerEntryMode.calendarOnly,
             firstDate: DateTime.now(),
             format: DateFormat("yyyy-MM-dd HH:mm"),
@@ -76,10 +76,7 @@ class _State extends State<TimePlaceStep> {
                 return null;
               }
               if (value.compareTo(
-                    widget.formKey.currentState!.fields["startsAt"]!.value
-                        as DateTime,
-                  ) <
-                  0) {
+                widget.formKey.currentState!.fields["startsAt"]!.value as DateTime) < 0) {
                 return "The end date cannot be earlier than the start date.";
               }
               return null;
@@ -89,8 +86,7 @@ class _State extends State<TimePlaceStep> {
               suffixIcon: IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () {
-                  widget.formKey.currentState!.fields["endsAt"]
-                      ?.didChange(null);
+                  widget.formKey.currentState!.fields["endsAt"]?.didChange(null);
                 },
               ),
             ),

@@ -1,9 +1,11 @@
-// import "package:event_app/api/models/event.dart";
+import "package:event_app/api/models/event.dart";
 import "package:event_app/features/event/create-event-steps/summary_step.dart";
 import "package:event_app/features/event/create-event-steps/time_place_step.dart";
 import "package:flutter/material.dart";
 import "package:event_app/features/event/create-event-steps/description_step.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
+import "package:fluttertoast/fluttertoast.dart";
+import "package:go_router/go_router.dart";
 
 class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({super.key});
@@ -23,8 +25,8 @@ class _State extends State<CreateEventScreen> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final addressController = TextEditingController();
-  final startDateController = TextEditingController();
-  final endDateController = TextEditingController();
+  final startsAtController = TextEditingController();
+  final endsAtController = TextEditingController();
 
   int currentStep = 0;
   int id = 0;
@@ -33,8 +35,6 @@ class _State extends State<CreateEventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //final authState = context.watch<AuthState>();
-    //authState.userToken!;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Event creation"),
@@ -55,7 +55,25 @@ class _State extends State<CreateEventScreen> {
             FocusScope.of(context).unfocus();
             bool isLastStep = currentStep == steps.length - 1;
             if (isLastStep) {
-              //TODO: send event to backend
+              if (endsAtController.text.isEmpty) {
+                NewEvent(
+                  title: titleController.text,
+                  description: descriptionController.text,
+                  startsAt: DateTime.parse(startsAtController.text),
+                ).save();
+                return;
+              }
+              NewEvent(
+                title: titleController.text,
+                description: descriptionController.text,
+                startsAt: DateTime.parse(startsAtController.text),
+                endsAt: DateTime.parse(startsAtController.text),
+              ).save();
+              Fluttertoast.showToast(
+                msg: "Event created!",
+                backgroundColor: Colors.blue,
+              );
+              context.pop();
               return;
             }
             setState(() {
@@ -102,8 +120,8 @@ class _State extends State<CreateEventScreen> {
           content: TimePlaceStep(
             formKey: _formKeys[1],
             adressController: addressController,
-            startDateController: startDateController,
-            endDateController: endDateController,
+            startsAtController: startsAtController,
+            endsAtController: endsAtController,
           ),
         ),
         Step(
@@ -114,8 +132,8 @@ class _State extends State<CreateEventScreen> {
             title: titleController.text,
             description: descriptionController.text,
             address: addressController.text,
-            startsAt: startDateController.text,
-            endsAt: endDateController.text,
+            startsAt: startsAtController.text,
+            endsAt: endsAtController.text,
           ),
         ),
       ];

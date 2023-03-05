@@ -32,7 +32,10 @@ class _State extends State<DescriptionStep> {
             textInputAction: TextInputAction.next,
             validator: (value) {
               if (value!.isEmpty) {
-                return "Please enter a title";
+                return "Please enter a title.";
+              }
+              if (value.length > 50) {
+                return "Please enter a shorter title.";
               }
               return null;
             },
@@ -52,7 +55,10 @@ class _State extends State<DescriptionStep> {
             textInputAction: TextInputAction.next,
             validator: (value) {
               if (value!.isEmpty) {
-                return "Please enter a description";
+                return "Please enter a description.";
+              }
+              if (value.length > 1000) {
+                return "Please enter a shorter description.";
               }
               return null;
             },
