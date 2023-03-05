@@ -72,7 +72,7 @@ class _State extends State<HomeScreen> {
       // TODO: Handle hardcoded links :(
       onPressed: () => context.pushNamed(
         "eventView",
-        params: {"eventId": event.id.toString()},
+        params: {"id": event.id.toString()},
       ),
       child: Container(
         padding: const EdgeInsets.all(20.0),

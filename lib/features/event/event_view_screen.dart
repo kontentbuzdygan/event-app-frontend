@@ -1,15 +1,19 @@
 import "package:event_app/api/models/event.dart";
-import "package:event_app/features/shared/loading_screen.dart";
-import "package:event_app/features/shared/not_found_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:go_router/go_router.dart";
 
-class EventViewScreen extends StatelessWidget {
-  EventViewScreen({super.key, required int id}) {
-    event = Event.find(id).then((event) => event.fetchAuthor());
-  }
+class EventViewScreen extends StatefulWidget {
+  const EventViewScreen({super.key, required this.id});
 
-  late final Future<Event> event;
+  final int id;
+
+  @override
+  State<EventViewScreen> createState() => _EventViewScreenState();
+}
+
+class _EventViewScreenState extends State<EventViewScreen> {
+  late final event = Event.find(widget.id).then((event) => event.fetchAuthor());
 
   @override
   Widget build(BuildContext context) {
@@ -17,63 +21,70 @@ class EventViewScreen extends StatelessWidget {
 
     return FutureBuilder(
       future: event,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return NotFoundScreen(
-            message: l10n.eventNotFound,
+      builder: (builder, snapshot) => Scaffold(
+        appBar: AppBar(
+          leadingWidth: 20,
+          centerTitle: false,
+          title: Text(snapshot.data?.title ?? ""),
+        ),
+        body: () {
+          if (snapshot.hasData) return EventView(event: snapshot.data!);
+
+          return Center(
+            child: snapshot.hasError
+                ? Text(l10n.eventNotFound)
+                : const CircularProgressIndicator(),
           );
-        }
-
-        if (!snapshot.hasData) {
-          return const LoadingScreen();
-        }
-        final event = snapshot.data!;
-
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(event.title),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Center(
-              child: Column(
-                children: [
-                  infoRow(l10n.author, event.author!.displayName),
-                  infoRow(
-                    l10n.startsAt,
-                    l10n.date(event.startsAt),
-                    TextStyle(
-                      color: Colors.blue[700],
-                    ),
-                  ),
-                  if (event.endsAt != null)
-                    infoRow(
-                      l10n.endsAt,
-                      l10n.date(event.endsAt!),
-                      TextStyle(
-                        color: Colors.blue[700],
-                      ),
-                    ),
-                  infoRow(l10n.description, event.description),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+        }(),
+      ),
     );
   }
+}
 
-  Widget infoRow(String label, String info, [TextStyle? style]) {
-    return Row(
-      children: [
-        Text(
-          "$label: ",
-          style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.w600)
-              .merge(style),
-        ),
-        Text(info, style: style),
-      ],
+class EventView extends StatelessWidget {
+  const EventView({super.key, required this.event});
+
+  final Event event;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Text(
+              l10n.createdBy(""),
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+            TextButton(
+              onPressed: () => context.pushNamed(
+                "profileView",
+                params: {"id": event.authorId.toString()},
+              ),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                maximumSize: Size.infinite,
+              ),
+              child: Text(
+                event.author!.displayName,
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ),
+          ]),
+          Text(
+            event.endsAt != null
+                ? l10n.eventFromTo(event.startsAt, event.endsAt!)
+                : l10n.startsAtDate(event.startsAt),
+            style: TextStyle(color: Colors.blue[700]),
+          ),
+          const SizedBox(height: 5.0),
+          Text(event.description),
+        ],
+      ),
     );
   }
 }

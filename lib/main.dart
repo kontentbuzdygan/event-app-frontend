@@ -3,6 +3,7 @@ import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/event/event_view_screen.dart";
 import "package:event_app/features/home/home_screen.dart";
+import "package:event_app/features/profile/profile_view_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -61,9 +62,16 @@ class App extends StatelessWidget {
           ),
           GoRoute(
             name: "eventView",
-            path: "/event/:eventId",
+            path: "/event/:id",
             builder: (context, state) => EventViewScreen(
-              id: int.tryParse(state.params["eventId"]!) ?? 0,
+              id: int.tryParse(state.params["id"]!) ?? 0,
+            ),
+          ),
+          GoRoute(
+            name: "profileView",
+            path: "/profile/:id",
+            builder: (context, state) => ProfileViewScreen(
+              id: int.tryParse(state.params["id"]!) ?? 0,
             ),
           ),
         ],
