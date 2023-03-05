@@ -25,7 +25,7 @@ class _State extends State<DescriptionStep> {
       child: Column(
         children: <Widget>[
           FormBuilderTextField(
-            name: "dupa",
+            name: "title",
             autovalidateMode: AutovalidateMode.onUserInteraction,
             controller: widget.titleController,
             maxLength: 50,

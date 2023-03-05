@@ -1,4 +1,5 @@
 // import "package:event_app/api/models/event.dart";
+import "package:event_app/features/event/create-event-steps/summary_step.dart";
 import "package:event_app/features/event/create-event-steps/time_place_step.dart";
 import "package:flutter/material.dart";
 import "package:event_app/features/event/create-event-steps/description_step.dart";
@@ -16,12 +17,14 @@ class _State extends State<CreateEventScreen> {
   final List<GlobalKey<FormBuilderState>> _formKeys = [
     GlobalKey<FormBuilderState>(),
     GlobalKey<FormBuilderState>(),
+    GlobalKey<FormBuilderState>(),
   ];
 
-  final descriptionController = TextEditingController();
   final titleController = TextEditingController();
-  final dateController = TextEditingController();
-  final adressController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final addressController = TextEditingController();
+  final startDateController = TextEditingController();
+  final endDateController = TextEditingController();
 
   int currentStep = 0;
   int id = 0;
@@ -40,22 +43,23 @@ class _State extends State<CreateEventScreen> {
         key: _formKey,
         child: Stepper(
           type: StepperType.horizontal,
-          steps: getSteps,
+          steps: steps,
           currentStep: currentStep,
           onStepCancel: () => currentStep == 0
               ? null
               : setState(() {
                   currentStep -= 1;
+                  FocusScope.of(context).unfocus();
                 }),
           onStepContinue: () {
-            bool isLastStep = currentStep == getSteps.length - 1;
+            FocusScope.of(context).unfocus();
+            bool isLastStep = currentStep == steps.length - 1;
             if (isLastStep) {
               //TODO: send event to backend
               return;
             }
             setState(() {
               if (_formKeys[currentStep].currentState!.saveAndValidate()) {
-                _formKey.currentState?.saveAndValidate();
                 currentStep += 1;
               }
             });
@@ -70,7 +74,9 @@ class _State extends State<CreateEventScreen> {
                 const Spacer(),
                 TextButton(
                   onPressed: details.onStepContinue,
-                  child: const Text("Next"),
+                  child: Text(
+                    currentStep == steps.length - 1 ? "Confirm" : "Next",
+                  ),
                 ),
               ],
             );
@@ -80,7 +86,7 @@ class _State extends State<CreateEventScreen> {
     );
   }
 
-  List<Step> get getSteps => [
+  List<Step> get steps => [
         Step(
           state: currentStep > 0 ? StepState.complete : StepState.indexed,
           title: const Text("Description"),
@@ -95,8 +101,21 @@ class _State extends State<CreateEventScreen> {
           title: const Text("Time & Place"),
           content: TimePlaceStep(
             formKey: _formKeys[1],
-            adressController: adressController,
-            dateController: dateController,
+            adressController: addressController,
+            startDateController: startDateController,
+            endDateController: endDateController,
+          ),
+        ),
+        Step(
+          state: currentStep > 2 ? StepState.complete : StepState.indexed,
+          title: const Text("Summary"),
+          content: SummaryStep(
+            formKey: _formKeys[2],
+            title: titleController.text,
+            description: descriptionController.text,
+            address: addressController.text,
+            startsAt: startDateController.text,
+            endsAt: endDateController.text,
           ),
         ),
       ];
