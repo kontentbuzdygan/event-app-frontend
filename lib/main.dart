@@ -1,8 +1,8 @@
 import "package:event_app/errors.dart";
 import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
-import "package:event_app/features/event/event_view_screen.dart";
-import "package:event_app/features/home/home_screen.dart";
+import "package:event_app/features/events/event_view_screen.dart";
+import "package:event_app/features/events/feed_screen.dart";
 import "package:event_app/features/profile/profile_view_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
@@ -49,9 +49,9 @@ class App extends StatelessWidget {
         },
         routes: [
           GoRoute(
-            name: "home",
+            name: "feed",
             path: "/",
-            builder: (_, __) => const HomeScreen(),
+            builder: (_, __) => const FeedScreen(),
           ),
           GoRoute(
             name: "auth",

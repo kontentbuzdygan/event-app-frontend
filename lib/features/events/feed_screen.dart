@@ -1,24 +1,24 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/errors.dart";
-import "package:event_app/features/event/event_view_screen.dart";
+import "package:event_app/features/events/event_view_screen.dart";
 import "package:event_app/features/profile/profile_view_screen.dart";
 import "package:event_app/main.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class FeedScreen extends StatefulWidget {
+  const FeedScreen({super.key});
 
   static navigate() {
     App.router.goNamed("home");
   }
 
   @override
-  State<HomeScreen> createState() => _State();
+  State<FeedScreen> createState() => _State();
 }
 
-class _State extends State<HomeScreen> {
+class _State extends State<FeedScreen> {
   final allEvents = () async {
     final events = (await Event.findAll()).toList();
     await RestClient.runCached(
