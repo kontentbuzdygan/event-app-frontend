@@ -1,14 +1,18 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/errors.dart";
-import "package:event_app/features/auth/auth_state.dart";
+import "package:event_app/features/event/event_view_screen.dart";
+import "package:event_app/features/profile/profile_view_screen.dart";
+import "package:event_app/main.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
-import "package:go_router/go_router.dart";
-import "package:provider/provider.dart";
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  static navigate() {
+    App.router.goNamed("home");
+  }
 
   @override
   State<HomeScreen> createState() => _State();
@@ -28,21 +32,20 @@ class _State extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final authState = context.watch<AuthState>();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.feedTitle),
-        actions: <Widget>[
+        actions: [
           IconButton(
             onPressed: () => throw const ApplicationException(message: "Kurwa"),
             tooltip: "Throw",
             icon: const Icon(Icons.sports_basketball),
           ),
           IconButton(
-            onPressed: authState.signOut,
+            onPressed: ProfileViewScreen.navigateMe,
             tooltip: l10n.logOut,
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.person),
           ),
         ],
       ),
@@ -69,11 +72,7 @@ class _State extends State<HomeScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return MaterialButton(
-      // TODO: Handle hardcoded links :(
-      onPressed: () => context.pushNamed(
-        "eventView",
-        params: {"id": event.id.toString()},
-      ),
+      onPressed: () => EventViewScreen.navigate(event.id),
       child: Container(
         padding: const EdgeInsets.all(20.0),
         alignment: Alignment.topLeft,

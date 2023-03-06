@@ -18,18 +18,18 @@ void main() async {
   await dotenv.load();
   await App.authState.restoreAndRefreshToken();
 
-  runApp(App());
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
-  App({super.key});
+  const App({super.key});
 
   static const storage = FlutterSecureStorage();
   static final authState = AuthState();
 
-  static final ErrorNotifier _errorNotifier = ErrorNotifier();
+  static final _errorNotifier = ErrorNotifier();
 
-  late final GoRouter _router = GoRouter(
+  static final router = GoRouter(
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -51,33 +51,36 @@ class App extends StatelessWidget {
           GoRoute(
             name: "home",
             path: "/",
-            builder: (BuildContext context, GoRouterState state) =>
-                const HomeScreen(),
+            builder: (_, __) => const HomeScreen(),
           ),
           GoRoute(
             name: "auth",
             path: "/auth",
-            builder: (BuildContext context, GoRouterState state) =>
-                const AuthScreen(),
+            builder: (_, __) => const AuthScreen(),
           ),
           GoRoute(
             name: "eventView",
-            path: "/event/:id",
-            builder: (context, state) => EventViewScreen(
+            path: "/events/:id",
+            builder: (__, state) => EventViewScreen(
               id: int.tryParse(state.params["id"]!) ?? 0,
             ),
           ),
           GoRoute(
+            name: "myProfileView",
+            path: "/profiles/me",
+            builder: (_, __) => const ProfileViewScreen(),
+          ),
+          GoRoute(
             name: "profileView",
-            path: "/profile/:id",
-            builder: (context, state) => ProfileViewScreen(
+            path: "/profiles/:id",
+            builder: (_, state) => ProfileViewScreen(
               id: int.tryParse(state.params["id"]!) ?? 0,
             ),
           ),
         ],
       ),
     ],
-    redirect: (BuildContext context, GoRouterState state) {
+    redirect: (_, state) {
       if (!authState.loggedIn) return "/auth";
       if (state.subloc == "/auth") return "/";
       return null;
@@ -86,14 +89,14 @@ class App extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: authState),
         ChangeNotifierProvider.value(value: _errorNotifier),
       ],
       child: MaterialApp.router(
-        routerConfig: _router,
+        routerConfig: router,
         title: "Event App",
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

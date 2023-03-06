@@ -60,5 +60,6 @@
       }
     }
   },
-  "eventNotFound": "This event doesn't exist."
+  "eventNotFound": "This event doesn't exist.",
+  "yourProfile": "Your profile"
 }

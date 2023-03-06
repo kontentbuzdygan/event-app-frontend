@@ -18,5 +18,6 @@
   "createdBy": "stworzone przez {user}",
   "emailInvalid": "Nieprawidłowy email",
   "passwordTooShort": "Hasło musi mieć przynajmniej {minLength} znaków",
-  "eventNotFound": "To wydarzenie nie istnieje."
+  "eventNotFound": "To wydarzenie nie istnieje.",
+  "yourProfile": "Twój profil"
 }
