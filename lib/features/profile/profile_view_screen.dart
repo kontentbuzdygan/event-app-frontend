@@ -70,7 +70,6 @@ class ProfileView extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-          if (profile.avatar != null) Text(profile.avatar!),
           if (profile.bio != null) Text(profile.bio!)
         ],
       ),
