@@ -31,8 +31,6 @@ class _EventViewScreenState extends State<EventViewScreen> {
       future: event,
       builder: (builder, snapshot) => Scaffold(
         appBar: AppBar(
-          leadingWidth: 20,
-          centerTitle: false,
           title: Text(snapshot.data?.title ?? ""),
         ),
         body: () {

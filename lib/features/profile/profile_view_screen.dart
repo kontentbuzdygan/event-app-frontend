@@ -34,8 +34,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
       future: profile,
       builder: (_, snapshot) => Scaffold(
         appBar: AppBar(
-          leadingWidth: 20,
-          centerTitle: false,
           title: Text(snapshot.data?.displayName ?? ""),
           actions: [
             if (widget.id == null) ...[
