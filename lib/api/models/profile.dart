@@ -23,4 +23,8 @@ class Profile {
   static Future<Profile> find(int id) async {
     return Profile.fromJson(await rest.get([_apiPath, id]));
   }
+
+  static Future<Profile> me() async {
+    return Profile.fromJson(await rest.get([_apiPath, "me"]));
+  }
 }

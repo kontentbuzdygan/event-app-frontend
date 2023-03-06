@@ -135,15 +135,13 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
   Widget emailField(AuthState authState) {
     final l10n = AppLocalizations.of(context)!;
+    final enabled = formState.value == _FormState.enteringEmail && authState.canLogIn;
 
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: emailController,
-      enabled:
-          formState.value == _FormState.enteringEmail && authState.canLogIn,
-      style: formState.value != _FormState.enteringEmail && authState.canLogIn
-          ? const TextStyle(color: Colors.grey)
-          : null,
+      enabled: enabled,
+      style: !enabled ? const TextStyle(color: Colors.grey) : null,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: l10n.email,
