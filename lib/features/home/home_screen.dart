@@ -38,6 +38,11 @@ class _State extends State<HomeScreen> {
         title: Text(l10n.feedTitle),
         actions: [
           IconButton(
+            onPressed: () => throw const ApplicationException(message: "Kurwa"),
+            tooltip: "Throw",
+            icon: const Icon(Icons.sports_basketball),
+          ),
+          IconButton(
             onPressed: ProfileViewScreen.navigateMe,
             tooltip: l10n.yourProfile,
             icon: const Icon(Icons.person),

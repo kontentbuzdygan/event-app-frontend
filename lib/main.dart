@@ -45,7 +45,7 @@ class App extends StatelessWidget {
             });
           }
 
-          return Scaffold(body: child);
+          return child;
         },
         routes: [
           GoRoute(
