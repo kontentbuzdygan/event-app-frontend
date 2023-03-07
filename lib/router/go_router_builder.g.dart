@@ -23,14 +23,12 @@ GoRoute get $feedRoute => GoRouteData.$route(
           factory: $EventViewRouteExtension._fromState,
         ),
         GoRouteData.$route(
-          path: "profiles",
+          path: "profiles/me",
           factory: $MyProfileViewRouteExtension._fromState,
-          routes: [
-            GoRouteData.$route(
-              path: ":id",
-              factory: $ProfileViewRouteExtension._fromState,
-            ),
-          ],
+        ),
+        GoRouteData.$route(
+          path: "profiles/:id",
+          factory: $ProfileViewRouteExtension._fromState,
         ),
       ],
     );
@@ -87,7 +85,7 @@ extension $MyProfileViewRouteExtension on MyProfileViewRoute {
       MyProfileViewRoute();
 
   String get location => GoRouteData.$location(
-        "/profiles",
+        "/profiles/me",
       );
 
   void go(BuildContext context) => context.go(location);
