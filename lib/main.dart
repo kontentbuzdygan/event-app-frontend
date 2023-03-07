@@ -1,9 +1,6 @@
 import "package:event_app/errors.dart";
-import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
-import "package:event_app/features/events/event_view_screen.dart";
-import "package:event_app/features/events/feed_screen.dart";
-import "package:event_app/features/profile/profile_view_screen.dart";
+import "package:event_app/router/go_router_builder.dart";
 import "package:flutter/material.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -47,37 +44,7 @@ class App extends StatelessWidget {
 
           return child;
         },
-        routes: [
-          GoRoute(
-            name: "feed",
-            path: "/",
-            builder: (_, __) => const FeedScreen(),
-          ),
-          GoRoute(
-            name: "auth",
-            path: "/auth",
-            builder: (_, __) => const AuthScreen(),
-          ),
-          GoRoute(
-            name: "eventView",
-            path: "/events/:id",
-            builder: (__, state) => EventViewScreen(
-              id: int.tryParse(state.params["id"]!) ?? 0,
-            ),
-          ),
-          GoRoute(
-            name: "myProfileView",
-            path: "/profiles/me",
-            builder: (_, __) => const ProfileViewScreen(),
-          ),
-          GoRoute(
-            name: "profileView",
-            path: "/profiles/:id",
-            builder: (_, state) => ProfileViewScreen(
-              id: int.tryParse(state.params["id"]!) ?? 0,
-            ),
-          ),
-        ],
+        routes: $appRoutes
       ),
     ],
     redirect: (_, state) {
