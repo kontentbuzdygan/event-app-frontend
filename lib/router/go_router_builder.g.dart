@@ -24,7 +24,7 @@ GoRoute get $feedRoute => GoRouteData.$route(
         ),
         GoRouteData.$route(
           path: "profiles",
-          factory: $ProfileMeViewRouteExtension._fromState,
+          factory: $MyProfileViewRouteExtension._fromState,
           routes: [
             GoRouteData.$route(
               path: ":id",
@@ -46,7 +46,7 @@ extension $FeedRouteExtension on FeedRoute {
 
   void push(BuildContext context) => context.push(location);
 
-  void pushReplacement( context) =>
+  void pushReplacement(BuildContext context) =>
       context.pushReplacement(location);
 }
 
@@ -61,7 +61,7 @@ extension $AuthRouteExtension on AuthRoute {
 
   void push(BuildContext context) => context.push(location);
 
-  void pushReplacement( context) =>
+  void pushReplacement(BuildContext context) =>
       context.pushReplacement(location);
 }
 
@@ -78,13 +78,13 @@ extension $EventViewRouteExtension on EventViewRoute {
 
   void push(BuildContext context) => context.push(location);
 
-  void pushReplacement( context) =>
+  void pushReplacement(BuildContext context) =>
       context.pushReplacement(location);
 }
 
-extension $ProfileMeViewRouteExtension on ProfileMeViewRoute {
-  static ProfileMeViewRoute _fromState(GoRouterState state) =>
-      ProfileMeViewRoute();
+extension $MyProfileViewRouteExtension on MyProfileViewRoute {
+  static MyProfileViewRoute _fromState(GoRouterState state) =>
+      MyProfileViewRoute();
 
   String get location => GoRouteData.$location(
         "/profiles",
@@ -94,7 +94,7 @@ extension $ProfileMeViewRouteExtension on ProfileMeViewRoute {
 
   void push(BuildContext context) => context.push(location);
 
-  void pushReplacement( context) =>
+  void pushReplacement(BuildContext context) =>
       context.pushReplacement(location);
 }
 
@@ -111,6 +111,6 @@ extension $ProfileViewRouteExtension on ProfileViewRoute {
 
   void push(BuildContext context) => context.push(location);
 
-  void pushReplacement( context) =>
+  void pushReplacement(BuildContext context) =>
       context.pushReplacement(location);
 }

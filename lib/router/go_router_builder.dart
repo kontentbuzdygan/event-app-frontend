@@ -14,7 +14,7 @@ part "go_router_builder.g.dart";
   routes: [
     TypedGoRoute<AuthRoute>(path: "auth"),
     TypedGoRoute<EventViewRoute>(path: "events/:id"),
-    TypedGoRoute<ProfileMeViewRoute>(
+    TypedGoRoute<MyProfileViewRoute>(
       path: "profiles",
       routes: [
         TypedGoRoute<ProfileViewRoute>(path: ":id"),
@@ -25,12 +25,12 @@ part "go_router_builder.g.dart";
 
 class FeedRoute extends GoRouteData {
   @override
-  Widget build(context) => const FeedScreen();
+  Widget build(context, state) => const FeedScreen();
 }
 
 class AuthRoute extends GoRouteData {
   @override
-  Widget build(context) => const AuthScreen();
+  Widget build(context, state) => const AuthScreen();
 }
 
 class EventViewRoute extends GoRouteData {
@@ -39,7 +39,7 @@ class EventViewRoute extends GoRouteData {
   final int id;
 
   @override
-  Widget build(context) => EventViewScreen(id: id);
+  Widget build(context, state) => EventViewScreen(id: id);
 }
 
 
@@ -49,10 +49,10 @@ class ProfileViewRoute extends GoRouteData {
   final int id;
 
   @override
-  Widget build(context) => ProfileViewScreen(id: id);
+  Widget build(context, state) => ProfileViewScreen(id: id);
 }
 
-class ProfileMeViewRoute extends GoRouteData {
+class MyProfileViewRoute extends GoRouteData {
   @override
-  Widget build(context) => const ProfileViewScreen();
+  Widget build(context, state) => const ProfileViewScreen();
 }

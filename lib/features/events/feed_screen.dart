@@ -42,7 +42,7 @@ class _State extends State<FeedScreen> {
             icon: const Icon(Icons.sports_basketball),
           ),
           IconButton(
-            onPressed: () => ProfileMeViewRoute().push(context),
+            onPressed: () => MyProfileViewRoute().push(context),
             tooltip: l10n.yourProfile,
             icon: const Icon(Icons.person),
           ),
