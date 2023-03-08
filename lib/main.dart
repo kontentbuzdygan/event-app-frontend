@@ -1,6 +1,6 @@
 import "package:event_app/errors.dart";
 import "package:event_app/features/auth/auth_state.dart";
-import "package:event_app/router/go_router_builder.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -27,6 +27,7 @@ class App extends StatelessWidget {
   static final _errorNotifier = ErrorNotifier();
 
   static final router = GoRouter(
+    initialLocation: "/auth",
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -48,8 +49,12 @@ class App extends StatelessWidget {
       ),
     ],
     redirect: (_, state) {
-      if (!authState.loggedIn) return "/auth";
-      if (state.subloc == "/auth") return "/";
+      if (!authState.loggedIn) return AuthRoute().location;
+      
+      if (state.subloc == AuthRoute().location) { 
+        return FeedRoute().location;
+      }
+
       return null;
     },
     refreshListenable: authState,

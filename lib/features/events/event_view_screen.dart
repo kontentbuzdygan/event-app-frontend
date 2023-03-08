@@ -1,6 +1,6 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/main.dart";
-import "package:event_app/router/go_router_builder.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
