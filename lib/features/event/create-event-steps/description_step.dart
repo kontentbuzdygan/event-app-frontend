@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+
 
 class DescriptionStep extends StatefulWidget {
   const DescriptionStep({
@@ -20,6 +22,7 @@ class DescriptionStep extends StatefulWidget {
 class _State extends State<DescriptionStep> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return FormBuilder(
       key: widget.formKey,
       child: Column(
@@ -32,17 +35,17 @@ class _State extends State<DescriptionStep> {
             textInputAction: TextInputAction.next,
             validator: (value) {
               if (value!.isEmpty) {
-                return "Please enter a title.";
+                return l10n.titleInput;
               }
               if (value.length > 50) {
-                return "Please enter a shorter title.";
+                return l10n.titleTooLong;
               }
               return null;
             },
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "Sleepover at Mickey's",
-              labelText: "Enter event title",
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: l10n.titleExample,
+              labelText: l10n.title,
             ),
           ),
           const SizedBox(height: 10),
@@ -55,17 +58,17 @@ class _State extends State<DescriptionStep> {
             textInputAction: TextInputAction.next,
             validator: (value) {
               if (value!.isEmpty) {
-                return "Please enter a description.";
+                return l10n.descriptionInput;
               }
               if (value.length > 1000) {
-                return "Please enter a shorter description.";
+                return l10n.descriptionTooLong;
               }
               return null;
             },
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "Third edition of coding event app together!",
-              labelText: "Enter event description",
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: l10n.descriptionExample,
+              labelText: l10n.description,
             ),
           ),
         ],

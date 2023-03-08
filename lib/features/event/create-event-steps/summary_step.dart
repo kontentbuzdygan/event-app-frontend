@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class SummaryStep extends StatefulWidget {
   const SummaryStep({
@@ -25,19 +26,20 @@ class _State extends State<SummaryStep> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return FormBuilder(
       key: widget.formKey,
       child: Column(
         children: <Widget>[
-          Text("Title: ${widget.title}"),
-          Text("Description: ${widget.description}"),
-          Text("Address: ${widget.address}"),
-          Text("Start date: ${widget.startsAt}"),
-          Text(
-            widget.endsAt != ""
-                ? "End date: ${widget.endsAt!}"
-                : "No finishing date was chosen.",
-          ),
+          Text("${l10n.title}: ${widget.title}"),
+          Text("${l10n.description}: ${widget.description}"),
+          Text("${l10n.address}: ${widget.address}"),
+          if (widget.startsAt != "") ...[
+            Text(l10n.startsAtDate(DateTime.parse(widget.startsAt)))
+          ],
+          if (widget.endsAt != "") ...[
+            Text(l10n.endsAtDate(DateTime.parse(widget.endsAt!))),
+          ]
         ],
       ),
     );

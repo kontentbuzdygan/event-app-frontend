@@ -6,6 +6,7 @@ import "package:event_app/features/event/create-event-steps/description_step.dar
 import "package:flutter_form_builder/flutter_form_builder.dart";
 import "package:fluttertoast/fluttertoast.dart";
 import "package:go_router/go_router.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({super.key});
@@ -22,6 +23,8 @@ class _State extends State<CreateEventScreen> {
     GlobalKey<FormBuilderState>(),
   ];
 
+  late final AppLocalizations l10n = AppLocalizations.of(context)!;
+
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final addressController = TextEditingController();
@@ -37,7 +40,7 @@ class _State extends State<CreateEventScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Event creation"),
+        title: Text(l10n.createEvent),
       ),
       body: FormBuilder(
         key: _formKey,
@@ -67,10 +70,10 @@ class _State extends State<CreateEventScreen> {
                 title: titleController.text,
                 description: descriptionController.text,
                 startsAt: DateTime.parse(startsAtController.text),
-                endsAt: DateTime.parse(startsAtController.text),
+                endsAt: DateTime.parse(endsAtController.text),
               ).save();
               Fluttertoast.showToast(
-                msg: "Event created!",
+                msg: l10n.eventCreated,
                 backgroundColor: Colors.blue,
               );
               context.pop();
@@ -87,13 +90,13 @@ class _State extends State<CreateEventScreen> {
               children: <Widget>[
                 TextButton(
                   onPressed: details.onStepCancel,
-                  child: Text(currentStep == 0 ? "" : "Back"),
+                  child: Text(currentStep == 0 ? "" : l10n.back),
                 ),
                 const Spacer(),
                 TextButton(
                   onPressed: details.onStepContinue,
                   child: Text(
-                    currentStep == steps.length - 1 ? "Confirm" : "Next",
+                    currentStep == steps.length - 1 ? l10n.confirm : l10n.next,
                   ),
                 ),
               ],
@@ -107,7 +110,7 @@ class _State extends State<CreateEventScreen> {
   List<Step> get steps => [
         Step(
           state: currentStep > 0 ? StepState.complete : StepState.indexed,
-          title: const Text("Description"),
+          title: Text(l10n.description),
           content: DescriptionStep(
             formKey: _formKeys[0],
             descriptionController: descriptionController,
@@ -116,7 +119,7 @@ class _State extends State<CreateEventScreen> {
         ),
         Step(
           state: currentStep > 1 ? StepState.complete : StepState.indexed,
-          title: const Text("Time & Place"),
+          title: Text(l10n.timeAndPlace),
           content: TimePlaceStep(
             formKey: _formKeys[1],
             adressController: addressController,
@@ -126,7 +129,7 @@ class _State extends State<CreateEventScreen> {
         ),
         Step(
           state: currentStep > 2 ? StepState.complete : StepState.indexed,
-          title: const Text("Summary"),
+          title: Text(l10n.summary),
           content: SummaryStep(
             formKey: _formKeys[2],
             title: titleController.text,

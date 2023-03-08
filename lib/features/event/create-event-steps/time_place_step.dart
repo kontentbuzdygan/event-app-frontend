@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
 import "package:intl/intl.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class TimePlaceStep extends StatefulWidget {
   const TimePlaceStep({
@@ -25,6 +26,7 @@ class _State extends State<TimePlaceStep> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return FormBuilder(
       key: widget.formKey,
       child: Column(
@@ -37,14 +39,14 @@ class _State extends State<TimePlaceStep> {
             textInputAction: TextInputAction.next,
             validator: (value) {
               if (value!.isEmpty) {
-                return "Please enter an address";
+                return l10n.addressInput;
               }
               return null;
             },
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "Podwale staromiejskie 69",
-              labelText: "Enter address",
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: l10n.addressExample,
+              labelText: l10n.address,
             ),
           ),
           const SizedBox(height: 10),
@@ -58,8 +60,8 @@ class _State extends State<TimePlaceStep> {
             format: DateFormat("yyyy-MM-dd HH:mm"),
             inputType: InputType.both,
             initialTime: const TimeOfDay(hour: 18, minute: 0),
-            decoration: const InputDecoration(
-              labelText: "Start time",
+            decoration: InputDecoration(
+              labelText: l10n.startsAt,
             ),
           ),
           const SizedBox(height: 10),
@@ -77,12 +79,12 @@ class _State extends State<TimePlaceStep> {
               }
               if (value.compareTo(
                 widget.formKey.currentState!.fields["startsAt"]!.value as DateTime) < 0) {
-                return "The end date cannot be earlier than the start date.";
+                return l10n.endDateCantBeSoonerThanStart;
               }
               return null;
             },
             decoration: InputDecoration(
-              labelText: "End time (optional)",
+              labelText: l10n.endsAt,
               suffixIcon: IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () {
