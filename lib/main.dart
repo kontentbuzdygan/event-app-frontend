@@ -26,7 +26,7 @@ class App extends StatelessWidget {
 
   static final _errorNotifier = ErrorNotifier();
 
-  static final router = GoRouter(
+  static final _router = GoRouter(
     initialLocation: "/auth",
     routes: [
       ShellRoute(
@@ -70,7 +70,7 @@ class App extends StatelessWidget {
         ChangeNotifierProvider.value(value: _errorNotifier),
       ],
       child: MaterialApp.router(
-        routerConfig: router,
+        routerConfig: _router,
         title: "Event App",
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

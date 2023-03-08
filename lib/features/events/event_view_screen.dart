@@ -7,13 +7,6 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 class EventViewScreen extends StatefulWidget {
   const EventViewScreen({super.key, required this.id});
 
-  static navigate(int id) {
-    App.router.pushNamed(
-      "eventView",
-      params: {"id": id.toString()},
-    );
-  }
-
   final int id;
 
   @override
@@ -67,7 +60,8 @@ class EventView extends StatelessWidget {
               style: TextStyle(color: Colors.grey[600]),
             ),
             TextButton(
-              onPressed: () => ProfileViewRoute(id: event.authorId).push(context),
+              onPressed: () =>
+                  ProfileViewRoute(id: event.authorId).push(context),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 maximumSize: Size.infinite,

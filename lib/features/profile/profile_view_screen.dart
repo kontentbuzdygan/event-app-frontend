@@ -6,17 +6,6 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 class ProfileViewScreen extends StatefulWidget {
   const ProfileViewScreen({super.key, this.id});
 
-  static navigateMe() {
-    App.router.pushNamed("myProfileView");
-  }
-
-  static navigate(int id) {
-    App.router.pushNamed(
-      "profileView",
-      params: {"id": id.toString()},
-    );
-  }
-
   final int? id;
 
   @override
@@ -69,9 +58,7 @@ class ProfileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Column(
-        children: [
-          if (profile.bio != null) Text(profile.bio!)
-        ],
+        children: [if (profile.bio != null) Text(profile.bio!)],
       ),
     );
   }
