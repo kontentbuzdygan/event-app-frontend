@@ -13,15 +13,12 @@ class AuthRoute extends GoRouteData {
   Widget build(context, state) => const AuthScreen();
 }
 
-@TypedGoRoute<FeedRoute>(
-  path: "/",
-  routes: [
-    TypedGoRoute<EventViewRoute>(path: "events/:id"),
-    TypedGoRoute<MyProfileViewRoute>(path: "profiles/me"),
-    TypedGoRoute<ProfileViewRoute>(path: "profiles/:id"),
-  ]
-)
-class FeedRoute extends GoRouteData {
+@TypedGoRoute<HomeRoute>(path: "/", routes: [
+  TypedGoRoute<EventViewRoute>(path: "events/:id"),
+  TypedGoRoute<MyProfileViewRoute>(path: "profiles/me"),
+  TypedGoRoute<ProfileViewRoute>(path: "profiles/:id"),
+])
+class HomeRoute extends GoRouteData {
   @override
   Widget build(context, state) => const FeedScreen();
 }

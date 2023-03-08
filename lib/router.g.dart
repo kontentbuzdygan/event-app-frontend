@@ -8,7 +8,7 @@ part of "router.dart";
 
 List<GoRoute> get $appRoutes => [
       $authRoute,
-      $feedRoute,
+      $homeRoute,
     ];
 
 GoRoute get $authRoute => GoRouteData.$route(
@@ -31,9 +31,9 @@ extension $AuthRouteExtension on AuthRoute {
       context.pushReplacement(location);
 }
 
-GoRoute get $feedRoute => GoRouteData.$route(
+GoRoute get $homeRoute => GoRouteData.$route(
       path: "/",
-      factory: $FeedRouteExtension._fromState,
+      factory: $HomeRouteExtension._fromState,
       routes: [
         GoRouteData.$route(
           path: "events/:id",
@@ -50,8 +50,8 @@ GoRoute get $feedRoute => GoRouteData.$route(
       ],
     );
 
-extension $FeedRouteExtension on FeedRoute {
-  static FeedRoute _fromState(GoRouterState state) => FeedRoute();
+extension $HomeRouteExtension on HomeRoute {
+  static HomeRoute _fromState(GoRouterState state) => HomeRoute();
 
   String get location => GoRouteData.$location(
         "/",

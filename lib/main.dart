@@ -35,24 +35,26 @@ class App extends StatelessWidget {
 
           final error = errorNotifier.consumeError();
           if (error != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(error.toString())),
-              );
-            });
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(error.toString())),
+                );
+              },
+            );
           }
 
           return child;
         },
-        routes: $appRoutes
+        routes: $appRoutes,
       ),
     ],
     redirect: (_, state) {
       if (!authState.loggedIn) return AuthRoute().location;
-      
-      if (state.subloc == AuthRoute().location) { 
-        return FeedRoute().location;
+
+      if (state.subloc == AuthRoute().location) {
+        return HomeRoute().location;
       }
 
       return null;
