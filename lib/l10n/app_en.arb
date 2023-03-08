@@ -77,7 +77,7 @@
   "descriptionInput": "Please enter a description.",
   "descriptionTooLong": "Description is too long.",
   "descriptionExample": "Third edition of coding event app together!",
-  "addressInput": "Enter event address",
+  "addressInput": "Please enter an address.",
   "addressExample": "Mickey's house",
   "address": "Address",
   "endDateCantBeSoonerThanStart": "The end date cannot be earlier than the start date.",
@@ -88,5 +88,6 @@
   "next": "Next",
   "confirm": "Confirm",
   "timeAndPlace": "Time & Place",
-  "summary": "Summary"
+  "summary": "Summary",
+  "yourProfile": "Your profile"
 }
