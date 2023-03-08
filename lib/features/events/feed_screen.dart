@@ -1,9 +1,8 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/errors.dart";
-import "package:event_app/features/events/event_view_screen.dart";
-import "package:event_app/features/profile/profile_view_screen.dart";
 import "package:event_app/main.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
@@ -43,7 +42,7 @@ class _State extends State<FeedScreen> {
             icon: const Icon(Icons.sports_basketball),
           ),
           IconButton(
-            onPressed: ProfileViewScreen.navigateMe,
+            onPressed: () => MyProfileViewRoute().push(context),
             tooltip: l10n.yourProfile,
             icon: const Icon(Icons.person),
           ),
@@ -72,7 +71,7 @@ class _State extends State<FeedScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return MaterialButton(
-      onPressed: () => EventViewScreen.navigate(event.id),
+      onPressed: () => EventViewRoute(id: event.id).push(context),
       child: Container(
         padding: const EdgeInsets.all(20.0),
         alignment: Alignment.topLeft,
