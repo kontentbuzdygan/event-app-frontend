@@ -58,20 +58,20 @@ class _State extends State<CreateEventScreen> {
             FocusScope.of(context).unfocus();
             bool isLastStep = currentStep == steps.length - 1;
             if (isLastStep) {
-              // if (endsAtController.text.isEmpty) {
-              //   NewEvent(
-              //     title: titleController.text,
-              //     description: descriptionController.text,
-              //     startsAt: DateTime.parse(startsAtController.text),
-              //   ).save();
-              //   return;
-              // }
-              // NewEvent(
-              //   title: titleController.text,
-              //   description: descriptionController.text,
-              //   startsAt: DateTime.parse(startsAtController.text),
-              //   endsAt: DateTime.parse(endsAtController.text),
-              // ).save();
+              if (endsAtController.text.isEmpty) {
+                NewEvent(
+                  title: titleController.text,
+                  description: descriptionController.text,
+                  startsAt: DateTime.parse(startsAtController.text),
+                ).save();
+                return;
+              }
+              NewEvent(
+                title: titleController.text,
+                description: descriptionController.text,
+                startsAt: DateTime.parse(startsAtController.text),
+                endsAt: DateTime.parse(endsAtController.text),
+              ).save();
               Fluttertoast.showToast(
                 msg: l10n.eventCreated,
                 backgroundColor: Colors.blue,

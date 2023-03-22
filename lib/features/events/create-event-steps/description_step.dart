@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
-
+import "package:form_builder_validators/form_builder_validators.dart";
 
 class DescriptionStep extends StatefulWidget {
   const DescriptionStep({
@@ -33,15 +33,7 @@ class _State extends State<DescriptionStep> {
             controller: widget.titleController,
             maxLength: 50,
             textInputAction: TextInputAction.next,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return l10n.titleInput;
-              }
-              if (value.length > 50) {
-                return l10n.titleTooLong;
-              }
-              return null;
-            },
+            validator: FormBuilderValidators.required(errorText: l10n.titleInput), 
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.titleExample,
@@ -56,15 +48,7 @@ class _State extends State<DescriptionStep> {
             maxLines: 5,
             maxLength: 1000,
             textInputAction: TextInputAction.next,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return l10n.descriptionInput;
-              }
-              if (value.length > 1000) {
-                return l10n.descriptionTooLong;
-              }
-              return null;
-            },
+            validator: FormBuilderValidators.required(errorText: l10n.descriptionInput),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.descriptionExample,

@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
 import "package:intl/intl.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:form_builder_validators/form_builder_validators.dart";
 
 class TimePlaceStep extends StatefulWidget {
   const TimePlaceStep({
@@ -37,12 +38,7 @@ class _State extends State<TimePlaceStep> {
             controller: widget.adressController,
             maxLength: 50,
             textInputAction: TextInputAction.next,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return l10n.addressInput;
-              }
-              return null;
-            },
+            validator: FormBuilderValidators.required(errorText: l10n.addressInput),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.addressExample,
@@ -73,16 +69,18 @@ class _State extends State<TimePlaceStep> {
             format: DateFormat("yyyy-MM-dd HH:mm"),
             inputType: InputType.both,
             initialTime: const TimeOfDay(hour: 18, minute: 0),
-            validator: (value) {
-              if (value == null) {
+            validator: FormBuilderValidators.compose([
+              (value) {
+                if (value == null) {
+                  return null;
+                }
+                if (value.compareTo(
+                  widget.formKey.currentState!.fields["startsAt"]!.value as DateTime) < 0) {
+                  return l10n.endDateCantBeSoonerThanStart;
+                }
                 return null;
               }
-              if (value.compareTo(
-                widget.formKey.currentState!.fields["startsAt"]!.value as DateTime) < 0) {
-                return l10n.endDateCantBeSoonerThanStart;
-              }
-              return null;
-            },
+            ]),
             decoration: InputDecoration(
               labelText: l10n.endsAt,
               suffixIcon: IconButton(

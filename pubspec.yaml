@@ -46,6 +46,7 @@ dependencies:
   fluttertoast: ^8.2.1
   flutter_localizations:
     sdk: flutter
+  form_builder_validators: ^8.5.0
 
 dependency_overrides:
   intl: ^0.17.0
