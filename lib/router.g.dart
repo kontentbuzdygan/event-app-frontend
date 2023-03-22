@@ -47,6 +47,10 @@ GoRoute get $homeRoute => GoRouteData.$route(
           path: "profiles/:id",
           factory: $ProfileViewRouteExtension._fromState,
         ),
+        GoRouteData.$route(
+          path: "create",
+          factory: $CreateEventRouteExtension._fromState,
+        ),
       ],
     );
 
@@ -105,6 +109,21 @@ extension $ProfileViewRouteExtension on ProfileViewRoute {
 
   String get location => GoRouteData.$location(
         "/profiles/${Uri.encodeComponent(id.toString())}",
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  void push(BuildContext context) => context.push(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+}
+
+extension $CreateEventRouteExtension on CreateEventRoute {
+  static CreateEventRoute _fromState(GoRouterState state) => CreateEventRoute();
+
+  String get location => GoRouteData.$location(
+        "/create",
       );
 
   void go(BuildContext context) => context.go(location);

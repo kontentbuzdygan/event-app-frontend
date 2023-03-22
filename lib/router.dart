@@ -2,6 +2,7 @@ import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/events/event_view_screen.dart";
 import "package:event_app/features/events/feed_screen.dart";
 import "package:event_app/features/profile/profile_view_screen.dart";
+import "package:event_app/features/events/create_event_screen.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 
@@ -17,6 +18,7 @@ class AuthRoute extends GoRouteData {
   TypedGoRoute<EventViewRoute>(path: "events/:id"),
   TypedGoRoute<MyProfileViewRoute>(path: "profiles/me"),
   TypedGoRoute<ProfileViewRoute>(path: "profiles/:id"),
+  TypedGoRoute<CreateEventRoute>(path: "create"),
 ])
 class HomeRoute extends GoRouteData {
   @override
@@ -45,3 +47,9 @@ class ProfileViewRoute extends GoRouteData {
   @override
   Widget build(context, state) => ProfileViewScreen(id: id);
 }
+
+class CreateEventRoute extends GoRouteData {
+  @override
+  Widget build(context, state) => const CreateEventScreen();
+}
+

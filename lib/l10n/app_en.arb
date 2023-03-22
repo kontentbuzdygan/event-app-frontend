@@ -10,8 +10,8 @@
   "password": "Password",
   "author": "Author",
   "description": "Description",
-  "startsAt": "starts at",
-  "endsAt": "ends at",
+  "startsAt": "Starts at",
+  "endsAt": "Ends at",
   "date": "{date}",
   "@date": {
     "placeholders": {
@@ -21,7 +21,7 @@
       }
     }
   },
-  "startsAtDate": "starts at {start}",
+  "startsAtDate": "Starts at {start}",
   "@startsAtDate": {
     "placeholders": {
       "start": {
@@ -30,7 +30,16 @@
       }
     }
   },
-  "eventFromTo": "from {start} to {end}",
+  "endsAtDate": "Ends at {end}",
+  "@endsAtDate": {
+    "placeholders": {
+      "end": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "eventFromTo": "From {start} to {end}",
   "@eventFromTo": {
     "placeholders": {
       "start": {
@@ -43,7 +52,7 @@
       }
     }
   },
-  "createdBy": "created by {user}",
+  "createdBy": "Created by {user}",
   "@createdBy": {
     "placeholders": {
       "user": {
@@ -61,5 +70,22 @@
     }
   },
   "eventNotFound": "This event doesn't exist.",
+  "titleInput": "Please enter a title.",
+  "titleExample": "Sleepover at Mickey's",
+  "title": "Event title",
+  "descriptionInput": "Please enter a description.",
+  "descriptionExample": "Third edition of coding event app together!",
+  "addressInput": "Please enter an address.",
+  "addressExample": "Mickey's house",
+  "address": "Address",
+  "endDateCantBeSoonerThanStart": "The end date cannot be earlier than the start date.",
+  "noEndDateSelected": "No end date was chosen.",
+  "createEvent": "Create event",
+  "eventCreated": "Event created",
+  "back": "Back",
+  "next": "Next",
+  "confirm": "Confirm",
+  "timeAndPlace": "Time & Place",
+  "summary": "Summary",
   "yourProfile": "Your profile"
 }
