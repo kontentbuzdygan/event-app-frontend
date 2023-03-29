@@ -1,4 +1,5 @@
 import "package:event_app/api/json.dart";
+import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 
 const String _apiPath = "auth";

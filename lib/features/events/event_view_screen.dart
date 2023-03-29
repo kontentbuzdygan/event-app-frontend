@@ -1,4 +1,5 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/main.dart";
 import "package:event_app/router.dart";
 import "package:flutter/material.dart";
@@ -32,6 +33,24 @@ class _EventViewScreenState extends State<EventViewScreen> {
       builder: (builder, snapshot) => Scaffold(
         appBar: AppBar(
           title: Text(snapshot.data?.title ?? ""),
+          actions: !snapshot.hasData ? null : [
+            PopupMenuButton(itemBuilder: (itemBuilder){
+              return [
+                const PopupMenuItem<int>(
+                  value: 0,
+                  child: Text("Hello"),
+                ),
+                if(App.authState.myId == snapshot.data!.authorId) ...[
+                  PopupMenuItem(
+                    child: TextButton(
+                      onPressed: () => print("Delete"), 
+                      child: const Text("Delete event")
+                    ),
+                  ),
+                ],  
+              ];
+            })
+          ],
         ),
         body: () {
           if (snapshot.hasData) return EventView(event: snapshot.data!);

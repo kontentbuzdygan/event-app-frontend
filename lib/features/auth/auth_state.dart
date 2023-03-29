@@ -1,13 +1,18 @@
+import "dart:ffi";
+
 import "package:event_app/api/exceptions.dart";
 import "package:event_app/api/models/user.dart";
 import "package:event_app/secure_storage.dart";
 import "package:flutter/material.dart";
+import "package:event_app/api/models/profile.dart";
 
 const userTokenStorageKey = "event-app-user-token";
 
 class AuthState extends ChangeNotifier {
   String? get userToken => _userToken;
   String? _userToken;
+
+  int? myId;
 
   bool get loading => _loading;
   bool _loading = false;
@@ -21,7 +26,10 @@ class AuthState extends ChangeNotifier {
           await refreshToken();
         } on Unauthorized {
           await _setUserToken(null);
+          return;
         }
+        
+        myId = (await Profile.me()).id;
       });
 
   Future<void> signIn(String email, String password) =>

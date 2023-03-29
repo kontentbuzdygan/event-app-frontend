@@ -32,6 +32,7 @@ class _State extends State<CreateEventScreen> {
   final endsAtController = TextEditingController();
 
   int currentStep = 0;
+  bool isEnabled = true;
   int id = 0;
   DateTime startsAt = DateTime.now();
   DateTime? endsAt;
@@ -54,32 +55,17 @@ class _State extends State<CreateEventScreen> {
                   currentStep -= 1;
                   FocusScope.of(context).unfocus();
                 }),
-          onStepContinue: () {
+          onStepContinue: () async {
             FocusScope.of(context).unfocus();
             bool isLastStep = currentStep == steps.length - 1;
             if (isLastStep) {
-              if (endsAtController.text.isEmpty) {
-                NewEvent(
-                  title: titleController.text,
-                  description: descriptionController.text,
-                  startsAt: DateTime.parse(startsAtController.text),
-                ).save();
-                return;
-              }
-              NewEvent(
-                title: titleController.text,
-                description: descriptionController.text,
-                startsAt: DateTime.parse(startsAtController.text),
-                endsAt: DateTime.parse(endsAtController.text),
-              ).save();
-              Fluttertoast.showToast(
-                msg: l10n.eventCreated,
-                backgroundColor: Colors.blue,
-              );
-              context.pop();
+              await createEvent(context);
+              Navigator.of(context).pop();
               return;
             }
+          
             setState(() {
+              isEnabled = true;
               if (_formKeys[currentStep].currentState!.saveAndValidate()) {
                 currentStep += 1;
               }
@@ -94,7 +80,7 @@ class _State extends State<CreateEventScreen> {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: details.onStepContinue,
+                  onPressed: isEnabled ? details.onStepContinue : null,
                   child: Text(
                     currentStep == steps.length - 1 ? l10n.confirm : l10n.next,
                   ),
@@ -104,6 +90,26 @@ class _State extends State<CreateEventScreen> {
           },
         ),
       ),
+    );
+  }
+
+  Future<void> createEvent(BuildContext context) async {
+    setState(() {
+      isEnabled = false;
+    });
+
+    await NewEvent(
+      title: titleController.text,
+      description: descriptionController.text,
+      startsAt: DateTime.parse(startsAtController.text),
+      endsAt: endsAtController.text.isEmpty 
+        ? null 
+        : DateTime.parse(endsAtController.text),
+    ).save();
+    
+    Fluttertoast.showToast(
+      msg: l10n.eventCreated,
+      backgroundColor: Colors.blue,
     );
   }
 
