@@ -41,6 +41,9 @@ class RestClient {
   Future<JsonObject> post(dynamic pathOrParts, [JsonObject body = const {}]) =>
       request("POST", pathOrParts, body);
 
+  Future<JsonObject> patch(dynamic pathOrParts, [JsonObject body = const {}]) =>
+      request("PATCH", pathOrParts, body);
+
   Future<JsonObject> delete(
     dynamic pathOrParts, [
     JsonObject body = const {},

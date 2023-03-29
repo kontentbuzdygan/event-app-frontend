@@ -61,5 +61,9 @@
     }
   },
   "eventNotFound": "This event doesn't exist.",
-  "yourProfile": "Your profile"
+  "yourProfile": "Your profile",
+  "editProfile": "Edit profile",
+  "displayName": "Display name",
+  "bio": "Bio",
+  "save": "save"
 }

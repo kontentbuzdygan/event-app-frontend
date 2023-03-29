@@ -1,5 +1,6 @@
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/main.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
@@ -21,11 +22,17 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     final l10n = AppLocalizations.of(context)!;
     return FutureBuilder(
       future: profile,
-      builder: (_, snapshot) => Scaffold(
+      builder: (context, snapshot) => Scaffold(
         appBar: AppBar(
           title: Text(snapshot.data?.displayName ?? ""),
           actions: [
+            // Menu
             if (widget.id == null) ...[
+              IconButton(
+                onPressed: () => MyProfileEditRoute().push(context),
+                tooltip: l10n.editProfile,
+                icon: const Icon(Icons.edit),
+              ),
               IconButton(
                 onPressed: App.authState.signOut,
                 tooltip: l10n.logOut,
