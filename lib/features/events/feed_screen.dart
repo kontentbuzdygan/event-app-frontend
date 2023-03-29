@@ -43,6 +43,10 @@ class _State extends State<FeedScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () => CreateEventRoute().push(context),
+      ),
       body: FutureBuilder(
         future: allEvents,
         builder: (context, snapshot) {
