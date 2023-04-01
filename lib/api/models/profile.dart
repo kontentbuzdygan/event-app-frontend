@@ -5,10 +5,10 @@ const String _apiPath = "profiles";
 
 class Profile {
   final int id;
-  final String displayName;
-  final String? bio;
+  String displayName;
+  String? bio;
 
-  const Profile._({
+  Profile._({
     required this.id,
     required this.displayName,
     this.bio,
@@ -19,6 +19,15 @@ class Profile {
         displayName: json["display_name"],
         bio: json["bio"],
       );
+
+  JsonObject toJson() => {
+        "display_name": displayName,
+        "bio": bio,
+      };
+
+  Future<void> update() async {
+    await rest.patch([_apiPath, "me"], toJson());
+  }
 
   static Future<Profile> find(int id) async {
     return Profile.fromJson(await rest.get([_apiPath, id]));

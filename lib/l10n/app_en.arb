@@ -87,5 +87,9 @@
   "confirm": "Confirm",
   "timeAndPlace": "Time & Place",
   "summary": "Summary",
-  "yourProfile": "Your profile"
+  "yourProfile": "Your profile",
+  "editProfile": "Edit profile",
+  "displayName": "Display name",
+  "bio": "Bio",
+  "save": "Save"
 }
