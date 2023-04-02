@@ -1,6 +1,7 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/errors.dart";
+import "package:event_app/features/search/search_delegate.dart";
 import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -13,15 +14,23 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _State extends State<FeedScreen> {
-  final allEvents = () async {
-    final events = (await Event.findAll()).toList();
-    await RestClient.runCached(
-      () => Future.wait(
-        events.map((event) => event.fetchAuthor()),
-      ),
-    );
-    return events;
-  }();
+
+  late Future<List<Event>> allEvents;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    allEvents = () async {
+      final events = (await Event.findAll()).toList();
+      await RestClient.runCached(
+        () => Future.wait(
+          events.map((event) => event.fetchAuthor()),
+        ),
+      );
+      return events;
+    }();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +40,13 @@ class _State extends State<FeedScreen> {
       appBar: AppBar(
         title: Text(l10n.feedTitle),
         actions: [
+          IconButton(
+            onPressed: () => showSearch(
+              context: context, 
+              delegate: EventsAndProfilesSearchDelegate()
+            ), 
+            icon: const Icon(Icons.search)
+          ),
           IconButton(
             onPressed: () => throw const ApplicationException(message: "Kurwa"),
             tooltip: "Throw",

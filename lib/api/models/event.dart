@@ -48,7 +48,7 @@ class Event {
   }
 
   Future<Event> fetchAuthor() async {
-    author = await Profile.find(authorId);
+    author = await Profile.get(authorId);
     return this;
   }
 }
