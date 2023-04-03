@@ -71,6 +71,8 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp.router(
         routerConfig: _router,
+        theme: ThemeData(useMaterial3: true),
+        darkTheme: ThemeData.dark(useMaterial3: true),
         title: "Event App",
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
