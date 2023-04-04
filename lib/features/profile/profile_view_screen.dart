@@ -1,8 +1,8 @@
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/main.dart";
-import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:go_router/go_router.dart";
 
 class ProfileViewScreen extends StatefulWidget {
   const ProfileViewScreen({super.key, this.id});
@@ -26,10 +26,9 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
         appBar: AppBar(
           title: Text(snapshot.data?.displayName ?? ""),
           actions: [
-            // Menu
             if (widget.id == null) ...[
               IconButton(
-                onPressed: () => MyProfileEditRoute().push(context),
+                onPressed: () => context.push("/me/edit"),
                 tooltip: l10n.editProfile,
                 icon: const Icon(Icons.edit),
               ),

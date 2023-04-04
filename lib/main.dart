@@ -1,5 +1,11 @@
 import "package:event_app/errors.dart";
+import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
+import "package:event_app/features/events/create_event_screen.dart";
+import "package:event_app/features/events/event_view_screen.dart";
+import "package:event_app/features/events/feed_screen.dart";
+import "package:event_app/features/profile/profile_edit_screen.dart";
+import "package:event_app/features/profile/profile_view_screen.dart";
 import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
@@ -44,19 +50,62 @@ class App extends StatelessWidget {
               },
             );
           }
-
           return child;
         },
-        routes: $appRoutes,
+        routes: [
+          GoRoute(
+            path: "/auth",
+            builder: (context, state) => const AuthScreen(),
+          ),
+          StatefulShellRoute(
+            builder: (context, state, child) => BottomNavigation(
+              state: state,
+              child: child,
+            ),
+            branches: [
+              StatefulShellBranch(routes: [
+                GoRoute(
+                  path: "/",
+                  builder: (context, state) => const FeedScreen(),
+                ),
+                GoRoute(
+                  name: "createEvent",
+                  path: "/events/create",
+                  builder: (context, state) => const CreateEventScreen(),
+                ),
+                GoRoute(
+                  path: "/events/:eventId",
+                  builder: (context, state) => EventViewScreen(
+                    id: int.parse(state.params["eventId"] ?? "0"),
+                  ),
+                ),
+                GoRoute(
+                  path: "/profiles/:profileId",
+                  builder: (context, state) => ProfileViewScreen(
+                    id: int.tryParse(state.params["profileId"] ?? "0") ?? 0,
+                  ),
+                )
+              ]),
+              StatefulShellBranch(routes: [
+                GoRoute(
+                  path: "/me",
+                  builder: (context, state) => const ProfileViewScreen(),
+                ),
+                GoRoute(
+                  path: "/me/edit",
+                  builder: (context, state) => const ProfileEditScreen(),
+                )
+              ]),
+            ],
+          )
+        ],
       ),
     ],
     redirect: (_, state) {
-      if (!authState.loggedIn) return AuthRoute().location;
-
-      if (state.subloc == AuthRoute().location) {
-        return HomeRoute().location;
+      if (!authState.loggedIn) return "/auth";
+      if (state.subloc == "/auth") {
+        return "/";
       }
-
       return null;
     },
     refreshListenable: authState,

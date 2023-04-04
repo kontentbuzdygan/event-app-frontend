@@ -5,6 +5,7 @@ import "package:event_app/features/search/search_delegate.dart";
 import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:go_router/go_router.dart";
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -14,13 +15,12 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _State extends State<FeedScreen> {
-
   late Future<List<Event>> allEvents;
 
   @override
   void initState() {
     super.initState();
-    
+
     allEvents = () async {
       final events = (await Event.findAll()).toList();
       await RestClient.runCached(
@@ -41,27 +41,15 @@ class _State extends State<FeedScreen> {
         title: Text(l10n.feedTitle),
         actions: [
           IconButton(
-            onPressed: () => showSearch(
-              context: context, 
-              delegate: EventsAndProfilesSearchDelegate()
-            ), 
-            icon: const Icon(Icons.search)
-          ),
-          IconButton(
             onPressed: () => throw const ApplicationException(message: "Kurwa"),
             tooltip: "Throw",
             icon: const Icon(Icons.sports_basketball),
-          ),
-          IconButton(
-            onPressed: () => MyProfileViewRoute().push(context),
-            tooltip: l10n.yourProfile,
-            icon: const Icon(Icons.person),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () => CreateEventRoute().push(context),
+        onPressed: () => context.pushNamed("createEvent"),
       ),
       body: FutureBuilder(
         future: allEvents,
@@ -86,7 +74,7 @@ class _State extends State<FeedScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return MaterialButton(
-      onPressed: () => EventViewRoute(id: event.id).push(context),
+      onPressed: () => context.push("/events/${event.id}"),
       child: Container(
         padding: const EdgeInsets.all(20.0),
         alignment: Alignment.topLeft,

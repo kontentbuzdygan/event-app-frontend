@@ -35,7 +35,14 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  go_router: ^6.0.0
+  # go_router: ^6.0.0
+  collection: ^1.17.0
+  go_router:
+    git:
+      url: https://github.com/tolo/flutter_packages.git
+      path: packages/go_router
+      ref: nested-persistent-navigation
+      
   provider: ^6.0.0
   http: ^0.13.5
   form_validator: ^1.0.3

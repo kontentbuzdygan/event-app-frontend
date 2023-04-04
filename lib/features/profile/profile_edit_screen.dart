@@ -113,7 +113,7 @@ class _ProfileEditFormState extends State<ProfileEditForm> {
 
     await widget.profile
         .update()
-        .then((_) => MyProfileViewRoute().go(context))
+        // .then((_) => MyProfileViewRoute().go(context))
         .catchError((_) => setState(() => loading = false));
   }
 }

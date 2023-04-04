@@ -1,63 +1,38 @@
-import "package:event_app/features/auth/auth_screen.dart";
-import "package:event_app/features/events/event_view_screen.dart";
-import "package:event_app/features/events/feed_screen.dart";
-import "package:event_app/features/profile/profile_edit_screen.dart";
-import "package:event_app/features/profile/profile_view_screen.dart";
-import "package:event_app/features/events/create_event_screen.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 
-part "router.g.dart";
+class BottomNavigation extends StatefulWidget {
+  const BottomNavigation({super.key, required this.state, required this.child});
 
-@TypedGoRoute<AuthRoute>(path: "/auth")
-class AuthRoute extends GoRouteData {
-  @override
-  Widget build(context, state) => const AuthScreen();
-}
-
-@TypedGoRoute<HomeRoute>(path: "/", routes: [
-  TypedGoRoute<EventViewRoute>(path: "events/:id"),
-  TypedGoRoute<MyProfileViewRoute>(path: "profiles/me", routes: [
-    TypedGoRoute<MyProfileEditRoute>(path: "edit"),
-  ]),
-  TypedGoRoute<ProfileViewRoute>(path: "profiles/:id"),
-  TypedGoRoute<CreateEventRoute>(path: "create"),
-])
-class HomeRoute extends GoRouteData {
-  @override
-  Widget build(context, state) => const FeedScreen();
-}
-
-class EventViewRoute extends GoRouteData {
-  EventViewRoute({required this.id});
-
-  final int id;
+  final StatefulShellRouteState state;
+  final Widget child;
 
   @override
-  Widget build(context, state) => EventViewScreen(id: id);
+  State<BottomNavigation> createState() => _BottomNavigationState();
 }
 
-class MyProfileViewRoute extends GoRouteData {
+class _BottomNavigationState extends State<BottomNavigation> {
   @override
-  Widget build(context, state) => const ProfileViewScreen();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        top: false,
+        child: widget.child,
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: widget.state.currentIndex,
+        onDestinationSelected: (i) => widget.state.goBranch(index: i),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: "Profile",
+          )
+        ],
+      ),
+    );
+  }
 }
-
-class MyProfileEditRoute extends GoRouteData {
-  @override
-  Widget build(context, state) => const ProfileEditScreen();
-}
-
-class ProfileViewRoute extends GoRouteData {
-  ProfileViewRoute({required this.id});
-
-  final int id;
-
-  @override
-  Widget build(context, state) => ProfileViewScreen(id: id);
-}
-
-class CreateEventRoute extends GoRouteData {
-  @override
-  Widget build(context, state) => const CreateEventScreen();
-}
-
