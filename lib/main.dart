@@ -70,6 +70,8 @@ class App extends StatelessWidget {
         ChangeNotifierProvider.value(value: _errorNotifier),
       ],
       child: MaterialApp.router(
+        theme: ThemeData(useMaterial3: true),
+        darkTheme: ThemeData.dark(useMaterial3: true),
         routerConfig: _router,
         title: "Event App",
         localizationsDelegates: AppLocalizations.localizationsDelegates,
