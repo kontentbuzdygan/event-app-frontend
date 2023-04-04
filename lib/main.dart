@@ -79,20 +79,21 @@ class App extends StatelessWidget {
                     id: int.parse(state.params["eventId"] ?? "0"),
                   ),
                 ),
-                GoRoute(
-                  path: "/profiles/:profileId",
-                  builder: (context, state) => ProfileViewScreen(
-                    id: int.tryParse(state.params["profileId"] ?? "0") ?? 0,
-                  ),
-                )
               ]),
               StatefulShellBranch(routes: [
                 GoRoute(
-                  path: "/me",
+                  name: "myProfile",
+                  path: "/profiles/me",
                   builder: (context, state) => const ProfileViewScreen(),
                 ),
                 GoRoute(
-                  path: "/me/edit",
+                  path: "/profiles/:profileId",
+                  builder: (context, state) => ProfileViewScreen(
+                    id: int.tryParse(state.params["profileId"]!),
+                  ),
+                ),
+                GoRoute(
+                  path: "/profiles/me/edit",
                   builder: (context, state) => const ProfileEditScreen(),
                 )
               ]),
