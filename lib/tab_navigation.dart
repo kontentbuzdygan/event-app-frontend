@@ -28,6 +28,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
             label: "Home",
           ),
           NavigationDestination(
+            icon: Icon(Icons.search),
+            label: "Discover",
+          ),
+          NavigationDestination(
             icon: Icon(Icons.person),
             label: "Profile",
           )

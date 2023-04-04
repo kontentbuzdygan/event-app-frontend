@@ -1,5 +1,4 @@
 import "package:event_app/api/models/profile.dart";
-import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:form_validator/form_validator.dart";

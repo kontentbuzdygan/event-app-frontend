@@ -28,7 +28,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
           actions: [
             if (widget.id == null) ...[
               IconButton(
-                onPressed: () => context.push("/me/edit"),
+                onPressed: () => context.pushNamed("editProfile"),
                 tooltip: l10n.editProfile,
                 icon: const Icon(Icons.edit),
               ),
