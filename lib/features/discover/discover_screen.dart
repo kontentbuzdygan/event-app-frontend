@@ -1,8 +1,11 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
+import "package:event_app/api/osm_nominatim_dlient.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "package:flutter_map/flutter_map.dart";
 import "package:go_router/go_router.dart";
+import "package:latlong2/latlong.dart";
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -78,32 +81,45 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         ],
       );
 
-  Column get eventList => Column(
-        children: [
-          FutureBuilder(
-            future: events,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return const CircularProgressIndicator();
-              }
+  Widget get eventList => FutureBuilder(
+      future: NominatimClient.locationFromString("Modrzewiowa 7a, Banino"),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
 
-              if (snapshot.hasError) {
-                return Text(snapshot.error!.toString());
-              }
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
 
-              final events = snapshot.data!.map(listItemEvent).toList();
-
-              return Expanded(
-                child: ListView.separated(
-                  itemCount: events.length,
-                  itemBuilder: (context, index) => events[index],
-                  separatorBuilder: (context, index) => const Divider(),
+        return FlutterMap(
+          options: MapOptions(
+            center: LatLng(54.37, 18.61),
+            zoom: 10,
+            maxZoom: 18.2,
+          ),
+          // nonRotatedChildren: [
+          //   AttributionWidget.defaultWidget(
+          //     source: 'OpenStreetMap contributors',
+          //     onSourceTapped: null,
+          //   ),
+          // ],
+          children: [
+            TileLayer(
+              urlTemplate:
+                  "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+            ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: snapshot.data!,
+                  builder: (context) => const FlutterLogo(),
                 ),
-              );
-            },
-          )
-        ],
-      );
+              ],
+            ),
+          ],
+        );
+      });
 
   Widget listItemEvent(Event event) => GestureDetector(
         onTap: () => context.push("/events/${event.id}"),
