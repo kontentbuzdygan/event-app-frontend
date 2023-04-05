@@ -1,5 +1,6 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 
@@ -24,59 +25,85 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Discover")),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            TextField(
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                alignLabelWithHint: true,
-                hintText: "Search",
-                prefixIcon: Icon(Icons.search),
-                // suffixIcon: Icon(Icons.clear),
-              ),
-              onSubmitted: search,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: CupertinoSearchTextField(
+            onSubmitted: search,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.titleLarge!.color,
             ),
-            const SizedBox(height: 8),
-            FutureBuilder(
-              future: Future.wait([events, profiles]),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const CircularProgressIndicator();
-                }
-
-                if (snapshot.hasError) {
-                  return Text(snapshot.error!.toString());
-                }
-
-                final events = (snapshot.data![0] as Iterable<Event>)
-                    .map(listItemEvent)
-                    .toList();
-
-                final profiles = (snapshot.data![1] as Iterable<Profile>)
-                    .map(listItemProfile)
-                    .toList();
-
-                final listItems = profiles + events;
-
-                return Expanded(
-                  child: ListView.separated(
-                    itemCount: listItems.length,
-                    itemBuilder: (context, index) => listItems[index],
-                    separatorBuilder: (context, index) => const Divider(),
-                  ),
-                );
-              },
-            ),
-          ],
+          ),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: "events"),
+              Tab(text: "profiles"),
+            ],
+            indicatorSize: TabBarIndicatorSize.tab,
+          ),
         ),
+        body: TabBarView(children: [
+          eventList,
+          profilesList,
+        ]),
       ),
     );
   }
+
+  Widget get profilesList => Column(
+        children: [
+          FutureBuilder(
+            future: profiles,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const CircularProgressIndicator();
+              }
+
+              if (snapshot.hasError) {
+                return Text(snapshot.error!.toString());
+              }
+
+              final profiles = snapshot.data!.map(listItemProfile).toList();
+
+              return Expanded(
+                child: ListView.separated(
+                  itemCount: profiles.length,
+                  itemBuilder: (context, index) => profiles[index],
+                  separatorBuilder: (context, index) => const Divider(),
+                ),
+              );
+            },
+          )
+        ],
+      );
+
+  Column get eventList => Column(
+        children: [
+          FutureBuilder(
+            future: events,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const CircularProgressIndicator();
+              }
+
+              if (snapshot.hasError) {
+                return Text(snapshot.error!.toString());
+              }
+
+              final events = snapshot.data!.map(listItemEvent).toList();
+
+              return Expanded(
+                child: ListView.separated(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) => events[index],
+                  separatorBuilder: (context, index) => const Divider(),
+                ),
+              );
+            },
+          )
+        ],
+      );
 
   Widget listItemEvent(Event event) => GestureDetector(
         onTap: () => context.push("/events/${event.id}"),
