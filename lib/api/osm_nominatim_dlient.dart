@@ -44,5 +44,3 @@ class NominatimClient {
     }
   }
 }
-
-// https://nominatim.openstreetmap.org/search?q=${location}&format=json
