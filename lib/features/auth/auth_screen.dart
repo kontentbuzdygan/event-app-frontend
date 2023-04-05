@@ -186,7 +186,7 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
   Widget continueButton(AuthState authState) {
     final l10n = AppLocalizations.of(context)!;
 
-    return ElevatedButton(
+    return FilledButton(
       onPressed: authState.canLogIn ? advanceFormState : null,
       child: Text(formState.value.getButtonText(l10n)),
     );

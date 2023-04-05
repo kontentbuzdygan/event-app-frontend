@@ -75,31 +75,22 @@ class _State extends State<FeedScreen> {
     return MaterialButton(
       onPressed: () => context.push("/events/${event.id}"),
       child: Container(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
         alignment: Alignment.topLeft,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              event.title,
-              style: const TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 5.0),
-            Text(
-              l10n.createdBy(event.author?.displayName ?? ""),
-              style: theme.textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 5.0),
+            Text(event.title, style: theme.textTheme.titleLarge),
+            const SizedBox(height: 5),
+            Text(l10n.createdBy(event.author!.displayName)),
+            const SizedBox(height: 5),
             Text(
               event.endsAt != null
                   ? l10n.eventFromTo(event.startsAt, event.endsAt!)
                   : l10n.startsAtDate(event.startsAt),
               style: TextStyle(color: theme.colorScheme.primary),
             ),
-            const SizedBox(height: 5.0),
+            const SizedBox(height: 5),
             Text(event.description),
           ],
         ),
