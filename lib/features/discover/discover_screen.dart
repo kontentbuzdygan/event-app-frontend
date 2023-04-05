@@ -127,6 +127,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         AttributionWidget.defaultWidget(
           source: "OpenStreetMap contributors",
           onSourceTapped: null,
+          alignment: Alignment.topRight,
         ),
       ],
       children: [
