@@ -29,11 +29,11 @@ class Profile {
     await rest.patch([_apiPath, "me"], toJson());
   }
 
-  static Future<Profile> get(int id) async {
+  static Future<Profile> find(int id) async {
     return Profile.fromJson(await rest.get([_apiPath, id]));
   }
 
-  static Future<Iterable<Profile>> find(String name) async {
+  static Future<Iterable<Profile>> search(String name) async {
     final json = await rest.get([_apiPath, "?name=$name"]);
     return (json["profiles"] as Iterable<dynamic>)
         .cast<JsonObject>()

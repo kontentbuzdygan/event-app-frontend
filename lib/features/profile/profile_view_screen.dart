@@ -15,7 +15,7 @@ class ProfileViewScreen extends StatefulWidget {
 
 class _ProfileViewScreenState extends State<ProfileViewScreen> {
   late final Future<Profile> profile =
-      widget.id != null ? Profile.get(widget.id!) : Profile.me();
+      widget.id != null ? Profile.find(widget.id!) : Profile.me();
 
   @override
   Widget build(context) {

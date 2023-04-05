@@ -19,7 +19,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   void search(String value) {
     setState(() {
       events = Event.findAll();
-      profiles = Profile.find(value);
+      profiles = Profile.search(value);
     });
   }
 
@@ -37,21 +37,21 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           ),
           bottom: const TabBar(
             tabs: [
-              Tab(text: "events"),
-              Tab(text: "profiles"),
+              Tab(text: "Events"),
+              Tab(text: "Profiles"),
             ],
             indicatorSize: TabBarIndicatorSize.tab,
           ),
         ),
         body: TabBarView(children: [
           eventList,
-          profilesList,
+          profileList,
         ]),
       ),
     );
   }
 
-  Widget get profilesList => Column(
+  Widget get profileList => Column(
         children: [
           FutureBuilder(
             future: profiles,
