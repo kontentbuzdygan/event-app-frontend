@@ -1,6 +1,13 @@
 import "package:event_app/errors.dart";
+import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
-import "package:event_app/router.dart";
+import "package:event_app/features/discover/discover_screen.dart";
+import "package:event_app/features/events/create_event_screen.dart";
+import "package:event_app/features/events/event_view_screen.dart";
+import "package:event_app/features/events/feed_screen.dart";
+import "package:event_app/features/profile/profile_edit_screen.dart";
+import "package:event_app/features/profile/profile_view_screen.dart";
+import "package:event_app/tab_navigation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -44,19 +51,74 @@ class App extends StatelessWidget {
               },
             );
           }
-
           return child;
         },
-        routes: $appRoutes,
+        routes: [
+          GoRoute(
+            path: "/auth",
+            builder: (context, state) => const AuthScreen(),
+          ),
+          StatefulShellRoute(
+            builder: (context, state, child) => BottomNavigation(
+              state: state,
+              child: child,
+            ),
+            branches: [
+              StatefulShellBranch(routes: [
+                GoRoute(
+                  name: "feed",
+                  path: "/",
+                  builder: (context, state) => const FeedScreen(),
+                ),
+                GoRoute(
+                  name: "createEvent",
+                  path: "/events/create",
+                  builder: (context, state) => const CreateEventScreen(),
+                ),
+                GoRoute(
+                  name: "viewEvent",
+                  path: "/events/:eventId",
+                  builder: (context, state) => EventViewScreen(
+                    id: int.parse(state.params["eventId"] ?? "0"),
+                  ),
+                ),
+              ]),
+              StatefulShellBranch(routes: [
+                GoRoute(
+                  name: "discover",
+                  path: "/discover",
+                  builder: (context, state) => const DiscoverScreen(),
+                )
+              ]),
+              StatefulShellBranch(routes: [
+                GoRoute(
+                  name: "myProfile",
+                  path: "/profiles/me",
+                  builder: (context, state) => const ProfileViewScreen(),
+                ),
+                GoRoute(
+                  name: "viewProfile",
+                  path: "/profiles/:profileId",
+                  builder: (context, state) => ProfileViewScreen(
+                    id: int.tryParse(state.params["profileId"]!),
+                  ),
+                ),
+                GoRoute(
+                  name: "editProfile",
+                  path: "/profiles/me/edit",
+                  builder: (context, state) => const ProfileEditScreen(),
+                )
+              ]),
+            ],
+          )
+        ],
       ),
     ],
     redirect: (_, state) {
-      if (!authState.loggedIn) return AuthRoute().location;
-
-      if (state.subloc == AuthRoute().location) {
-        return HomeRoute().location;
+      if (!authState.loggedIn) return "/auth";
+      if (state.subloc == "/auth") {
+        return "/";
       }
-
       return null;
     },
     refreshListenable: authState,
@@ -70,6 +132,8 @@ class App extends StatelessWidget {
         ChangeNotifierProvider.value(value: _errorNotifier),
       ],
       child: MaterialApp.router(
+        theme: ThemeData(useMaterial3: true),
+        darkTheme: ThemeData.dark(useMaterial3: true),
         routerConfig: _router,
         title: "Event App",
         localizationsDelegates: AppLocalizations.localizationsDelegates,

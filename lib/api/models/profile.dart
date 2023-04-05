@@ -33,6 +33,13 @@ class Profile {
     return Profile.fromJson(await rest.get([_apiPath, id]));
   }
 
+  static Future<Iterable<Profile>> search(String name) async {
+    final json = await rest.get([_apiPath, "?name=$name"]);
+    return (json["profiles"] as Iterable<dynamic>)
+        .cast<JsonObject>()
+        .map(Profile.fromJson);
+  }
+
   static Future<Profile> me() async {
     return Profile.fromJson(await rest.get([_apiPath, "me"]));
   }

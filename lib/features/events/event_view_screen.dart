@@ -1,7 +1,7 @@
 import "package:event_app/api/models/event.dart";
-import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:go_router/go_router.dart";
 
 class EventViewScreen extends StatefulWidget {
   const EventViewScreen({super.key, required this.id});
@@ -59,8 +59,7 @@ class EventView extends StatelessWidget {
               style: TextStyle(color: Colors.grey[600]),
             ),
             TextButton(
-              onPressed: () =>
-                  ProfileViewRoute(id: event.authorId).push(context),
+              onPressed: () => context.push("/profiles/${event.authorId}"),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 maximumSize: Size.infinite,
