@@ -76,7 +76,7 @@ class _State extends State<CreateEventScreen> {
               ).save();
               Fluttertoast.showToast(
                 msg: l10n.eventCreated,
-                backgroundColor: theme.primaryColor,
+                backgroundColor: theme.colorScheme.background,
               );
               context.pop();
               return;

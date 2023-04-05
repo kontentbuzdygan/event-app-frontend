@@ -53,8 +53,8 @@ class EventView extends StatefulWidget {
 class _EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.all(12),
@@ -81,9 +81,8 @@ class _EventViewState extends State<EventView> {
             widget.event.endsAt != null
                 ? l10n.eventFromTo(widget.event.startsAt, widget.event.endsAt!)
                 : l10n.startsAtDate(widget.event.startsAt),
-            style: TextStyle(color: theme.primaryColor),
+            style: TextStyle(color: theme.colorScheme.primary),
           ),
-          const SizedBox(height: 5.0),
           Text(widget.event.description),
           Text("Comments", style: theme.textTheme.headlineMedium),
           Comments(event: widget.event),

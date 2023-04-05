@@ -15,8 +15,8 @@ class Comment extends StatefulWidget {
 class _CommentState extends State<Comment> {
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     final authorProfile = "/profiles/${widget.comment.authorId}";
     return Row(
@@ -35,7 +35,7 @@ class _CommentState extends State<Comment> {
                     ),
                     onPressed: () => context.push(authorProfile),
                     child: Text(widget.comment.author!.displayName,
-                        style: TextStyle(color: theme.primaryColor))),
+                        style: TextStyle(color: theme.colorScheme.primary))),
                 const Text(" "),
                 Text(l10n.date(widget.comment.createdAt))
               ],

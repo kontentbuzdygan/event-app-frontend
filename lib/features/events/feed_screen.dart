@@ -69,8 +69,8 @@ class _State extends State<FeedScreen> {
   }
 
   Widget eventListItem(Event event) {
-    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return MaterialButton(
       onPressed: () => context.push("/events/${event.id}"),
@@ -90,14 +90,14 @@ class _State extends State<FeedScreen> {
             const SizedBox(height: 5.0),
             Text(
               l10n.createdBy(event.author?.displayName ?? ""),
-              style: TextStyle(color: theme.hintColor),
+              style: theme.textTheme.bodyMedium,
             ),
             const SizedBox(height: 5.0),
             Text(
               event.endsAt != null
                   ? l10n.eventFromTo(event.startsAt, event.endsAt!)
                   : l10n.startsAtDate(event.startsAt),
-              style: TextStyle(color: theme.primaryColor),
+              style: TextStyle(color: theme.colorScheme.primary),
             ),
             const SizedBox(height: 5.0),
             Text(event.description),
