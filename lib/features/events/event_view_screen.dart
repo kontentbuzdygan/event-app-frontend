@@ -1,9 +1,9 @@
 import "package:event_app/api/models/event.dart";
-import "package:event_app/api/rest_client.dart";
-import "package:event_app/features/event_comments/event_comment.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
+
+import "comments/comments.dart";
 
 class EventViewScreen extends StatefulWidget {
   const EventViewScreen({super.key, required this.id});
@@ -51,16 +51,6 @@ class EventView extends StatefulWidget {
 }
 
 class _EventViewState extends State<EventView> {
-  late final comments = () async {
-    final event = await widget.event.fetchComments();
-    await RestClient.runCached(
-      () => Future.wait(
-        event.comments!.map((comment) => comment.fetchAuthor()),
-      ),
-    );
-    return event.comments;
-  }();
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -69,7 +59,6 @@ class _EventViewState extends State<EventView> {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
             Text(
@@ -96,20 +85,8 @@ class _EventViewState extends State<EventView> {
           ),
           const SizedBox(height: 5.0),
           Text(widget.event.description),
-          const Text("Comments", style: TextStyle(fontSize: 18)),
-          FutureBuilder(
-              future: comments,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                return Column(
-                  children: snapshot.data!
-                      .map((comment) => Comment(comment: comment))
-                      .toList(),
-                );
-              }),
+          Text("Comments", style: theme.textTheme.headlineMedium),
+          Comments(event: widget.event),
         ],
       ),
     );
