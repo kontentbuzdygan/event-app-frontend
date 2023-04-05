@@ -97,13 +97,12 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.welcome)),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: form,
-          child: Center(
-            child: Container(
-              constraints: const BoxConstraints(minWidth: 100, maxWidth: 350),
+      body: Form(
+        key: form,
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 350),
+            child: AutofillGroup(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
