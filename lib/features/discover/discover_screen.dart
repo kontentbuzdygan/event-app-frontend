@@ -6,6 +6,7 @@ import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
 import "package:go_router/go_router.dart";
 import "package:latlong2/latlong.dart";
+import "package:sliding_up_panel/sliding_up_panel.dart";
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -16,7 +17,7 @@ class DiscoverScreen extends StatefulWidget {
 
 // TODO: Translate this file
 class _DiscoverScreenState extends State<DiscoverScreen> {
-  Future<Iterable<Event>> events = Future.value([]);
+  Future<Iterable<Event>> events = Event.findAll();
   Future<Iterable<Profile>> profiles = Future.value([]);
 
   void search(String value) {
@@ -81,51 +82,105 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         ],
       );
 
-  Widget get eventList => Column(
+  Widget get eventList => Stack(
         children: [
           FutureBuilder(
-              future: userLatLng(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                }
+            future: userLatLng(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text(snapshot.error.toString());
+              }
 
-                if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
-                }
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              }
 
-                return Expanded(
-                  child: FlutterMap(
-                    options: MapOptions(
-                      center: snapshot.data!,
-                      zoom: 11,
-                      maxZoom: 18.2,
-                    ),
-                    nonRotatedChildren: [
-                      AttributionWidget.defaultWidget(
-                        source: "OpenStreetMap contributors",
-                        onSourceTapped: null,
-                      ),
-                    ],
-                    children: [
-                      TileLayer(
-                        urlTemplate:
-                            "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
-                      ),
-                      MarkerLayer(
-                        markers: [
-                          Marker(
-                            point: snapshot.data!,
-                            builder: (context) => const FlutterLogo(),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }),
+              return eventMap(snapshot.data!);
+            },
+          ),
+          DraggableScrollableSheet(
+            snap: true,
+            builder: (BuildContext context, ScrollController scrollController) {
+              return Container(
+                color: Theme.of(context).cardColor,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: 25,
+                  itemBuilder: (BuildContext context, int index) {
+                    return const ListTile(title: Text("Event"));
+                  },
+                ),
+              );
+            },
+          ),
         ],
       );
+
+  Widget eventMap(LatLng location) {
+    return FlutterMap(
+      options: MapOptions(
+        center: location,
+        zoom: 11,
+        minZoom: 4,
+        maxZoom: 18.2,
+      ),
+      nonRotatedChildren: [
+        AttributionWidget.defaultWidget(
+          source: "OpenStreetMap contributors",
+          onSourceTapped: null,
+        ),
+      ],
+      children: [
+        TileLayer(
+          urlTemplate:
+              "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        ),
+        eventMarkers(location),
+      ],
+    );
+  }
+
+  Widget eventMarkers(LatLng pos) {
+    return FutureBuilder(
+      future: events,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const MarkerLayer();
+        }
+
+        if (snapshot.hasError) {
+          return MarkerLayer(
+            markers: [
+              Marker(
+                point: pos,
+                builder: (context) => Text(
+                  snapshot.error.toString(),
+                ),
+              )
+            ],
+          );
+        }
+
+        return MarkerLayer(
+          markers: snapshot.data!.map(eventMarker).toList(),
+        );
+      },
+    );
+  }
+
+  Marker eventMarker(Event event) {
+    return Marker(
+      point: event.location,
+      builder: (_) => GestureDetector(
+        onTap: () => context.push("/events/${event.id}"),
+        child: const Icon(
+          Icons.location_on,
+          color: Colors.red,
+          size: 48,
+        ),
+      ),
+    );
+  }
 
   Widget listItemEvent(Event event) => GestureDetector(
         onTap: () => context.push("/events/${event.id}"),
