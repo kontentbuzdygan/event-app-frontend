@@ -1,5 +1,6 @@
 import "package:event_app/api/models/event_comment.dart";
 import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
 
 class Comment extends StatefulWidget {
@@ -14,17 +15,31 @@ class Comment extends StatefulWidget {
 class _CommentState extends State<Comment> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    final authorProfile = "/profiles/${widget.comment.authorId}";
     return Row(
       children: [
         IconButton(
-            onPressed: () =>
-                context.push("/profiles/${widget.comment.authorId}"),
+            onPressed: () => context.push(authorProfile),
             icon: const Icon(Icons.account_circle_outlined)),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-                "${widget.comment.author!.displayName} on ${widget.comment.createdAt.toString()}"),
+            Row(
+              children: [
+                TextButton(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                    ),
+                    onPressed: () => context.push(authorProfile),
+                    child: Text(widget.comment.author!.displayName,
+                        style: TextStyle(color: theme.primaryColor))),
+                const Text(" "),
+                Text(l10n.date(widget.comment.createdAt))
+              ],
+            ),
             Text(widget.comment.content)
           ],
         )

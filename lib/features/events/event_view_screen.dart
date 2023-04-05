@@ -64,27 +64,27 @@ class _EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
             Text(
               l10n.createdBy(""),
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(color: theme.hintColor),
             ),
             TextButton(
               onPressed: () =>
                   context.push("/profiles/${widget.event.authorId}"),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
-                maximumSize: Size.infinite,
               ),
               child: Text(
                 widget.event.author!.displayName,
-                style: TextStyle(color: Colors.grey[600]),
+                style: TextStyle(color: theme.hintColor),
               ),
             ),
           ]),
@@ -92,7 +92,7 @@ class _EventViewState extends State<EventView> {
             widget.event.endsAt != null
                 ? l10n.eventFromTo(widget.event.startsAt, widget.event.endsAt!)
                 : l10n.startsAtDate(widget.event.startsAt),
-            style: TextStyle(color: Colors.blue[700]),
+            style: TextStyle(color: theme.primaryColor),
           ),
           const SizedBox(height: 5.0),
           Text(widget.event.description),
@@ -101,8 +101,9 @@ class _EventViewState extends State<EventView> {
               future: comments,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 }
+
                 return Column(
                   children: snapshot.data!
                       .map((comment) => Comment(comment: comment))

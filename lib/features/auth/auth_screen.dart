@@ -142,7 +142,6 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
       keyboardType: TextInputType.emailAddress,
       controller: emailController,
       enabled: enabled,
-      style: !enabled ? const TextStyle(color: Colors.grey) : null,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: l10n.email,
@@ -160,7 +159,6 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
       obscureText: !showPassword,
       controller: passwordController,
       enabled: authState.canLogIn,
-      style: !authState.canLogIn ? const TextStyle(color: Colors.grey) : null,
       decoration: InputDecoration(
         suffixIcon: IconButton(
           icon: Icon(

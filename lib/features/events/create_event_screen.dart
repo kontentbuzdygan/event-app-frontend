@@ -1,12 +1,12 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/features/events/create-event-steps/description_step.dart";
 import "package:event_app/features/events/create-event-steps/summary_step.dart";
 import "package:event_app/features/events/create-event-steps/time_place_step.dart";
 import "package:flutter/material.dart";
-import "package:event_app/features/events/create-event-steps/description_step.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:fluttertoast/fluttertoast.dart";
 import "package:go_router/go_router.dart";
-import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({super.key});
@@ -38,6 +38,8 @@ class _State extends State<CreateEventScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.createEvent),
@@ -74,7 +76,7 @@ class _State extends State<CreateEventScreen> {
               ).save();
               Fluttertoast.showToast(
                 msg: l10n.eventCreated,
-                backgroundColor: Colors.blue,
+                backgroundColor: theme.primaryColor,
               );
               context.pop();
               return;
