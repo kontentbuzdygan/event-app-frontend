@@ -56,7 +56,7 @@ class _State extends State<FeedScreen> {
             return eventsListView(snapshot.requireData);
           }
 
-          return Text(l10n.loading);
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
