@@ -19,7 +19,8 @@ void main() {
     overrideRestClient(restMock = MockRestClient());
     overrideSecureStorage(storage = const InMemoryStorage());
 
-    signIn = restMock.mock("POST", ["auth", "sign-in"], (_) => {"token": "DUMMY-TOKEN"});
+    signIn = restMock.mock(
+        "POST", ["auth", "sign-in"], (_) => {"token": "DUMMY-TOKEN"});
     authState = AuthState();
   });
 
@@ -27,10 +28,12 @@ void main() {
     await authState.signIn("john.doe@example.com", "password1234");
 
     expect(signIn, hasBeenCalled());
-    expect(signIn.lastRequest?.body, equals({
-      "email": "john.doe@example.com",
-      "password": "password1234",
-    }));
+    expect(
+        signIn.lastRequest?.body,
+        equals({
+          "email": "john.doe@example.com",
+          "password": "password1234",
+        }));
     expect(authState.userToken, equals("DUMMY-TOKEN"));
     expect(authState.loggedIn, isTrue);
     expect(await storage.read(key: userTokenStorageKey), equals("DUMMY-TOKEN"));
@@ -41,10 +44,12 @@ void main() {
     await authState.signUp("john.doe@example.com", "password1234");
 
     expect(signUp, hasBeenCalled());
-    expect(signUp.lastRequest?.body, equals({
-      "email": "john.doe@example.com",
-      "password": "password1234",
-    }));
+    expect(
+        signUp.lastRequest?.body,
+        equals({
+          "email": "john.doe@example.com",
+          "password": "password1234",
+        }));
   });
 
   test("signOut", () async {
@@ -60,14 +65,16 @@ void main() {
 
   group("refreshToken", () {
     test("successful response", () async {
-      final refresh = restMock.mock("POST", ["auth", "refresh"], (_) => {"token": "FRESH-TOKEN"});
+      final refresh = restMock.mock(
+          "POST", ["auth", "refresh"], (_) => {"token": "FRESH-TOKEN"});
       await authState.signIn("john.doe@example.com", "password1234");
       await authState.refreshToken();
 
       expect(refresh, hasBeenCalled());
       expect(authState.userToken, equals("FRESH-TOKEN"));
       expect(authState.loggedIn, isTrue);
-      expect(await storage.read(key: userTokenStorageKey), equals("FRESH-TOKEN"));
+      expect(
+          await storage.read(key: userTokenStorageKey), equals("FRESH-TOKEN"));
     });
 
     test("error response", () async {
@@ -82,9 +89,11 @@ void main() {
   });
 
   test("userExists", () async {
-    final userExists = restMock.mock("POST", ["auth", "user-exists"], (request) => {
-      "user_exists": request?["email"] == "john.doe@example.com"
-    });
+    final userExists = restMock.mock(
+        "POST",
+        ["auth", "user-exists"],
+        (request) =>
+            {"user_exists": request?["email"] == "john.doe@example.com"});
 
     expect(await authState.userExists("john.doe@example.com"), isTrue);
     expect(await authState.userExists("foobar@example.com"), isFalse);

@@ -33,7 +33,8 @@ class _State extends State<DescriptionStep> {
             controller: widget.titleController,
             maxLength: 50,
             textInputAction: TextInputAction.next,
-            validator: FormBuilderValidators.required(errorText: l10n.titleInput), 
+            validator:
+                FormBuilderValidators.required(errorText: l10n.titleInput),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.titleExample,
@@ -48,7 +49,8 @@ class _State extends State<DescriptionStep> {
             maxLines: 5,
             maxLength: 1000,
             textInputAction: TextInputAction.next,
-            validator: FormBuilderValidators.required(errorText: l10n.descriptionInput),
+            validator: FormBuilderValidators.required(
+                errorText: l10n.descriptionInput),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.descriptionExample,

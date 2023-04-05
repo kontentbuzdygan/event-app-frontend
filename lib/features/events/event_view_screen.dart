@@ -1,4 +1,6 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/api/rest_client.dart";
+import "package:event_app/features/event_comments/event_comment.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
@@ -39,10 +41,25 @@ class _EventViewScreenState extends State<EventViewScreen> {
   }
 }
 
-class EventView extends StatelessWidget {
+class EventView extends StatefulWidget {
   const EventView({super.key, required this.event});
 
   final Event event;
+
+  @override
+  State<EventView> createState() => _EventViewState();
+}
+
+class _EventViewState extends State<EventView> {
+  late final comments = () async {
+    final event = await widget.event.fetchComments();
+    await RestClient.runCached(
+      () => Future.wait(
+        event.comments!.map((comment) => comment.fetchAuthor()),
+      ),
+    );
+    return event.comments;
+  }();
 
   @override
   Widget build(BuildContext context) {
@@ -59,25 +76,39 @@ class EventView extends StatelessWidget {
               style: TextStyle(color: Colors.grey[600]),
             ),
             TextButton(
-              onPressed: () => context.push("/profiles/${event.authorId}"),
+              onPressed: () =>
+                  context.push("/profiles/${widget.event.authorId}"),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 maximumSize: Size.infinite,
               ),
               child: Text(
-                event.author!.displayName,
+                widget.event.author!.displayName,
                 style: TextStyle(color: Colors.grey[600]),
               ),
             ),
           ]),
           Text(
-            event.endsAt != null
-                ? l10n.eventFromTo(event.startsAt, event.endsAt!)
-                : l10n.startsAtDate(event.startsAt),
+            widget.event.endsAt != null
+                ? l10n.eventFromTo(widget.event.startsAt, widget.event.endsAt!)
+                : l10n.startsAtDate(widget.event.startsAt),
             style: TextStyle(color: Colors.blue[700]),
           ),
           const SizedBox(height: 5.0),
-          Text(event.description),
+          Text(widget.event.description),
+          const Text("Comments", style: TextStyle(fontSize: 18)),
+          FutureBuilder(
+              future: comments,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const CircularProgressIndicator();
+                }
+                return Column(
+                  children: snapshot.data!
+                      .map((comment) => Comment(comment: comment))
+                      .toList(),
+                );
+              }),
         ],
       ),
     );

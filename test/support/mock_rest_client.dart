@@ -21,7 +21,8 @@ import "package:flutter_test/flutter_test.dart";
 class MockRestClient extends RestClient {
   final List<MockRestEndpoint> _mocks = [];
 
-  MockRestEndpoint mock(String method, List<dynamic> path, MockRestEndpointCallback callback) {
+  MockRestEndpoint mock(
+      String method, List<dynamic> path, MockRestEndpointCallback callback) {
     final mock = MockRestEndpoint._(method, path, callback);
     _mocks.add(mock);
     return mock;
@@ -47,13 +48,14 @@ class MockRestEndpoint {
   final JsonObject Function(JsonObject? requestBody) _callback;
   final List<MockedRequest> _requests = [];
 
-  MockedRequest? get lastRequest => _requests.isNotEmpty ? _requests.last : null;
+  MockedRequest? get lastRequest =>
+      _requests.isNotEmpty ? _requests.last : null;
 
   MockRestEndpoint._(this._method, this._path, this._callback);
 
   bool matches(String method, List<dynamic> path) =>
-    method.toLowerCase() == _method.toLowerCase() &&
-    joinPath(path) == joinPath(_path);
+      method.toLowerCase() == _method.toLowerCase() &&
+      joinPath(path) == joinPath(_path);
 
   JsonObject call(JsonObject? requestBody) {
     try {
@@ -92,28 +94,30 @@ class _HasBeenCalledMatcher extends TypeMatcher<MockRestEndpoint> {
 
   @override
   bool matches(Object? item, Map matchState) =>
-    super.matches(item, matchState) &&
-    (_times == null
-      ? (item as MockRestEndpoint)._requests.isNotEmpty
-      : (item as MockRestEndpoint)._requests.length == _times);
+      super.matches(item, matchState) &&
+      (_times == null
+          ? (item as MockRestEndpoint)._requests.isNotEmpty
+          : (item as MockRestEndpoint)._requests.length == _times);
 
   @override
   Description describe(Description description) {
     return super
-      .describe(description)
-      .add(" to have been called${_times != null ? " $_times times" : ""}");
+        .describe(description)
+        .add(" to have been called${_times != null ? " $_times times" : ""}");
   }
 
   @override
-  Description describeMismatch(item, Description mismatchDescription, Map matchState, bool verbose) {
+  Description describeMismatch(
+      item, Description mismatchDescription, Map matchState, bool verbose) {
     if (item is MockRestEndpoint) {
       return mismatchDescription.add(
         item._requests.isEmpty
-          ? "was never called"
-          : "was called ${item._requests.length} times",
+            ? "was never called"
+            : "was called ${item._requests.length} times",
       );
     }
 
-    return super.describeMismatch(item, mismatchDescription, matchState, verbose);
+    return super
+        .describeMismatch(item, mismatchDescription, matchState, verbose);
   }
 }

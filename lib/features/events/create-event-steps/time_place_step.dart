@@ -38,7 +38,8 @@ class _State extends State<TimePlaceStep> {
             controller: widget.adressController,
             maxLength: 50,
             textInputAction: TextInputAction.next,
-            validator: FormBuilderValidators.required(errorText: l10n.addressInput),
+            validator:
+                FormBuilderValidators.required(errorText: l10n.addressInput),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.addressExample,
@@ -74,8 +75,9 @@ class _State extends State<TimePlaceStep> {
                 if (value == null) {
                   return null;
                 }
-                if (value.compareTo(
-                  widget.formKey.currentState!.fields["startsAt"]!.value as DateTime) < 0) {
+                if (value.compareTo(widget.formKey.currentState!
+                        .fields["startsAt"]!.value as DateTime) <
+                    0) {
                   return l10n.endDateCantBeSoonerThanStart;
                 }
                 return null;
@@ -86,7 +88,8 @@ class _State extends State<TimePlaceStep> {
               suffixIcon: IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () {
-                  widget.formKey.currentState!.fields["endsAt"]?.didChange(null);
+                  widget.formKey.currentState!.fields["endsAt"]
+                      ?.didChange(null);
                 },
               ),
             ),
