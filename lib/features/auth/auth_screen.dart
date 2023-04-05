@@ -162,7 +162,9 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
       decoration: InputDecoration(
         suffixIcon: IconButton(
           icon: Icon(
-            showPassword ? Icons.visibility_off : Icons.visibility,
+            showPassword
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
           ),
           onPressed: () => setState(() {
             showPassword = !showPassword;
@@ -201,7 +203,7 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
     return IconButton(
       onPressed: formState.value.canGoBack ? goBack : null,
-      icon: const Icon(Icons.arrow_back_rounded),
+      icon: const Icon(Icons.arrow_back_outlined),
       iconSize: 30,
       splashRadius: 20,
       padding: EdgeInsets.zero,

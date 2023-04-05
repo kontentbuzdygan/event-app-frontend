@@ -41,12 +41,12 @@ class _State extends State<FeedScreen> {
           IconButton(
             onPressed: () => throw const ApplicationException(message: "Kurwa"),
             tooltip: "Throw",
-            icon: const Icon(Icons.sports_basketball),
+            icon: const Icon(Icons.sports_basketball_outlined),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add_outlined),
         onPressed: () => context.pushNamed("createEvent"),
       ),
       body: FutureBuilder(

@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
-import "package:intl/intl.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:form_builder_validators/form_builder_validators.dart";
+import "package:intl/intl.dart";
 
 class TimePlaceStep extends StatefulWidget {
   const TimePlaceStep({
@@ -86,7 +86,7 @@ class _State extends State<TimePlaceStep> {
             decoration: InputDecoration(
               labelText: l10n.endsAt,
               suffixIcon: IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(Icons.close_outlined),
                 onPressed: () {
                   widget.formKey.currentState!.fields["endsAt"]
                       ?.didChange(null);
