@@ -81,45 +81,51 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         ],
       );
 
-  Widget get eventList => FutureBuilder(
-      future: NominatimClient.locationFromString("Modrzewiowa 7a, Banino"),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
+  Widget get eventList => Column(
+        children: [
+          FutureBuilder(
+              future: userLatLng(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
 
-        if (!snapshot.hasData) {
-          return CircularProgressIndicator();
-        }
+                if (!snapshot.hasData) {
+                  return const CircularProgressIndicator();
+                }
 
-        return FlutterMap(
-          options: MapOptions(
-            center: LatLng(54.37, 18.61),
-            zoom: 10,
-            maxZoom: 18.2,
-          ),
-          // nonRotatedChildren: [
-          //   AttributionWidget.defaultWidget(
-          //     source: 'OpenStreetMap contributors',
-          //     onSourceTapped: null,
-          //   ),
-          // ],
-          children: [
-            TileLayer(
-              urlTemplate:
-                  "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
-            ),
-            MarkerLayer(
-              markers: [
-                Marker(
-                  point: snapshot.data!,
-                  builder: (context) => const FlutterLogo(),
-                ),
-              ],
-            ),
-          ],
-        );
-      });
+                return Expanded(
+                  child: FlutterMap(
+                    options: MapOptions(
+                      center: snapshot.data!,
+                      zoom: 11,
+                      maxZoom: 18.2,
+                    ),
+                    nonRotatedChildren: [
+                      AttributionWidget.defaultWidget(
+                        source: "OpenStreetMap contributors",
+                        onSourceTapped: null,
+                      ),
+                    ],
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: snapshot.data!,
+                            builder: (context) => const FlutterLogo(),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }),
+        ],
+      );
 
   Widget listItemEvent(Event event) => GestureDetector(
         onTap: () => context.push("/events/${event.id}"),
