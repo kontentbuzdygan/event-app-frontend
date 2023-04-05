@@ -6,12 +6,9 @@ import "package:http/http.dart";
 
 /// Converts the given elements to strings and joins them with slashes, ensuring
 /// there is no consecutive or leading/trailing slashes
-String joinPath(List<dynamic> parts) =>
-  parts
-    .expand((part) => part
-      .toString()
-      .split("/")
-      .where((innerPart) => innerPart.isNotEmpty))
+String joinPath(List<dynamic> parts) => parts
+    .expand((part) =>
+        part.toString().split("/").where((innerPart) => innerPart.isNotEmpty))
     .join("/");
 
 Completer<T> wrapInCompleter<T>(Future<T> future) {

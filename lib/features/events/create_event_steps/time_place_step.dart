@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
-import "package:intl/intl.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:form_builder_validators/form_builder_validators.dart";
+import "package:intl/intl.dart";
 
 class TimePlaceStep extends StatefulWidget {
   const TimePlaceStep({
@@ -32,20 +32,22 @@ class _State extends State<TimePlaceStep> {
       key: widget.formKey,
       child: Column(
         children: <Widget>[
+          const SizedBox(height: 8),
           FormBuilderTextField(
             name: "address",
             autovalidateMode: AutovalidateMode.onUserInteraction,
             controller: widget.adressController,
             maxLength: 50,
             textInputAction: TextInputAction.next,
-            validator: FormBuilderValidators.required(errorText: l10n.addressInput),
+            validator:
+                FormBuilderValidators.required(errorText: l10n.addressInput),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.addressExample,
               labelText: l10n.address,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           FormBuilderDateTimePicker(
             name: "startsAt",
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -60,7 +62,7 @@ class _State extends State<TimePlaceStep> {
               labelText: l10n.startsAt,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           FormBuilderDateTimePicker(
             name: "endsAt",
             controller: widget.endsAtController,
@@ -74,8 +76,9 @@ class _State extends State<TimePlaceStep> {
                 if (value == null) {
                   return null;
                 }
-                if (value.compareTo(
-                  widget.formKey.currentState!.fields["startsAt"]!.value as DateTime) < 0) {
+                if (value.compareTo(widget.formKey.currentState!
+                        .fields["startsAt"]!.value as DateTime) <
+                    0) {
                   return l10n.endDateCantBeSoonerThanStart;
                 }
                 return null;
@@ -84,9 +87,10 @@ class _State extends State<TimePlaceStep> {
             decoration: InputDecoration(
               labelText: l10n.endsAt,
               suffixIcon: IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(Icons.close_outlined),
                 onPressed: () {
-                  widget.formKey.currentState!.fields["endsAt"]?.didChange(null);
+                  widget.formKey.currentState!.fields["endsAt"]
+                      ?.didChange(null);
                 },
               ),
             ),

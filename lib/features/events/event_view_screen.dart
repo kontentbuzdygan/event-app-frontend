@@ -3,6 +3,8 @@ import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
 
+import "comments/comments.dart";
+
 class EventViewScreen extends StatefulWidget {
   const EventViewScreen({super.key, required this.id});
 
@@ -39,45 +41,51 @@ class _EventViewScreenState extends State<EventViewScreen> {
   }
 }
 
-class EventView extends StatelessWidget {
+class EventView extends StatefulWidget {
   const EventView({super.key, required this.event});
 
   final Event event;
 
   @override
+  State<EventView> createState() => _EventViewState();
+}
+
+class _EventViewState extends State<EventView> {
+  @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
         children: [
           Row(children: [
             Text(
               l10n.createdBy(""),
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(color: theme.hintColor),
             ),
             TextButton(
-              onPressed: () => context.push("/profiles/${event.authorId}"),
+              onPressed: () =>
+                  context.push("/profiles/${widget.event.authorId}"),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
-                maximumSize: Size.infinite,
               ),
               child: Text(
-                event.author!.displayName,
-                style: TextStyle(color: Colors.grey[600]),
+                widget.event.author!.displayName,
+                style: TextStyle(color: theme.hintColor),
               ),
             ),
           ]),
           Text(
-            event.endsAt != null
-                ? l10n.eventFromTo(event.startsAt, event.endsAt!)
-                : l10n.startsAtDate(event.startsAt),
-            style: TextStyle(color: Colors.blue[700]),
+            widget.event.endsAt != null
+                ? l10n.eventFromTo(widget.event.startsAt, widget.event.endsAt!)
+                : l10n.startsAtDate(widget.event.startsAt),
+            style: TextStyle(color: theme.colorScheme.primary),
           ),
-          const SizedBox(height: 5.0),
-          Text(event.description),
+          Text(widget.event.description),
+          Text("Comments", style: theme.textTheme.headlineMedium),
+          Comments(event: widget.event),
         ],
       ),
     );

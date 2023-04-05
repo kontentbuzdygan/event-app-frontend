@@ -17,7 +17,10 @@ class User {
   static Future<void> signOut() => rest.delete([_apiPath, "sign-out"]);
 
   static Future<String> signIn(String email, String password) async {
-    final res = await rest.post([_apiPath, "sign-in"], {
+    final res = await rest.post([
+      _apiPath,
+      "sign-in"
+    ], {
       "email": email,
       "password": password,
     });

@@ -1,4 +1,5 @@
 import "package:event_app/api/json.dart";
+import "package:event_app/api/models/event_comment.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 
@@ -11,6 +12,7 @@ class Event {
   final DateTime? endsAt;
 
   Profile? author;
+  List? comments;
 
   Event._({
     required this.id,
@@ -49,6 +51,11 @@ class Event {
 
   Future<Event> fetchAuthor() async {
     author = await Profile.find(authorId);
+    return this;
+  }
+
+  Future<Event> fetchComments() async {
+    comments = await findEventComments(id);
     return this;
   }
 }

@@ -25,15 +25,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: CupertinoSearchTextField(
             onSubmitted: search,
-            style: TextStyle(
-              color: Theme.of(context).textTheme.titleLarge!.color,
-            ),
+            style: theme.textTheme.titleLarge,
           ),
           bottom: const TabBar(
             tabs: [
@@ -113,7 +113,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           child: Column(children: [
             Text(
               event.title,
-              style: Theme.of(context).primaryTextTheme.titleMedium,
+              style: Theme.of(context).textTheme.titleMedium,
             )
           ]),
         ),
@@ -127,7 +127,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           child: Column(children: [
             Text(
               profile.displayName,
-              style: Theme.of(context).primaryTextTheme.titleMedium,
+              style: Theme.of(context).textTheme.titleMedium,
             )
           ]),
         ),

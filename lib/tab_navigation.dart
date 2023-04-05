@@ -24,15 +24,18 @@ class _BottomNavigationState extends State<BottomNavigation> {
         onDestinationSelected: (i) => widget.state.goBranch(index: i),
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
             label: "Home",
           ),
           NavigationDestination(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
             label: "Discover",
           ),
           NavigationDestination(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person_outlined),
+            selectedIcon: Icon(Icons.person),
             label: "Profile",
           )
         ],
