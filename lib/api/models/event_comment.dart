@@ -47,11 +47,12 @@ class EventComment {
 
 Future<List<EventComment>> findEventComments(int eventId) async {
   return List.generate(
-      2 + _random.nextInt(5),
-      (i) => EventComment._(
-          id: i,
-          authorId: 19 + i,
-          content: _comments[_random.nextInt(_comments.length)],
-          createdAt: DateTime(2024, 6, 14 + i)));
-  // return EventComment.fromJson(await rest.get([_apiPath, id]));
+    2 + _random.nextInt(5),
+    (i) => EventComment._(
+      id: i,
+      authorId: 21 + i,
+      content: _comments[_random.nextInt(_comments.length)],
+      createdAt: DateTime(2024, 6, 14 + i),
+    ),
+  );
 }

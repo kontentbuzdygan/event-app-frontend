@@ -7,14 +7,16 @@ class CommentInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      const Expanded(
-        child: TextField(
-          decoration: InputDecoration(hintText: "Add a comment…"),
-          maxLines: null,
+    return Row(
+      children: [
+        const Expanded(
+          child: TextField(
+            decoration: InputDecoration(hintText: "Add a comment…"),
+            maxLines: null,
+          ),
         ),
-      ),
-      IconButton(onPressed: onSubmit, icon: const Icon(Icons.send_outlined))
-    ]);
+        IconButton(onPressed: onSubmit, icon: const Icon(Icons.send_outlined))
+      ],
+    );
   }
 }

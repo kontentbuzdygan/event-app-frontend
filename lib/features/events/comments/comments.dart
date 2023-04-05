@@ -27,20 +27,21 @@ class _CommentsState extends State<Comments> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: comments,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      future: comments,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          return Column(
-            children: [
-              ...snapshot.data!
-                  .map((comment) => Comment(comment: comment))
-                  .toList(),
-              CommentInput(onSubmit: () {}) // TODO: make an API request
-            ],
-          );
-        });
+        return Column(
+          children: [
+            ...snapshot.data!
+                .map((comment) => Comment(comment: comment))
+                .toList(),
+            CommentInput(onSubmit: () {}) // TODO: make an API request
+          ],
+        );
+      },
+    );
   }
 }
