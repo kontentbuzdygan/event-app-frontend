@@ -32,6 +32,7 @@ class _State extends State<TimePlaceStep> {
       key: widget.formKey,
       child: Column(
         children: <Widget>[
+          const SizedBox(height: 8),
           FormBuilderTextField(
             name: "address",
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -46,7 +47,7 @@ class _State extends State<TimePlaceStep> {
               labelText: l10n.address,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           FormBuilderDateTimePicker(
             name: "startsAt",
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -61,7 +62,7 @@ class _State extends State<TimePlaceStep> {
               labelText: l10n.startsAt,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           FormBuilderDateTimePicker(
             name: "endsAt",
             controller: widget.endsAtController,

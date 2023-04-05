@@ -19,31 +19,43 @@ class _CommentState extends State<Comment> {
     final l10n = AppLocalizations.of(context)!;
 
     final authorProfile = "/profiles/${widget.comment.authorId}";
-    return Row(
-      children: [
-        IconButton(
-            onPressed: () => context.push(authorProfile),
-            icon: const Icon(Icons.account_circle_outlined)),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                TextButton(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IconButton(
+              onPressed: () => context.push(authorProfile),
+              icon: const Icon(Icons.account_circle_outlined)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  TextButton(
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
                     ),
                     onPressed: () => context.push(authorProfile),
-                    child: Text(widget.comment.author!.displayName,
-                        style: TextStyle(color: theme.colorScheme.primary))),
-                const Text(" "),
-                Text(l10n.date(widget.comment.createdAt))
-              ],
-            ),
-            Text(widget.comment.content)
-          ],
-        )
-      ],
+                    child: Text(
+                      widget.comment.author!.displayName,
+                      style: TextStyle(color: theme.colorScheme.primary),
+                    ),
+                  ),
+                  const Text(" "),
+                  Text(
+                    l10n.date(widget.comment.createdAt),
+                    style: theme.textTheme.labelSmall!.merge(
+                      TextStyle(color: theme.hintColor),
+                    ),
+                  )
+                ],
+              ),
+              Text(widget.comment.content)
+            ],
+          )
+        ],
+      ),
     );
   }
 }

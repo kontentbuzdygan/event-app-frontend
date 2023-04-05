@@ -47,7 +47,6 @@ class _State extends State<CreateEventScreen> {
       body: FormBuilder(
         key: _formKey,
         child: Stepper(
-          type: StepperType.horizontal,
           steps: steps,
           currentStep: currentStep,
           onStepCancel: () => currentStep == 0
