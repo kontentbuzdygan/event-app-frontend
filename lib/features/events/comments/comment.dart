@@ -25,33 +25,32 @@ class _CommentState extends State<Comment> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           IconButton(
-              onPressed: () => context.push(authorProfile),
-              icon: const Icon(Icons.account_circle_outlined)),
+            onPressed: () => context.push(authorProfile),
+            icon: const Icon(Icons.account_circle_outlined),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                    ),
+                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     onPressed: () => context.push(authorProfile),
                     child: Text(
                       widget.comment.author!.displayName,
                       style: TextStyle(color: theme.colorScheme.primary),
                     ),
                   ),
-                  const Text(" "),
+                  const SizedBox(width: 8),
                   Text(
                     l10n.date(widget.comment.createdAt),
                     style: theme.textTheme.labelSmall!.merge(
                       TextStyle(color: theme.hintColor),
                     ),
-                  )
+                  ),
                 ],
               ),
-              Text(widget.comment.content)
+              Text(widget.comment.content),
             ],
           )
         ],
