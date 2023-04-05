@@ -1,7 +1,7 @@
 import "package:event_app/api/models/event.dart";
-import "package:event_app/features/events/create-event-steps/description_step.dart";
-import "package:event_app/features/events/create-event-steps/summary_step.dart";
-import "package:event_app/features/events/create-event-steps/time_place_step.dart";
+import "package:event_app/features/events/create_event_steps/description_step.dart";
+import "package:event_app/features/events/create_event_steps/summary_step.dart";
+import "package:event_app/features/events/create_event_steps/time_place_step.dart";
 import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
