@@ -41,12 +41,12 @@ class _State extends State<FeedScreen> {
           IconButton(
             onPressed: () => throw const ApplicationException(message: "Kurwa"),
             tooltip: "Throw",
-            icon: const Icon(Icons.sports_basketball),
+            icon: const Icon(Icons.sports_basketball_outlined),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add_outlined),
         onPressed: () => context.pushNamed("createEvent"),
       ),
       body: FutureBuilder(
@@ -56,7 +56,7 @@ class _State extends State<FeedScreen> {
             return eventsListView(snapshot.requireData);
           }
 
-          return Text(l10n.loading);
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
@@ -69,36 +69,28 @@ class _State extends State<FeedScreen> {
   }
 
   Widget eventListItem(Event event) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
     return MaterialButton(
       onPressed: () => context.push("/events/${event.id}"),
       child: Container(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
         alignment: Alignment.topLeft,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              event.title,
-              style: const TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 5.0),
-            Text(
-              l10n.createdBy(event.author?.displayName ?? ""),
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 5.0),
+            Text(event.title, style: theme.textTheme.titleLarge),
+            const SizedBox(height: 5),
+            Text(l10n.createdBy(event.author!.displayName)),
+            const SizedBox(height: 5),
             Text(
               event.endsAt != null
                   ? l10n.eventFromTo(event.startsAt, event.endsAt!)
                   : l10n.startsAtDate(event.startsAt),
-              style: TextStyle(color: Colors.blue[700]),
+              style: TextStyle(color: theme.colorScheme.primary),
             ),
-            const SizedBox(height: 5.0),
+            const SizedBox(height: 5),
             Text(event.description),
           ],
         ),

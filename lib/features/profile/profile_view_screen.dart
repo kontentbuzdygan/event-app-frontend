@@ -30,12 +30,12 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               IconButton(
                 onPressed: () => context.pushNamed("editProfile"),
                 tooltip: l10n.editProfile,
-                icon: const Icon(Icons.edit),
+                icon: const Icon(Icons.edit_outlined),
               ),
               IconButton(
                 onPressed: App.authState.signOut,
                 tooltip: l10n.logOut,
-                icon: const Icon(Icons.logout),
+                icon: const Icon(Icons.logout_outlined),
               ),
             ]
           ],

@@ -27,20 +27,22 @@ class _State extends State<DescriptionStep> {
       key: widget.formKey,
       child: Column(
         children: <Widget>[
+          const SizedBox(height: 8),
           FormBuilderTextField(
             name: "title",
             autovalidateMode: AutovalidateMode.onUserInteraction,
             controller: widget.titleController,
             maxLength: 50,
             textInputAction: TextInputAction.next,
-            validator: FormBuilderValidators.required(errorText: l10n.titleInput), 
+            validator:
+                FormBuilderValidators.required(errorText: l10n.titleInput),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.titleExample,
               labelText: l10n.title,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           FormBuilderTextField(
             name: "description",
             controller: widget.descriptionController,
@@ -48,10 +50,13 @@ class _State extends State<DescriptionStep> {
             maxLines: 5,
             maxLength: 1000,
             textInputAction: TextInputAction.next,
-            validator: FormBuilderValidators.required(errorText: l10n.descriptionInput),
+            validator: FormBuilderValidators.required(
+              errorText: l10n.descriptionInput,
+            ),
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.descriptionExample,
+              alignLabelWithHint: true,
               labelText: l10n.description,
             ),
           ),

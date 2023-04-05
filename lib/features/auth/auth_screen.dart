@@ -97,13 +97,12 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.welcome)),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: form,
-          child: Center(
-            child: Container(
-              constraints: const BoxConstraints(minWidth: 100, maxWidth: 350),
+      body: Form(
+        key: form,
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 350),
+            child: AutofillGroup(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -135,13 +134,13 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
   Widget emailField(AuthState authState) {
     final l10n = AppLocalizations.of(context)!;
-    final enabled = formState.value == _FormState.enteringEmail && authState.canLogIn;
+    final enabled =
+        formState.value == _FormState.enteringEmail && authState.canLogIn;
 
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: emailController,
       enabled: enabled,
-      style: !enabled ? const TextStyle(color: Colors.grey) : null,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: l10n.email,
@@ -159,11 +158,12 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
       obscureText: !showPassword,
       controller: passwordController,
       enabled: authState.canLogIn,
-      style: !authState.canLogIn ? const TextStyle(color: Colors.grey) : null,
       decoration: InputDecoration(
         suffixIcon: IconButton(
           icon: Icon(
-            showPassword ? Icons.visibility_off : Icons.visibility,
+            showPassword
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
           ),
           onPressed: () => setState(() {
             showPassword = !showPassword;
@@ -187,7 +187,7 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
   Widget continueButton(AuthState authState) {
     final l10n = AppLocalizations.of(context)!;
 
-    return ElevatedButton(
+    return FilledButton(
       onPressed: authState.canLogIn ? advanceFormState : null,
       child: Text(formState.value.getButtonText(l10n)),
     );
@@ -202,7 +202,7 @@ class _State extends State<AuthScreen> with TickerProviderStateMixin {
 
     return IconButton(
       onPressed: formState.value.canGoBack ? goBack : null,
-      icon: const Icon(Icons.arrow_back_rounded),
+      icon: const Icon(Icons.arrow_back_outlined),
       iconSize: 30,
       splashRadius: 20,
       padding: EdgeInsets.zero,
