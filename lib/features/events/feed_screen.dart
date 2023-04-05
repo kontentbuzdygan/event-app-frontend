@@ -47,7 +47,7 @@ class _State extends State<FeedScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () => context.pushNamed("myProfile"),
+        onPressed: () => context.pushNamed("createEvent"),
       ),
       body: FutureBuilder(
         future: allEvents,
