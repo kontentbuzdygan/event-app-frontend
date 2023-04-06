@@ -1,11 +1,12 @@
+import "dart:math";
+
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/osm_nominatim_dlient.dart";
-import "package:flutter/cupertino.dart";
+import "package:event_app/features/discover/event_map.dart";
 import "package:flutter/material.dart";
+import "package:flutter/rendering.dart";
 import "package:flutter_map/flutter_map.dart";
-import "package:go_router/go_router.dart";
-import "package:latlong2/latlong.dart";
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -16,197 +17,157 @@ class DiscoverScreen extends StatefulWidget {
 
 // TODO: Translate this file
 class _DiscoverScreenState extends State<DiscoverScreen> {
-  Future<Iterable<Event>> events = Event.findAll();
-  Future<Iterable<Profile>> profiles = Future.value([]);
-
-  void search(String value) {
-    setState(() {
-      events = Event.findAll();
-      profiles = Profile.search(value);
-    });
-  }
+  final mapController = MapController();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return DefaultTabController(
-      length: 2,
+    return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: CupertinoSearchTextField(
-            onSubmitted: search,
-            style: theme.textTheme.titleLarge,
-          ),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: "Events"),
-              Tab(text: "Profiles"),
-            ],
-            indicatorSize: TabBarIndicatorSize.tab,
-          ),
+        body: FutureBuilder(
+          future: userLatLng(),
+          builder: (context, locationSnapshot) {
+            if (locationSnapshot.connectionState == ConnectionState.done &&
+                locationSnapshot.hasData) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                mapController.move(locationSnapshot.requireData, 8);
+              });
+            }
+
+            return FutureBuilder(
+              future: Event.findAll(),
+              builder: (context, eventsSnapshot) => Stack(
+                children: [
+                  EventMap(
+                    controller: mapController,
+                    eventsSnapshot: eventsSnapshot,
+                  ),
+                  draggableEventList(eventsSnapshot),
+                  const SearchBar(),
+                ],
+              ),
+            );
+          },
         ),
-        body: TabBarView(children: [
-          eventList,
-          profileList,
-        ]),
       ),
     );
   }
 
-  Widget get profileList => Column(
-        children: [
-          FutureBuilder(
-            future: profiles,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return const CircularProgressIndicator();
-              }
-
-              if (snapshot.hasError) {
-                return Text(snapshot.error!.toString());
-              }
-
-              final profiles = snapshot.data!.map(listItemProfile).toList();
-
-              return Expanded(
-                child: ListView.separated(
-                  itemCount: profiles.length,
-                  itemBuilder: (context, index) => profiles[index],
-                  separatorBuilder: (context, index) => const Divider(),
-                ),
-              );
-            },
-          )
-        ],
-      );
-
-  Widget get eventList => Stack(
-        children: [
-          FutureBuilder(
-            future: userLatLng(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Text(snapshot.error.toString());
-              }
-
-              if (!snapshot.hasData) {
-                return const CircularProgressIndicator();
-              }
-
-              return eventMap(snapshot.data!);
-            },
+  Widget draggableEventList(AsyncSnapshot<Iterable<Event>> snapshot) {
+    return DraggableScrollableSheet(
+      maxChildSize: 0.84,
+      minChildSize: 0.035,
+      initialChildSize: 0.035,
+      snap: true,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+            color: Theme.of(context).colorScheme.background,
           ),
-          DraggableScrollableSheet(
-            snap: true,
-            builder: (BuildContext context, ScrollController scrollController) {
-              return Container(
-                color: Theme.of(context).cardColor,
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: 25,
-                  itemBuilder: (BuildContext context, int index) {
-                    return const ListTile(title: Text("Event"));
-                  },
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                const SizedBox(height: 12),
+                Container(
+                  height: 5,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondary,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
-              );
-            },
+                if (snapshot.hasData)
+                  ListView(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 10,
+                    ),
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children: [
+                      ...snapshot.data!.map(eventCard).toList(),
+                    ],
+                  ),
+              ],
+            ),
           ),
-        ],
-      );
-
-  Widget eventMap(LatLng location) {
-    return FlutterMap(
-      options: MapOptions(
-        center: location,
-        zoom: 11,
-        minZoom: 4,
-        maxZoom: 18.2,
-      ),
-      nonRotatedChildren: [
-        AttributionWidget.defaultWidget(
-          source: "OpenStreetMap contributors",
-          onSourceTapped: null,
-          alignment: Alignment.topRight,
-        ),
-      ],
-      children: [
-        TileLayer(
-          urlTemplate:
-              "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
-        ),
-        eventMarkers(location),
-      ],
-    );
-  }
-
-  Widget eventMarkers(LatLng pos) {
-    return FutureBuilder(
-      future: events,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const MarkerLayer();
-        }
-
-        if (snapshot.hasError) {
-          return MarkerLayer(
-            markers: [
-              Marker(
-                point: pos,
-                builder: (context) => Text(
-                  snapshot.error.toString(),
-                ),
-              )
-            ],
-          );
-        }
-
-        return MarkerLayer(
-          markers: snapshot.data!.map(eventMarker).toList(),
         );
       },
     );
   }
 
-  Marker eventMarker(Event event) {
-    return Marker(
-      point: event.location,
-      builder: (_) => GestureDetector(
-        onTap: () => context.push("/events/${event.id}"),
-        child: const Icon(
-          Icons.location_on,
-          color: Colors.red,
-          size: 48,
+  Widget eventCard(event) => GestureDetector(
+        onTap: () => mapController.move(event.location, mapController.zoom),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  event.title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Text(event.description),
+              ],
+            ),
+          ),
         ),
+      );
+}
+
+class SearchBar extends StatelessWidget {
+  const SearchBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: Theme.of(context).colorScheme.background,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 60,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              margin: EdgeInsets.zero,
+              elevation: 5,
+              child: Center(
+                child: TextFormField(
+                  maxLines: 1,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    hintText: "Search here",
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: const [
+                Chip(label: Text("🎉 Party")),
+                SizedBox(width: 10),
+                Chip(label: Text("🏋️ Gym")),
+                SizedBox(width: 10),
+                Chip(label: Text("🏌️ Golf")),
+                SizedBox(width: 10),
+                Chip(label: Text("👻 Movie night")),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
-
-  Widget listItemEvent(Event event) => GestureDetector(
-        onTap: () => context.push("/events/${event.id}"),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          alignment: Alignment.centerLeft,
-          child: Column(children: [
-            Text(
-              event.title,
-              style: Theme.of(context).textTheme.titleMedium,
-            )
-          ]),
-        ),
-      );
-
-  Widget listItemProfile(Profile profile) => GestureDetector(
-        onTap: () => context.push("/profiles/${profile.id}"),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          alignment: Alignment.centerLeft,
-          child: Column(children: [
-            Text(
-              profile.displayName,
-              style: Theme.of(context).textTheme.titleMedium,
-            )
-          ]),
-        ),
-      );
 }

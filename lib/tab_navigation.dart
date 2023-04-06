@@ -29,8 +29,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
             label: "Home",
           ),
           NavigationDestination(
-            icon: Icon(Icons.search_outlined),
-            selectedIcon: Icon(Icons.search),
+            icon: Icon(Icons.map_outlined),
+            selectedIcon: Icon(Icons.map),
             label: "Discover",
           ),
           NavigationDestination(
