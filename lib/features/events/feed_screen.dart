@@ -13,21 +13,49 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _State extends State<FeedScreen> {
-  late Future<List<Event>> allEvents;
+  List<Event> allEvents = List.empty(growable: true);
+  late Future<List<Event>> _future;
+  late ScrollController _scrollController;
+  bool moreLoading = false;
+  int page = 0;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !moreLoading) {
+        setState(() {
+          moreLoading = true;
+          _future = loadEvents();
+          moreLoading = false;
+        });
+      }
+    });
 
-    allEvents = () async {
-      final events = (await Event.findAll()).toList();
+    _future = loadEvents(); 
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(loadEvents);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<List<Event>> loadEvents() async {
+      final events = (await Event.findAll(page:page)).toList();
       await RestClient.runCached(
         () => Future.wait(
           events.map((event) => event.fetchAuthor()),
         ),
       );
-      return events;
-    }();
+
+      if (events.isEmpty) return allEvents;
+
+      page++;
+      allEvents.addAll(events);
+      return allEvents;
   }
 
   @override
@@ -50,7 +78,7 @@ class _State extends State<FeedScreen> {
         onPressed: () => context.pushNamed("createEvent"),
       ),
       body: FutureBuilder(
-        future: allEvents,
+        future: _future,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return eventsListView(snapshot.requireData);
@@ -64,8 +92,9 @@ class _State extends State<FeedScreen> {
 
   Widget eventsListView(Iterable<Event> events) {
     return ListView(
-      children: events.map(eventListItem).toList(),
-    );
+        controller: _scrollController,
+        children: events.map(eventListItem).toList(),
+      );
   }
 
   Widget eventListItem(Event event) {
