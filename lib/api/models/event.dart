@@ -48,8 +48,8 @@ class Event {
   /// Otherwise the actual `Event` objects yielded from the iterable will be regenerated
   /// on every iteration due to laziness, and so their non-serialized state will
   /// not be persisted.
-  static Future<Iterable<Event>> findAll() async {
-    final json = await rest.get([_apiPath]);
+  static Future<Iterable<Event>> findAll({int page = 0}) async {
+    final json = await rest.get([_apiPath, "?page=$page"]);
     return (json["events"] as Iterable<dynamic>)
         .cast<JsonObject>()
         .map(Event.fromJson);
