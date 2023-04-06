@@ -1,4 +1,6 @@
 import "package:event_app/api/models/profile.dart";
+import "package:event_app/features/profile/profile_header.dart";
+import "package:event_app/features/profile/profile_tabs.dart";
 import "package:event_app/main.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -20,11 +22,12 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   @override
   Widget build(context) {
     final l10n = AppLocalizations.of(context)!;
+
     return FutureBuilder(
       future: profile,
       builder: (context, snapshot) => Scaffold(
         appBar: AppBar(
-          title: Text(snapshot.data?.displayName ?? ""),
+          title: Text(l10n.yourProfile),
           actions: [
             if (widget.id == null) ...[
               IconButton(
@@ -41,7 +44,13 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
           ],
         ),
         body: () {
-          if (snapshot.hasData) return ProfileView(profile: snapshot.data!);
+          if (snapshot.hasData) {
+            return ListView(children: [
+              ProfileHeader(profile: snapshot.data!),
+              // TODO: stick tabs to the top of screen
+              const SizedBox(height: 400, child: ProfileTabs())
+            ]);
+          }
 
           return Center(
             child: snapshot.hasError
@@ -49,22 +58,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 : const CircularProgressIndicator(),
           );
         }(),
-      ),
-    );
-  }
-}
-
-class ProfileView extends StatelessWidget {
-  const ProfileView({super.key, required this.profile});
-
-  final Profile profile;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [if (profile.bio != null) Text(profile.bio!)],
       ),
     );
   }
