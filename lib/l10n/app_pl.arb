@@ -37,5 +37,13 @@
   "confirm": "Potwierdź",
   "timeAndPlace": "Czas i miejsce",
   "summary": "Podsumowanie",
-  "yourProfile": "Twój profil"
+  "yourProfile": "Twój profil",
+  "editProfile": "Edytuj profil",
+  "displayName": "Nazwa uzytkownika",
+  "bio": "O mnie",
+  "save": "Zapisz",
+  "searchHint": "Szukaj",
+  "homeTabLabel": "Aktualności",
+  "discoverTabLabel": "Odkrywaj",
+  "profileTabLabel": "Profil"
 }
