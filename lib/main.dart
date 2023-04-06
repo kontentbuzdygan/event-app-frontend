@@ -46,7 +46,10 @@ class App extends StatelessWidget {
               (_) {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(error.toString())),
+                  SnackBar(
+                    content: Text(error.toString()),
+                    behavior: SnackBarBehavior.floating,
+                  ),
                 );
               },
             );
