@@ -2,7 +2,9 @@ import "package:event_app/features/discover/search_field.dart";
 import "package:flutter/material.dart";
 
 class TopBar extends StatelessWidget {
-  const TopBar({super.key});
+  const TopBar({super.key, required this.searchFieldController});
+
+  final TextEditingController? searchFieldController;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -12,7 +14,7 @@ class TopBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SearchField(),
+            SearchField(controller: searchFieldController),
             const SizedBox(height: 16),
             filters,
           ],

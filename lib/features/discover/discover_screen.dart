@@ -15,6 +15,7 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
   final mapController = MapController();
+  final searchField = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     eventsSnapshot: eventsSnapshot,
                   ),
                   DraggableEventList(snapshot: eventsSnapshot),
-                  const TopBar(),
+                  TopBar(searchFieldController: searchField),
                 ],
               ),
             );

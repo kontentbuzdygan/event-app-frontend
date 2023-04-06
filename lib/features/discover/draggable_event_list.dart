@@ -1,6 +1,7 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/features/events/event_card.dart";
 import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
 
 class DraggableEventList extends StatelessWidget {
   const DraggableEventList({super.key, required this.snapshot});
@@ -11,7 +12,7 @@ class DraggableEventList extends StatelessWidget {
   Widget build(BuildContext context) {
     final boxDecoration = BoxDecoration(
       borderRadius: const BorderRadius.vertical(
-        top: Radius.circular(20),
+        top: Radius.circular(26),
       ),
       color: Theme.of(context).colorScheme.background,
     );
@@ -48,14 +49,19 @@ class DraggableEventList extends StatelessWidget {
         ),
       );
 
-  Widget get eventsList => ListView(
+  Widget get eventsList => ListView.separated(
         padding: const EdgeInsets.symmetric(
           vertical: 16,
           horizontal: 10,
         ),
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        children: snapshot.data!.map(eventCard).toList(),
+        itemCount: snapshot.data!.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        itemBuilder: (context, i) => GestureDetector(
+          onTap: () => context.push("/events/${snapshot.data!.toList()[i].id}"),
+          child: snapshot.data!.map(eventCard).toList()[i],
+        ),
       );
 
   Widget eventCard(event) => GestureDetector(

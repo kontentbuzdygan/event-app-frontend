@@ -1,7 +1,7 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/features/events/event_card.dart";
 import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
-import "package:go_router/go_router.dart";
 
 class EventsMap extends StatefulWidget {
   const EventsMap({
@@ -50,10 +50,13 @@ class _EventsMapState extends State<EventsMap> {
     return Marker(
       point: event.location,
       builder: (_) => GestureDetector(
-        onTap: () => context.push("/events/${event.id}"),
-        child: const Icon(
+        onTap: () => showModalBottomSheet(
+          context: context,
+          builder: (context) => EventLayout(event: event),
+        ),
+        child: Icon(
           Icons.location_on,
-          color: Colors.red,
+          color: Theme.of(context).colorScheme.background,
           size: 48,
         ),
       ),
