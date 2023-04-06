@@ -3,8 +3,8 @@ import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
 import "package:go_router/go_router.dart";
 
-class EventMap extends StatefulWidget {
-  const EventMap({
+class EventsMap extends StatefulWidget {
+  const EventsMap({
     super.key,
     required this.controller,
     required this.eventsSnapshot,
@@ -14,10 +14,10 @@ class EventMap extends StatefulWidget {
   final AsyncSnapshot<Iterable<Event>> eventsSnapshot;
 
   @override
-  State<EventMap> createState() => _EventMapState();
+  State<EventsMap> createState() => _EventsMapState();
 }
 
-class _EventMapState extends State<EventMap> {
+class _EventsMapState extends State<EventsMap> {
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
