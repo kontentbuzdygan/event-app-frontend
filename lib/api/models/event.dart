@@ -1,15 +1,19 @@
+import "dart:math";
+
 import "package:event_app/api/json.dart";
 import "package:event_app/api/models/event_comment.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 
 const String _apiPath = "events";
+final _random = Random();
 
 class Event {
   final int id, authorId;
   final String title, description;
   final DateTime startsAt;
   final DateTime? endsAt;
+  final int commentCount;
 
   Profile? author;
   List? comments;
@@ -21,6 +25,7 @@ class Event {
     required this.description,
     required this.startsAt,
     this.endsAt,
+    required this.commentCount,
   });
 
   factory Event.fromJson(JsonObject json) => Event._(
@@ -31,6 +36,7 @@ class Event {
         startsAt: DateTime.parse(json["starts_at"]),
         endsAt:
             json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
+        commentCount: 2 + _random.nextInt(5),
       );
 
   static Future<Event> find(int id) async {
