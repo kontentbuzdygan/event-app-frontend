@@ -92,6 +92,11 @@ class _State extends State<FeedScreen> {
             ),
             const SizedBox(height: 5),
             Text(event.description),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.comment_outlined, size: 16),
+                label: Text(event.commentCount.toString()))
           ],
         ),
       ),
