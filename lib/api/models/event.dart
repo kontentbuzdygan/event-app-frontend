@@ -15,6 +15,7 @@ class Event {
   final DateTime startsAt;
   final DateTime? endsAt;
   final LatLng location;
+  final int commentCount;
 
   Profile? author;
   List? comments;
@@ -27,6 +28,7 @@ class Event {
     required this.startsAt,
     required this.location,
     this.endsAt,
+    required this.commentCount,
   });
 
   factory Event.fromJson(JsonObject json) => Event._(
@@ -42,6 +44,7 @@ class Event {
         ),
         endsAt:
             json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
+        commentCount: 2 + _random.nextInt(5),
       );
 
   static Future<Event> find(int id) async {
