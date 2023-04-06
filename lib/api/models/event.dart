@@ -29,13 +29,15 @@ class Event {
   });
 
   factory Event.fromJson(JsonObject json) => Event._(
-      id: json["id"],
-      authorId: json["author_id"],
-      title: json["title"],
-      description: json["description"],
-      startsAt: DateTime.parse(json["starts_at"]),
-      endsAt: json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
-      commentCount: 2 + _random.nextInt(5));
+        id: json["id"],
+        authorId: json["author_id"],
+        title: json["title"],
+        description: json["description"],
+        startsAt: DateTime.parse(json["starts_at"]),
+        endsAt:
+            json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
+        commentCount: 2 + _random.nextInt(5),
+      );
 
   static Future<Event> find(int id) async {
     return Event.fromJson(await rest.get([_apiPath, id]));
