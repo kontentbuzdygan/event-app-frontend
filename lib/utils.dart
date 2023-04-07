@@ -1,8 +1,11 @@
 import "dart:async";
 import "dart:convert";
+import "package:http/http.dart" as http;
 
 import "package:event_app/api/exceptions.dart";
 import "package:http/http.dart";
+
+final client = http.Client();
 
 /// Converts the given elements to strings and joins them with slashes, ensuring
 /// there is no consecutive or leading/trailing slashes
@@ -38,4 +41,12 @@ extension JsonDecodeBodyStreamed on StreamedResponse {
     if (isSuccess) return jsonDecode(await stream.bytesToString());
     throw InvalidResponseStatus.of(statusCode);
   }
+}
+
+Future<String> fetchMockImage(String keyword) async {
+  final req = http.Request(
+      "GET", Uri.parse("https://source.unsplash.com/random/1280x720?$keyword"))
+    ..followRedirects = false;
+  final res = await client.send(req);
+  return res.headers["location"]!;
 }
