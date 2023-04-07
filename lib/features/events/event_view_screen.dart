@@ -15,7 +15,9 @@ class EventViewScreen extends StatefulWidget {
 }
 
 class _EventViewScreenState extends State<EventViewScreen> {
-  late final event = Event.find(widget.id).then((event) => event.fetchAuthor());
+  late var event = Event.find(widget.id)
+      .then((event) => event.fetchAuthor())
+      .then((event) => event.fetchBanner());
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +62,8 @@ class _EventViewState extends State<EventView> {
       padding: const EdgeInsets.all(12),
       child: ListView(
         children: [
+          if (widget.event.banner != null)
+            Expanded(child: Image.network(widget.event.banner!)),
           Row(children: [
             Text(
               l10n.createdBy(""),
