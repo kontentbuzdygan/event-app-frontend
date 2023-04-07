@@ -32,7 +32,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             }
 
             return FutureBuilder(
-              future: Event.findAll(),
+              future: Event.findAll().then((value) => value.toList()),
               builder: (context, eventsSnapshot) => Stack(
                 children: [
                   EventsMap(

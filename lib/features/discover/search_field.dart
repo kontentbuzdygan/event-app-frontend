@@ -35,7 +35,7 @@ class SearchField extends StatelessWidget {
         // TODO: Implement profiles searching
         IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.people_outlined),
+          icon: const Icon(Icons.map_outlined),
         )
       ]),
     );

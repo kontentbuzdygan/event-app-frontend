@@ -62,18 +62,10 @@ class EventLayout extends StatelessWidget {
   Container banner(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(26),
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Theme.of(context).colorScheme.onPrimary,
-            Theme.of(context).colorScheme.background,
-          ],
-        ),
-      ),
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(26),
+          ),
+          color: Theme.of(context).colorScheme.onPrimary),
       height: 150,
       child: const Center(
         child: Text("Banner"),
