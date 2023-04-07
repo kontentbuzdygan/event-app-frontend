@@ -5,7 +5,6 @@ import "package:event_app/api/models/event_comment.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/utils.dart";
-import "package:flutter/material.dart";
 
 const String _apiPath = "events";
 final _random = Random();
