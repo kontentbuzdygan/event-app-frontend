@@ -74,7 +74,7 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
           final center = widget.controller.center;
           final zoom = widget.controller.zoom;
 
-          // FIXME: Use a wigdet that will resize map too
+          // FIXME: Use a wigdet that will resize map to
           // keep the pin visible after zooming
           await showModalBottomSheet(
             barrierColor: Colors.transparent,

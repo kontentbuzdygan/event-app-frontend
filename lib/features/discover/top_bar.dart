@@ -33,7 +33,10 @@ class _TopBarState extends State<TopBar> {
               controller: widget.searchFieldController,
               suffix: IconButton(
                 tooltip: l10n.showMap,
-                icon: Icon(widget.mapOpened ? Icons.map : Icons.map_outlined),
+                icon: Icon(
+                  widget.mapOpened ? Icons.map : Icons.map_outlined,
+                  size: 30,
+                ),
                 isSelected: widget.mapOpened,
                 onPressed: () {
                   if (widget.mapOnClick != null) {

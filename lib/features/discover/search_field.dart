@@ -25,14 +25,22 @@ class SearchField extends StatelessWidget {
             margin: EdgeInsets.zero,
             elevation: 5,
             child: Center(
-              child: TextFormField(
-                controller: controller,
-                maxLines: 1,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search_outlined),
-                  hintText: l10n.searchHint,
-                  border: InputBorder.none,
-                ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 20),
+                  const Icon(Icons.search_outlined),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextFormField(
+                      controller: controller,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                        hintText: l10n.searchHint,
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
