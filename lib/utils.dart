@@ -43,10 +43,10 @@ extension JsonDecodeBodyStreamed on StreamedResponse {
   }
 }
 
-Future<String> fetchMockImage(String keyword) async {
+Future<String?> fetchMockImage(String keyword) async {
   final req = http.Request(
       "GET", Uri.parse("https://source.unsplash.com/random/1280x720?$keyword"))
     ..followRedirects = false;
   final res = await client.send(req);
-  return res.headers["location"]!;
+  return res.headers["location"];
 }
