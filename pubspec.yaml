@@ -53,6 +53,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   form_builder_validators: ^8.5.0
+  story: ^1.0.0+1
+  username_gen: ^1.0.4
 
 dependency_overrides:
   intl: ^0.17.0

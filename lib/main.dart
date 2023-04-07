@@ -1,3 +1,4 @@
+import "package:event_app/api/models/story.dart";
 import "package:event_app/errors.dart";
 import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
@@ -7,6 +8,7 @@ import "package:event_app/features/events/event_view_screen.dart";
 import "package:event_app/features/events/feed_screen.dart";
 import "package:event_app/features/profile/profile_edit_screen.dart";
 import "package:event_app/features/profile/profile_view_screen.dart";
+import "package:event_app/features/story/story_view_screen.dart";
 import "package:event_app/tab_navigation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
@@ -107,6 +109,11 @@ class App extends StatelessWidget {
                   name: "editProfile",
                   path: "/profiles/me/edit",
                   builder: (context, state) => const ProfileEditScreen(),
+                ),
+                GoRoute(
+                  name: "stories",
+                  path: "/stories",
+                  builder: (context, state) => StoryViewScreen(stories: state.extra as List<Story>,)
                 )
               ]),
             ],

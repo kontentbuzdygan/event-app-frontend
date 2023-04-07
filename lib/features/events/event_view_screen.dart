@@ -1,4 +1,7 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/api/models/story.dart";
+import "package:event_app/api/rest_client.dart";
+import "package:event_app/features/story/story_list_view.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
@@ -51,6 +54,19 @@ class EventView extends StatefulWidget {
 }
 
 class _EventViewState extends State<EventView> {
+  late Future<List<Story>> allStories;
+
+  @override
+  void initState() {
+    super.initState();
+
+    allStories = () async {
+      final stories = await fetchRandomStoriesByEventId(widget.event.id);
+      await Future.wait(stories.map((story) => story.fetchAuthor()));
+      return stories;
+    }();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -60,6 +76,7 @@ class _EventViewState extends State<EventView> {
       padding: const EdgeInsets.all(12),
       child: ListView(
         children: [
+          StoryListView(stories: allStories),
           Row(children: [
             Text(
               l10n.createdBy(""),

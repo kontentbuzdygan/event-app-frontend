@@ -1,5 +1,6 @@
 import "package:event_app/api/json.dart";
 import "package:event_app/api/rest_client.dart";
+import 'package:username_gen/username_gen.dart';
 
 const String _apiPath = "profiles";
 
@@ -7,11 +8,13 @@ class Profile {
   final int id;
   String displayName;
   String? bio;
+  String? profilePicture;
 
   Profile._({
     required this.id,
     required this.displayName,
     this.bio,
+    this.profilePicture
   });
 
   factory Profile.fromJson(JsonObject json) => Profile._(
@@ -43,4 +46,8 @@ class Profile {
   static Future<Profile> me() async {
     return Profile.fromJson(await rest.get([_apiPath, "me"]));
   }
+}
+
+Future<Profile> randomProfile(int id) {
+  return Future.value(Profile._(id: id, displayName: UsernameGen().generate(), profilePicture: ""));
 }
