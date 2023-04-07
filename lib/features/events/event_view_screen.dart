@@ -14,7 +14,6 @@ class EventViewScreen extends StatefulWidget {
       params: {"id": id.toString()},
     );
   }
-
   final int id;
 
   @override
@@ -34,22 +33,7 @@ class _EventViewScreenState extends State<EventViewScreen> {
         appBar: AppBar(
           title: Text(snapshot.data?.title ?? ""),
           actions: !snapshot.hasData ? null : [
-            PopupMenuButton(itemBuilder: (itemBuilder){
-              return [
-                const PopupMenuItem<int>(
-                  value: 0,
-                  child: Text("Hello"),
-                ),
-                if(App.authState.myId == snapshot.data!.authorId) ...[
-                  PopupMenuItem(
-                    child: TextButton(
-                      onPressed: () => print("Delete"), 
-                      child: const Text("Delete event")
-                    ),
-                  ),
-                ],  
-              ];
-            })
+            PopupMenu(snapshot: snapshot)
           ],
         ),
         body: () {
@@ -62,6 +46,62 @@ class _EventViewScreenState extends State<EventViewScreen> {
           );
         }(),
       ),
+    );
+  }
+}
+
+class PopupMenu extends StatelessWidget {
+  final AsyncSnapshot<Event> snapshot;
+  const PopupMenu({
+    super.key,
+    required this.snapshot,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(itemBuilder: (itemBuilder){
+      return [
+        const PopupMenuItem<String>(
+          value: "hello",
+          child: Text("Hello"),
+        ),
+        if(App.authState.myId == snapshot.data!.authorId) ...[
+          const PopupMenuItem(
+            value: "delete",
+            child: Text("Delete event"),
+          ),
+        ],
+      ];
+    },
+    onSelected: (value){
+      switch(value){
+        case "hello": 
+          print("hello"); break;
+        case "delete":
+          showDialog(context: context, builder: (BuildContext context){
+            return AlertDialog(
+              title: const Text("Delete event"),
+              content: const Text("Are you sure you want to delete your awesome event?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    print("delete");
+                    //TODO: API call
+                  },
+                  child: const Text("Delete"),
+                ),
+              ],
+            );
+          });
+          break;
+        }
+      },
     );
   }
 }
