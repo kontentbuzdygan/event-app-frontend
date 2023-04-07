@@ -2,9 +2,14 @@ import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class SearchField extends StatelessWidget {
-  const SearchField({super.key, this.controller});
+  const SearchField({
+    super.key,
+    this.controller,
+    this.suffix,
+  });
 
   final TextEditingController? controller;
+  final Widget? suffix;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +37,7 @@ class SearchField extends StatelessWidget {
             ),
           ),
         ),
-        // TODO: Implement profiles searching
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.map_outlined),
-        )
+        if (suffix != null) suffix!
       ]),
     );
   }

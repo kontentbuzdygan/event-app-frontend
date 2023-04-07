@@ -45,5 +45,6 @@
   "searchHint": "Szukaj",
   "homeTabLabel": "Aktualności",
   "discoverTabLabel": "Odkrywaj",
-  "profileTabLabel": "Profil"
+  "profileTabLabel": "Profil",
+  "showMap": "Pokaz mapę"
 }

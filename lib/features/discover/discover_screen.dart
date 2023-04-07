@@ -1,4 +1,3 @@
-import "package:event_app/api/locator.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/features/discover/draggable_event_list.dart";
 import "package:event_app/features/discover/events_map.dart";
@@ -13,38 +12,74 @@ class DiscoverScreen extends StatefulWidget {
   State<DiscoverScreen> createState() => _DiscoverScreenState();
 }
 
-class _DiscoverScreenState extends State<DiscoverScreen> {
-  final mapController = MapController();
-  final searchField = TextEditingController();
+class _DiscoverScreenState extends State<DiscoverScreen>
+    with TickerProviderStateMixin {
+  late bool mapOpened;
+  late DraggableScrollableController sheetController;
+  late Future<List<Event>> events;
+  late MapController mapController;
+  late TextEditingController searchField;
+
+  @override
+  void initState() {
+    super.initState();
+
+    events = Event.findAll().then((value) => value.toList());
+    sheetController = DraggableScrollableController();
+    mapController = MapController();
+    mapOpened = false;
+    searchField = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: FutureBuilder(
-          future: userLatLng(),
-          builder: (context, locationSnapshot) {
-            if (locationSnapshot.connectionState == ConnectionState.done &&
-                locationSnapshot.hasData) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                mapController.move(locationSnapshot.requireData, 8);
-              });
-            }
-
-            return FutureBuilder(
-              future: Event.findAll().then((value) => value.toList()),
-              builder: (context, eventsSnapshot) => Stack(
-                children: [
-                  EventsMap(
-                    controller: mapController,
-                    eventsSnapshot: eventsSnapshot,
-                  ),
-                  DraggableEventList(snapshot: eventsSnapshot),
-                  TopBar(searchFieldController: searchField),
-                ],
+          future: events,
+          builder: (context, eventsSnapshot) => Column(
+            children: [
+              TopBar(
+                searchFieldController: searchField,
+                mapOpened: mapOpened,
+                mapOnClick: () {
+                  sheetController.animateTo(
+                    mapOpened ? 1 : 0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease,
+                  );
+                },
               ),
-            );
-          },
+              Expanded(
+                child: Stack(
+                  children: [
+                    EventsMap(
+                      controller: mapController,
+                      eventsSnapshot: eventsSnapshot,
+                    ),
+                    NotificationListener<DraggableScrollableNotification>(
+                      child: DraggableEventList(
+                        controller: sheetController,
+                        snapshot: eventsSnapshot,
+                      ),
+                      onNotification: (notification) {
+                        if (notification.extent >=
+                            notification.maxExtent - 0.1) {
+                          setState(() => mapOpened = false);
+                        }
+
+                        if (notification.extent <=
+                            notification.minExtent + 0.1) {
+                          setState(() => mapOpened = true);
+                        }
+                        return false;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
