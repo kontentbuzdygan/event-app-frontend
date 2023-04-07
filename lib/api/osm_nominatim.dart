@@ -12,7 +12,7 @@ class NominatimClient {
       final json = res.json()[0];
       return LatLng(double.parse(json["lat"]), double.parse(json["lon"]));
     } on Exception {
-      throw const ApplicationException(message: "");
+      throw const ApplicationException(message: "Request failed");
     }
   }
 }
