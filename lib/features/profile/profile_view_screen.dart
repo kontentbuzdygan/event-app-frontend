@@ -1,6 +1,7 @@
 import "package:event_app/api/models/profile.dart";
+import "package:event_app/features/events/feed_screen.dart";
 import "package:event_app/features/profile/profile_header.dart";
-import "package:event_app/features/profile/profile_tabs.dart";
+import "package:event_app/features/profile/tickets.dart";
 import "package:event_app/main.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -15,9 +16,25 @@ class ProfileViewScreen extends StatefulWidget {
   State<ProfileViewScreen> createState() => _ProfileViewScreenState();
 }
 
-class _ProfileViewScreenState extends State<ProfileViewScreen> {
+class _ProfileViewScreenState extends State<ProfileViewScreen>
+    with SingleTickerProviderStateMixin {
   late final Future<Profile> profile =
       widget.id != null ? Profile.find(widget.id!) : Profile.me();
+
+  static const List<Tab> _tabs = [
+    Tab(
+      text: "User",
+      icon: Icon(Icons.person_outlined),
+    ),
+    Tab(
+      text: "Events",
+      icon: Icon(Icons.celebration_outlined),
+    ),
+    Tab(
+      text: "Tickets",
+      icon: Icon(Icons.confirmation_number_outlined),
+    ),
+  ];
 
   @override
   Widget build(context) {
@@ -25,39 +42,38 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
 
     return FutureBuilder(
       future: profile,
-      builder: (context, snapshot) => Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.yourProfile),
-          actions: [
-            if (widget.id == null) ...[
-              IconButton(
-                onPressed: () => context.pushNamed("editProfile"),
-                tooltip: l10n.editProfile,
-                icon: const Icon(Icons.edit_outlined),
-              ),
-              IconButton(
-                onPressed: App.authState.signOut,
-                tooltip: l10n.logOut,
-                icon: const Icon(Icons.logout_outlined),
-              ),
-            ]
-          ],
+      builder: (context, snapshot) => DefaultTabController(
+        length: _tabs.length,
+        child: Scaffold(
+          appBar: AppBar(
+              title: Text(widget.id == null ? l10n.yourProfile : "Profile"),
+              bottom: const TabBar(tabs: _tabs),
+              actions: [
+                if (widget.id == null) ...[
+                  IconButton(
+                    onPressed: () => context.pushNamed("editProfile"),
+                    tooltip: l10n.editProfile,
+                    icon: const Icon(Icons.edit_outlined),
+                  ),
+                  IconButton(
+                    onPressed: App.authState.signOut,
+                    tooltip: l10n.logOut,
+                    icon: const Icon(Icons.logout_outlined),
+                  ),
+                ]
+              ]),
+          body: TabBarView(children: [
+            (snapshot.hasData)
+                ? ProfileHeader(profile: snapshot.data!)
+                : Center(
+                    child: snapshot.hasError
+                        ? Text(snapshot.error.toString())
+                        : const CircularProgressIndicator(),
+                  ),
+            const FeedScreen(),
+            const Tickets(),
+          ]),
         ),
-        body: () {
-          if (snapshot.hasData) {
-            return ListView(children: [
-              ProfileHeader(profile: snapshot.data!),
-              // TODO: stick tabs to the top of screen
-              const SizedBox(height: 400, child: ProfileTabs())
-            ]);
-          }
-
-          return Center(
-            child: snapshot.hasError
-                ? Text(snapshot.error.toString())
-                : const CircularProgressIndicator(),
-          );
-        }(),
       ),
     );
   }

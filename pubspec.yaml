@@ -56,7 +56,8 @@ dependencies:
   latlong2: ^0.8.1
   geolocator: ^9.0.2
   skeletons: ^0.0.3
-  unsplash_client: ^2.1.0+3
+  unsplash_client: ^2.1.0
+  qr_flutter: ^4.0.0
 
 dependency_overrides:
   intl: ^0.17.0
