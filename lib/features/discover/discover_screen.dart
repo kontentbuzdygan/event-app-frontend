@@ -1,8 +1,9 @@
 import "package:event_app/api/models/event.dart";
-import "package:event_app/api/models/profile.dart";
-import "package:flutter/cupertino.dart";
+import "package:event_app/features/discover/draggable_event_list.dart";
+import "package:event_app/features/discover/events_map.dart";
+import "package:event_app/features/discover/top_bar.dart";
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
+import "package:flutter_map/flutter_map.dart";
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -11,125 +12,76 @@ class DiscoverScreen extends StatefulWidget {
   State<DiscoverScreen> createState() => _DiscoverScreenState();
 }
 
-// TODO: Translate this file
-class _DiscoverScreenState extends State<DiscoverScreen> {
-  Future<Iterable<Event>> events = Future.value([]);
-  Future<Iterable<Profile>> profiles = Future.value([]);
+class _DiscoverScreenState extends State<DiscoverScreen>
+    with TickerProviderStateMixin {
+  late bool mapOpened;
+  late DraggableScrollableController sheetController;
+  late Future<List<Event>> events;
+  late MapController mapController;
+  late TextEditingController searchField;
 
-  void search(String value) {
-    setState(() {
-      events = Event.findAll();
-      profiles = Profile.search(value);
-    });
+  @override
+  void initState() {
+    super.initState();
+
+    events = Event.findAll().then((value) => value.toList());
+    sheetController = DraggableScrollableController();
+    mapController = MapController();
+    mapOpened = false;
+    searchField = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return DefaultTabController(
-      length: 2,
+    return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: CupertinoSearchTextField(
-            onSubmitted: search,
-            style: theme.textTheme.titleLarge,
-          ),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: "Events"),
-              Tab(text: "Profiles"),
+        body: FutureBuilder(
+          future: events,
+          builder: (context, eventsSnapshot) => Column(
+            children: [
+              TopBar(
+                searchFieldController: searchField,
+                mapOpened: mapOpened,
+                mapOnClick: () {
+                  sheetController.animateTo(
+                    mapOpened ? 1 : 0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease,
+                  );
+                },
+              ),
+              Expanded(
+                child: Stack(
+                  children: [
+                    EventsMap(
+                      controller: mapController,
+                      eventsSnapshot: eventsSnapshot,
+                    ),
+                    NotificationListener<DraggableScrollableNotification>(
+                      child: DraggableEventList(
+                        controller: sheetController,
+                        snapshot: eventsSnapshot,
+                      ),
+                      onNotification: (notification) {
+                        if (notification.extent >=
+                            notification.maxExtent - 0.1) {
+                          setState(() => mapOpened = false);
+                        }
+
+                        if (notification.extent <=
+                            notification.minExtent + 0.1) {
+                          setState(() => mapOpened = true);
+                        }
+                        return false;
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
-            indicatorSize: TabBarIndicatorSize.tab,
           ),
         ),
-        body: TabBarView(children: [
-          eventList,
-          profileList,
-        ]),
       ),
     );
   }
-
-  Widget get profileList => Column(
-        children: [
-          FutureBuilder(
-            future: profiles,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return const CircularProgressIndicator();
-              }
-
-              if (snapshot.hasError) {
-                return Text(snapshot.error!.toString());
-              }
-
-              final profiles = snapshot.data!.map(listItemProfile).toList();
-
-              return Expanded(
-                child: ListView.separated(
-                  itemCount: profiles.length,
-                  itemBuilder: (context, index) => profiles[index],
-                  separatorBuilder: (context, index) => const Divider(),
-                ),
-              );
-            },
-          )
-        ],
-      );
-
-  Column get eventList => Column(
-        children: [
-          FutureBuilder(
-            future: events,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return const CircularProgressIndicator();
-              }
-
-              if (snapshot.hasError) {
-                return Text(snapshot.error!.toString());
-              }
-
-              final events = snapshot.data!.map(listItemEvent).toList();
-
-              return Expanded(
-                child: ListView.separated(
-                  itemCount: events.length,
-                  itemBuilder: (context, index) => events[index],
-                  separatorBuilder: (context, index) => const Divider(),
-                ),
-              );
-            },
-          )
-        ],
-      );
-
-  Widget listItemEvent(Event event) => GestureDetector(
-        onTap: () => context.push("/events/${event.id}"),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          alignment: Alignment.centerLeft,
-          child: Column(children: [
-            Text(
-              event.title,
-              style: Theme.of(context).textTheme.titleMedium,
-            )
-          ]),
-        ),
-      );
-
-  Widget listItemProfile(Profile profile) => GestureDetector(
-        onTap: () => context.push("/profiles/${profile.id}"),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          alignment: Alignment.centerLeft,
-          child: Column(children: [
-            Text(
-              profile.displayName,
-              style: Theme.of(context).textTheme.titleMedium,
-            )
-          ]),
-        ),
-      );
 }

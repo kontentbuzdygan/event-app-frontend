@@ -4,6 +4,7 @@ import "package:event_app/api/json.dart";
 import "package:event_app/api/models/event_comment.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
+import "package:latlong2/latlong.dart";
 import "package:event_app/utils.dart";
 import "package:unsplash_client/unsplash_client.dart";
 
@@ -15,6 +16,7 @@ class Event {
   final String title, description;
   final DateTime startsAt;
   final DateTime? endsAt;
+  final LatLng location;
   final int commentCount;
 
   Profile? author;
@@ -27,6 +29,7 @@ class Event {
     required this.title,
     required this.description,
     required this.startsAt,
+    required this.location,
     this.endsAt,
     required this.commentCount,
   });
@@ -37,6 +40,11 @@ class Event {
         title: json["title"],
         description: json["description"],
         startsAt: DateTime.parse(json["starts_at"]),
+        // TODO: parse from json
+        location: LatLng(
+          50 + _random.nextDouble() * 4.5,
+          16 + _random.nextDouble() * 6,
+        ),
         endsAt:
             json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
         commentCount: 2 + _random.nextInt(5),
