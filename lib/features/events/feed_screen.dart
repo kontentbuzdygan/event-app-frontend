@@ -1,6 +1,7 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/errors.dart";
+import "package:event_app/features/events/tags/tags.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
@@ -93,10 +94,19 @@ class _State extends State<FeedScreen> {
             const SizedBox(height: 5),
             Text(event.description),
             const SizedBox(height: 8),
-            OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.comment_outlined, size: 16),
-                label: Text(event.commentCount.toString()))
+            Row(
+              children: [
+                OutlinedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.comment_outlined, size: 16),
+                    label: Text(event.commentCount.toString())),
+                const SizedBox(width: 8),
+                Tags(
+                  event: event,
+                  short: true,
+                )
+              ],
+            ),
           ],
         ),
       ),

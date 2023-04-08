@@ -1,4 +1,5 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/features/events/tags/tags.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
@@ -84,6 +85,10 @@ class _EventViewState extends State<EventView> {
             style: TextStyle(color: theme.colorScheme.primary),
           ),
           Text(widget.event.description),
+          Tags(
+            event: widget.event,
+            short: false,
+          ),
           Text("Comments", style: theme.textTheme.headlineMedium),
           Comments(event: widget.event),
         ],
