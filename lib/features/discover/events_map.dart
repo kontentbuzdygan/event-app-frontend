@@ -47,6 +47,7 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
           minZoom: 4,
           maxZoom: 18,
           zoom: 10,
+          enableScrollWheel: true,
         ),
         nonRotatedChildren: [
           AttributionWidget.defaultWidget(
@@ -77,14 +78,17 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
           final center = widget.controller.center;
           final zoom = widget.controller.zoom;
 
-          // FIXME: Use a wigdet that will resize map to
-          // keep the pin visible after zooming
+          final destination = LatLng(
+            event.location.latitude - 0.05,
+            event.location.longitude,
+          );
+
           await showModalBottomSheet(
             barrierColor: Colors.transparent,
             context: context,
             builder: (context) {
               widget.controller
-                  .animatedMapMove(this, event.location, max(11, zoom));
+                  .animatedMapMove(this, destination, max(11, zoom));
               return EventLayout(event: event);
             },
           );
