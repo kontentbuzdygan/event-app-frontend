@@ -34,7 +34,7 @@ class EventLayout extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        banner(context),
+        if (event.banner != null) banner(context),
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -61,14 +61,15 @@ class EventLayout extends StatelessWidget {
 
   Container banner(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(26),
-          ),
-          color: Theme.of(context).colorScheme.onPrimary),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(26),
+        ),
+      ),
       height: 150,
-      child: const Center(
-        child: Text("Banner"),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(26)),
+        child: Image.network(event.banner!.small.toString(), fit: BoxFit.cover),
       ),
     );
   }

@@ -34,6 +34,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
           events.map((event) => event.fetchAuthor()),
         ),
       );
+      await Future.wait(events.map((event) => event.fetchBanner()));
       return events;
     }();
   }
