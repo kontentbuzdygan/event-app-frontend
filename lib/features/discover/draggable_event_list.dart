@@ -13,7 +13,7 @@ class DraggableEventList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<DiscoverScreenNotifier>();
+    final state = context.watch<DiscoverScreenNotifier>();
     final controller = state.sheetController;
 
     return NotificationListener<DraggableScrollableNotification>(
