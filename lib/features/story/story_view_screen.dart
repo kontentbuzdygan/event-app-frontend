@@ -14,8 +14,7 @@ class StoryViewScreen extends StatefulWidget {
 class _StoryViewScreenState extends State<StoryViewScreen> {
   @override
   Widget build(context) {
-    return Scaffold(
-      body: StoryPageView(
+    return StoryPageView(
       itemBuilder: (context, pageIndex, storyIndex) {
         return Center(
           child: Text(
@@ -23,12 +22,14 @@ class _StoryViewScreenState extends State<StoryViewScreen> {
         );
       },
       storyLength: (pageIndex) {
-        return widget.stories[pageIndex].media.length;
+        return 3;//widget.stories[pageIndex].media.length;
       },
       pageLength: widget.stories.length,
       onPageLimitReached: () {
         Navigator.pop(context);
       },
-    ));
+      showShadow: true,
+      indicatorPadding: const EdgeInsets.symmetric(vertical: 56, horizontal: 8),
+    );
   }
 }

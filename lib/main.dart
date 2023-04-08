@@ -113,7 +113,12 @@ class App extends StatelessWidget {
                 GoRoute(
                   name: "stories",
                   path: "/stories",
-                  builder: (context, state) => StoryViewScreen(stories: state.extra as List<Story>,)
+                  pageBuilder: (context, state) => MaterialPage<void>(
+                    key: state.pageKey,
+                    restorationId: state.pageKey.value,
+                    fullscreenDialog: true,
+                    child: StoryViewScreen(stories: state.extra as List<Story>,)
+                    )
                 )
               ]),
             ],
