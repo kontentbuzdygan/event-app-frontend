@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 
 class DiscoverScreenNotifier extends ChangeNotifier {
   String? _filterText;
-  final Set<String> _filterTags = Set();
+  final Set<String> _filterTags = {};
   Set<String> get filterTags => _filterTags;
 
   bool _mapOpened = false;
