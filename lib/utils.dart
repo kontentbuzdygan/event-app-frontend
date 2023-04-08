@@ -12,7 +12,6 @@ final client = unsplash.UnsplashClient(
   accessKey: dotenv.get("UNSPLASH_KEY"),
 )));
 
-
 /// Converts the given elements to strings and joins them with slashes, ensuring
 /// there is no consecutive or leading/trailing slashes
 String joinPath(List<dynamic> parts) => parts

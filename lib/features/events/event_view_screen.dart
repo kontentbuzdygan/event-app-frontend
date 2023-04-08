@@ -62,9 +62,15 @@ class _EventViewState extends State<EventView> {
       padding: const EdgeInsets.all(12),
       child: ListView(
         children: [
-          if (widget.event.banner != null)
-            Expanded(
-                child: Image.network(widget.event.banner!.regular.toString())),
+          Row(
+            children: [
+              if (widget.event.banner != null)
+                Expanded(
+                    child: Image.network(
+                        widget.event.banner!.regular.toString(),
+                        fit: BoxFit.fill)),
+            ],
+          ),
           Row(children: [
             Text(
               l10n.createdBy(""),
