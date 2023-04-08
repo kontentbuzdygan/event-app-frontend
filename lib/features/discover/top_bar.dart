@@ -36,7 +36,7 @@ class _TopBarState extends State<TopBar> {
   Widget get filters => SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          // TODO: Load these from the db?
+          // TODO: Load these from the db
           children: ["🎉 Party", "🏋️ Gym", "🏌️ Golf", "👻 Movie night"]
               .map((tag) => Row(children: [
                     FilterChip(

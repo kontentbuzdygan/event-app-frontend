@@ -42,6 +42,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         body: FutureBuilder(
           future: events,
           builder: (context, eventsSnapshot) => ChangeNotifierProvider(
