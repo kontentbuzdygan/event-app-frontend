@@ -52,6 +52,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   form_builder_validators: ^8.5.0
+  unsplash_client: ^2.1.0+3
 
 dependency_overrides:
   intl: ^0.17.0

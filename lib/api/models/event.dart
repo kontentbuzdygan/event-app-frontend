@@ -5,6 +5,7 @@ import "package:event_app/api/models/event_comment.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/utils.dart";
+import "package:unsplash_client/unsplash_client.dart";
 
 const String _apiPath = "events";
 final _random = Random();
@@ -18,7 +19,7 @@ class Event {
 
   Profile? author;
   List? comments;
-  String? banner;
+  PhotoUrls? banner;
 
   Event._({
     required this.id,

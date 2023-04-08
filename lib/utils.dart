@@ -1,11 +1,10 @@
 import "dart:async";
 import "dart:convert";
-import "package:http/http.dart" as http;
 
 import "package:event_app/api/exceptions.dart";
+import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:http/http.dart";
-
-final client = http.Client();
+import "package:unsplash_client/unsplash_client.dart" as unsplash;
 
 /// Converts the given elements to strings and joins them with slashes, ensuring
 /// there is no consecutive or leading/trailing slashes
@@ -43,10 +42,18 @@ extension JsonDecodeBodyStreamed on StreamedResponse {
   }
 }
 
-Future<String?> fetchMockImage(String keyword) async {
-  final req = http.Request(
-      "GET", Uri.parse("https://source.unsplash.com/random/1280x720?$keyword"))
-    ..followRedirects = false;
-  final res = await client.send(req);
-  return res.headers["location"];
+Future<unsplash.PhotoUrls> fetchMockImage(String keyword) async {
+  final client = unsplash.UnsplashClient(
+      settings: unsplash.ClientSettings(
+          credentials: unsplash.AppCredentials(
+    accessKey: dotenv.get("UNSPLASH_KEY"),
+  )));
+
+  final photos = await client.photos
+      .random(query: keyword, orientation: unsplash.PhotoOrientation.landscape)
+      .goAndGet();
+  client.close();
+
+  final photo = photos.first.urls;
+  return photo;
 }

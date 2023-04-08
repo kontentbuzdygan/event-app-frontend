@@ -63,7 +63,8 @@ class _EventViewState extends State<EventView> {
       child: ListView(
         children: [
           if (widget.event.banner != null)
-            Expanded(child: Image.network(widget.event.banner!)),
+            Expanded(
+                child: Image.network(widget.event.banner!.regular.toString())),
           Row(children: [
             Text(
               l10n.createdBy(""),
