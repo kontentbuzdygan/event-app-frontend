@@ -27,10 +27,19 @@ class EventsMap extends StatefulWidget {
 class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
   late Future<LatLng> userLocation;
   late final state = context.watch<DiscoverScreenNotifier>();
+  late bool modalShown;
+  late AnimationController modalController;
 
   @override
   void initState() {
     super.initState();
+    modalShown = false;
+    modalController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    modalController.drive(CurveTween(curve: Curves.ease));
+
     userLocation = userLatLng()
       ..then(
         (location) => widget.controller.animatedMapMove(this, location, 10),
@@ -41,30 +50,44 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: userLocation,
-      builder: (context, snapshot) => FlutterMap(
-        mapController: widget.controller,
-        options: MapOptions(
-          minZoom: 4,
-          maxZoom: 18,
-          zoom: 10,
-          enableScrollWheel: true,
-        ),
-        nonRotatedChildren: [
-          AttributionWidget.defaultWidget(
-            source: "OpenStreetMap contributors",
-            onSourceTapped: null,
-            alignment: Alignment.topRight,
-          ),
-        ],
+      builder: (context, snapshot) => Column(
         children: [
-          TileLayer(
-            urlTemplate:
-                "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
-          ),
-          if (widget.eventsSnapshot.hasData)
-            MarkerLayer(
-              markers: widget.eventsSnapshot.data!.map(eventMarker).toList(),
+          Expanded(
+            child: FlutterMap(
+              mapController: widget.controller,
+              options: MapOptions(
+                minZoom: 4,
+                maxZoom: 18,
+                zoom: 10,
+                enableScrollWheel: true,
+              ),
+              nonRotatedChildren: [
+                AttributionWidget.defaultWidget(
+                  source: "OpenStreetMap contributors",
+                  onSourceTapped: null,
+                  alignment: Alignment.topRight,
+                ),
+              ],
+              children: [
+                TileLayer(
+                  urlTemplate:
+                      "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+                ),
+                if (widget.eventsSnapshot.hasData)
+                  MarkerLayer(
+                    markers:
+                        widget.eventsSnapshot.data!.map(eventMarker).toList(),
+                  ),
+              ],
             ),
+          ),
+          AnimatedSize(
+            curve: Curves.ease,
+            duration: const Duration(milliseconds: 200),
+            child: SizedBox(
+              height: modalShown ? 200 : 0,
+            ),
+          ),
         ],
       ),
     );
@@ -78,20 +101,24 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
           final center = widget.controller.center;
           final zoom = widget.controller.zoom;
 
-          final destination = LatLng(
-            event.location.latitude - 0.05,
-            event.location.longitude,
-          );
+          setState(() {
+            modalShown = true;
+          });
 
-          await showModalBottomSheet(
+          await showModalBottomSheet<void>(
+            transitionAnimationController: modalController,
             barrierColor: Colors.transparent,
             context: context,
             builder: (context) {
               widget.controller
-                  .animatedMapMove(this, destination, max(11, zoom));
+                  .animatedMapMove(this, event.location, max(11, zoom));
               return EventLayout(event: event);
             },
           );
+
+          setState(() {
+            modalShown = false;
+          });
 
           widget.controller.animatedMapMove(this, center, zoom);
         },
