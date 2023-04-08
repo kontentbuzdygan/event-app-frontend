@@ -6,6 +6,13 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:http/http.dart";
 import "package:unsplash_client/unsplash_client.dart" as unsplash;
 
+final client = unsplash.UnsplashClient(
+    settings: unsplash.ClientSettings(
+        credentials: unsplash.AppCredentials(
+  accessKey: dotenv.get("UNSPLASH_KEY"),
+)));
+
+
 /// Converts the given elements to strings and joins them with slashes, ensuring
 /// there is no consecutive or leading/trailing slashes
 String joinPath(List<dynamic> parts) => parts
@@ -43,17 +50,9 @@ extension JsonDecodeBodyStreamed on StreamedResponse {
 }
 
 Future<unsplash.PhotoUrls> fetchMockImage(String keyword) async {
-  final client = unsplash.UnsplashClient(
-      settings: unsplash.ClientSettings(
-          credentials: unsplash.AppCredentials(
-    accessKey: dotenv.get("UNSPLASH_KEY"),
-  )));
-
   final photos = await client.photos
       .random(query: keyword, orientation: unsplash.PhotoOrientation.landscape)
       .goAndGet();
-  client.close();
 
-  final photo = photos.first.urls;
-  return photo;
+  return photos.first.urls;
 }
