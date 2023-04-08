@@ -5,6 +5,8 @@ import "package:event_app/api/models/event_comment.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:latlong2/latlong.dart";
+import "package:event_app/utils.dart";
+import "package:unsplash_client/unsplash_client.dart";
 
 const String _apiPath = "events";
 final _random = Random();
@@ -19,6 +21,7 @@ class Event {
 
   Profile? author;
   List? comments;
+  PhotoUrls? banner;
 
   Event._({
     required this.id,
@@ -70,6 +73,11 @@ class Event {
 
   Future<Event> fetchComments() async {
     comments = await findEventComments(id);
+    return this;
+  }
+
+  Future<Event> fetchBanner() async {
+    banner = await fetchMockImage("party");
     return this;
   }
 }
