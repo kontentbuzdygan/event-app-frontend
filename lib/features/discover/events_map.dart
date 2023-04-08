@@ -26,7 +26,7 @@ class EventsMap extends StatefulWidget {
 
 class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
   late Future<LatLng> userLocation;
-  late final state = context.read<DiscoverScreenNotifier>();
+  late final state = context.watch<DiscoverScreenNotifier>();
 
   @override
   void initState() {

@@ -11,7 +11,7 @@ class SearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final state = context.watch<DiscoverScreenNotifier>();
+    final state = context.read<DiscoverScreenNotifier>();
 
     return SizedBox(
       height: 60,
@@ -30,8 +30,8 @@ class SearchField extends StatelessWidget {
                   const Icon(Icons.search_outlined),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: TextFormField(
-                      onFieldSubmitted: (value) => state.setFilterText(value),
+                    child: TextField(
+                      onChanged: (value) => state.setFilterText(value),
                       maxLines: 1,
                       decoration: InputDecoration(
                         hintText: l10n.searchHint,
