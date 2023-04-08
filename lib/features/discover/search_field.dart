@@ -1,19 +1,18 @@
+import "package:event_app/features/discover/discover_screen_notifier.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:provider/provider.dart";
 
 class SearchField extends StatelessWidget {
   const SearchField({
     super.key,
-    this.controller,
-    this.suffix,
   });
-
-  final TextEditingController? controller;
-  final Widget? suffix;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final state = context.watch<DiscoverScreenNotifier>();
+
     return SizedBox(
       height: 60,
       child: Row(children: [
@@ -32,7 +31,7 @@ class SearchField extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextFormField(
-                      controller: controller,
+                      onFieldSubmitted: (value) => state.setFilterText(value),
                       maxLines: 1,
                       decoration: InputDecoration(
                         hintText: l10n.searchHint,
@@ -45,7 +44,15 @@ class SearchField extends StatelessWidget {
             ),
           ),
         ),
-        if (suffix != null) suffix!
+        IconButton(
+          tooltip: l10n.showMap,
+          icon: Icon(
+            size: 30,
+            state.mapOpened ? Icons.map : Icons.map_outlined,
+          ),
+          isSelected: state.mapOpened,
+          onPressed: state.toggleList,
+        ),
       ]),
     );
   }

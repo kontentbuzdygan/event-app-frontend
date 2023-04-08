@@ -1,42 +1,54 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/features/discover/discover_screen_notifier.dart";
 import "package:event_app/features/events/event_card.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:provider/provider.dart";
 import "package:skeletons/skeletons.dart";
 
 class DraggableEventList extends StatelessWidget {
-  const DraggableEventList({
-    super.key,
-    required this.controller,
-    required this.snapshot,
-  });
+  const DraggableEventList({super.key, required this.snapshot});
 
   final AsyncSnapshot<List<Event>> snapshot;
-  final DraggableScrollableController controller;
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      controller: controller,
-      maxChildSize: 1,
-      minChildSize: 0.05,
-      initialChildSize: 1,
-      snap: true,
-      builder: (context, scrollController) {
-        return Container(
-          color: Theme.of(context).colorScheme.background,
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              children: [
-                const SizedBox(height: 13),
-                dragHandle(context),
-                eventsList,
-              ],
-            ),
-          ),
-        );
+    final state = context.read<DiscoverScreenNotifier>();
+    final controller = state.sheetController;
+
+    return NotificationListener<DraggableScrollableNotification>(
+      onNotification: (notification) {
+        if (notification.extent >= notification.maxExtent - 0.1) {
+          state.mapOpened = false;
+        }
+
+        if (notification.extent <= notification.minExtent + 0.1) {
+          state.mapOpened = true;
+        }
+        return false;
       },
+      child: DraggableScrollableSheet(
+        controller: controller,
+        maxChildSize: 1,
+        minChildSize: 0.05,
+        initialChildSize: 1,
+        snap: true,
+        builder: (context, scrollController) {
+          return Container(
+            color: Theme.of(context).colorScheme.background,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                children: [
+                  const SizedBox(height: 13),
+                  dragHandle(context),
+                  eventsList(state.filterEvent),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -51,21 +63,25 @@ class DraggableEventList extends StatelessWidget {
     );
   }
 
-  Widget get eventsList => !snapshot.hasData
+  Widget eventsList(bool Function(Event) filter) => !snapshot.hasData
       ? eventListSkeleton
-      : ListView.separated(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: snapshot.data!.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
-          itemBuilder: (context, i) => GestureDetector(
-            onTap: () => context.push(
-              "/events/${snapshot.data![i].id}",
+      : Builder(builder: (context) {
+          final events = snapshot.requireData.where(filter).toList();
+
+          return ListView.separated(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: events.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (context, i) => GestureDetector(
+              onTap: () => context.push(
+                "/events/${events[i].id}",
+              ),
+              child: EventCard(event: events[i]),
             ),
-            child: EventCard(event: snapshot.data![i]),
-          ),
-        );
+          );
+        });
 
   Widget get eventListSkeleton => Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),

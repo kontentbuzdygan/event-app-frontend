@@ -2,11 +2,13 @@ import "dart:math";
 
 import "package:event_app/api/locator.dart";
 import "package:event_app/api/models/event.dart";
+import "package:event_app/features/discover/discover_screen_notifier.dart";
 import "package:event_app/features/events/event_card.dart";
 import "package:event_app/features/map/animated_map.dart";
 import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
 import "package:latlong2/latlong.dart";
+import "package:provider/provider.dart";
 
 class EventsMap extends StatefulWidget {
   const EventsMap({
@@ -24,6 +26,7 @@ class EventsMap extends StatefulWidget {
 
 class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
   late Future<LatLng> userLocation;
+  late final state = context.read<DiscoverScreenNotifier>();
 
   @override
   void initState() {
@@ -41,7 +44,7 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
       builder: (context, snapshot) => FlutterMap(
         mapController: widget.controller,
         options: MapOptions(
-          minZoom: 8,
+          minZoom: 4,
           maxZoom: 18,
           zoom: 10,
         ),
@@ -90,8 +93,10 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
         },
         child: Icon(
           Icons.location_on,
-          color: Theme.of(context).colorScheme.background,
           size: 48,
+          color: state.filterEvent(event)
+              ? Theme.of(context).colorScheme.background
+              : Theme.of(context).colorScheme.background.withOpacity(0.3),
         ),
       ),
     );

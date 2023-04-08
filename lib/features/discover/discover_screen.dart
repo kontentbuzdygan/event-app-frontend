@@ -1,9 +1,12 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/api/rest_client.dart";
+import "package:event_app/features/discover/discover_screen_notifier.dart";
 import "package:event_app/features/discover/draggable_event_list.dart";
 import "package:event_app/features/discover/events_map.dart";
 import "package:event_app/features/discover/top_bar.dart";
 import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
+import "package:provider/provider.dart";
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -14,21 +17,25 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen>
     with TickerProviderStateMixin {
-  late bool mapOpened;
   late DraggableScrollableController sheetController;
   late Future<List<Event>> events;
   late MapController mapController;
-  late TextEditingController searchField;
 
   @override
   void initState() {
     super.initState();
 
-    events = Event.findAll().then((value) => value.toList());
     sheetController = DraggableScrollableController();
     mapController = MapController();
-    mapOpened = false;
-    searchField = TextEditingController();
+    events = () async {
+      final events = (await Event.findAll()).toList();
+      await RestClient.runCached(
+        () => Future.wait(
+          events.map((event) => event.fetchAuthor()),
+        ),
+      );
+      return events;
+    }();
   }
 
   @override
@@ -37,48 +44,24 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       child: Scaffold(
         body: FutureBuilder(
           future: events,
-          builder: (context, eventsSnapshot) => Column(
-            children: [
-              TopBar(
-                searchFieldController: searchField,
-                mapOpened: mapOpened,
-                mapOnClick: () {
-                  sheetController.animateTo(
-                    mapOpened ? 1 : 0,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.ease,
-                  );
-                },
-              ),
-              Expanded(
-                child: Stack(
-                  children: [
-                    EventsMap(
-                      controller: mapController,
-                      eventsSnapshot: eventsSnapshot,
-                    ),
-                    NotificationListener<DraggableScrollableNotification>(
-                      child: DraggableEventList(
-                        controller: sheetController,
-                        snapshot: eventsSnapshot,
+          builder: (context, eventsSnapshot) => ChangeNotifierProvider(
+            create: (_) => DiscoverScreenNotifier(),
+            child: Column(
+              children: [
+                const TopBar(),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      EventsMap(
+                        controller: mapController,
+                        eventsSnapshot: eventsSnapshot,
                       ),
-                      onNotification: (notification) {
-                        if (notification.extent >=
-                            notification.maxExtent - 0.1) {
-                          setState(() => mapOpened = false);
-                        }
-
-                        if (notification.extent <=
-                            notification.minExtent + 0.1) {
-                          setState(() => mapOpened = true);
-                        }
-                        return false;
-                      },
-                    ),
-                  ],
+                      DraggableEventList(snapshot: eventsSnapshot)
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
