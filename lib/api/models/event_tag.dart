@@ -23,6 +23,11 @@ class EventTag {
       EventTag._(id: json["id"], content: json["content"]);
 }
 
+List<EventTag> get tags {
+  return List.generate(
+      _tags.length, (i) => EventTag._(id: i, content: _tags[i]));
+}
+
 Future<List<EventTag>> findEventTags(int eventId) async {
   return List.generate(
     _random.nextInt(5) + 1,

@@ -15,7 +15,7 @@ class Tags extends StatefulWidget {
 }
 
 class _State extends State<Tags> {
-  late var tags = () async {
+  late var eventTags = () async {
     final event = await widget.event.fetchTags();
     return event.tags;
   }();
@@ -23,10 +23,10 @@ class _State extends State<Tags> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: tags,
+      future: eventTags,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const SizedBox();
         }
 
         return Wrap(
