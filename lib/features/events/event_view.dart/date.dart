@@ -18,9 +18,7 @@ class EventViewDate extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     if (startsAt == null) {
-      return const SkeletonLine(
-        style: SkeletonLineStyle(width: 240, height: 20),
-      );
+      return const EventViewDateSkeleton();
     }
 
     return Row(children: [
@@ -33,5 +31,18 @@ class EventViewDate extends StatelessWidget {
         style: TextStyle(color: theme.colorScheme.primary),
       ),
     ]);
+  }
+}
+
+class EventViewDateSkeleton extends StatelessWidget {
+  const EventViewDateSkeleton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const SkeletonLine(
+      style: SkeletonLineStyle(width: 240, height: 20),
+    );
   }
 }

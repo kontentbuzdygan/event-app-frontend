@@ -33,27 +33,48 @@ class EventViewDescription extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              if (author != null)
-                Flexible(
-                  child: Text(
-                    author!.displayName,
-                    style: theme.textTheme.titleLarge,
-                  ),
-                ),
-              if (author == null)
-                const SkeletonLine(
-                  style: SkeletonLineStyle(width: 200, height: 30),
-                ),
+              author == null
+                  ? const EventViewDisplayNameSkeleton()
+                  : Flexible(
+                      child: Text(
+                        author!.displayName,
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    ),
             ]),
             const SizedBox(height: 16),
             description == null
-                ? const SkeletonLine(
-                    style: SkeletonLineStyle(width: 1000, height: 100),
-                  )
+                ? const EventViewDescriptionSkeleton()
                 : Text(description!, style: theme.textTheme.bodyLarge),
           ],
         ),
       ),
+    );
+  }
+}
+
+class EventViewDescriptionSkeleton extends StatelessWidget {
+  const EventViewDescriptionSkeleton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const SkeletonLine(
+      style: SkeletonLineStyle(width: 1000, height: 100),
+    );
+  }
+}
+
+class EventViewDisplayNameSkeleton extends StatelessWidget {
+  const EventViewDisplayNameSkeleton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const SkeletonLine(
+      style: SkeletonLineStyle(width: 200, height: 30),
     );
   }
 }

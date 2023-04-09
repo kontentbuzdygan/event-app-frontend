@@ -22,7 +22,10 @@ class _EventViewState extends State<EventView> {
   @override
   void initState() {
     super.initState();
-    comments = widget.event?.fetchComments();
+    comments = Future.delayed(
+      const Duration(seconds: 2),
+      () => widget.event!.fetchComments(),
+    );
     banner = widget.event?.fetchBanner();
   }
 
@@ -44,7 +47,7 @@ class _EventViewState extends State<EventView> {
         if (event?.hasBanner ?? true)
           FutureBuilder(
             future: banner,
-            builder: (context, snapshot) => EventViewBaner(
+            builder: (context, snapshot) => EventViewBanner(
               title: event?.title,
               banner: snapshot.data?.banner,
             ),

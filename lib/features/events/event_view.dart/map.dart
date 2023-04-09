@@ -19,43 +19,46 @@ class EventViewMap extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12.5),
-              ),
-              child: SizedBox(
-                height: 200,
-                child: FlutterMap(
-                  options: MapOptions(
-                    zoom: 15,
-                    absorbPanEventsOnScrollables: true,
-                    center: location,
-                  ),
-                  nonRotatedChildren: [
-                    AttributionWidget.defaultWidget(
-                      source: "OpenStreetMap contributors",
+            location == null
+                ? const EventViewMapSkeleton()
+                : ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(12.5),
                     ),
-                  ],
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                          "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
-                    ),
-                    MarkerLayer(markers: [
-                      if (location != null)
-                        Marker(
-                          point: location!,
-                          builder: (_) => Icon(
-                            Icons.location_on,
-                            color: Theme.of(context).colorScheme.background,
-                            size: 48,
+                    child: SizedBox(
+                      height: 200,
+                      child: FlutterMap(
+                        options: MapOptions(
+                          zoom: 15,
+                          absorbPanEventsOnScrollables: true,
+                          center: location,
+                        ),
+                        nonRotatedChildren: [
+                          AttributionWidget.defaultWidget(
+                            source: "OpenStreetMap contributors",
                           ),
-                        )
-                    ]),
-                  ],
-                ),
-              ),
-            ),
+                        ],
+                        children: [
+                          TileLayer(
+                            urlTemplate:
+                                "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+                          ),
+                          MarkerLayer(markers: [
+                            if (location != null)
+                              Marker(
+                                point: location!,
+                                builder: (_) => Icon(
+                                  Icons.location_on,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                  size: 48,
+                                ),
+                              )
+                          ]),
+                        ],
+                      ),
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(children: [
@@ -72,6 +75,20 @@ class EventViewMap extends StatelessWidget {
               ]),
             ),
           ],
+        ),
+      );
+}
+
+class EventViewMapSkeleton extends StatelessWidget {
+  const EventViewMapSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) => const ClipRRect(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(12.5),
+        ),
+        child: SkeletonLine(
+          style: SkeletonLineStyle(height: 200),
         ),
       );
 }
