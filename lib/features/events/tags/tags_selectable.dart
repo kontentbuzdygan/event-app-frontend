@@ -10,7 +10,6 @@ class SelectableTags extends StatefulWidget {
 }
 
 class _State extends State<SelectableTags> {
-
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -22,7 +21,8 @@ class _State extends State<SelectableTags> {
             onSelected: (selected) {
               setState(() {
                 widget.selectedTags.any((item) => item.id == tag.id)
-                    ? widget.selectedTags.removeWhere((item) => item.id == tag.id)
+                    ? widget.selectedTags
+                        .removeWhere((item) => item.id == tag.id)
                     : widget.selectedTags.add(tag);
               });
             },
