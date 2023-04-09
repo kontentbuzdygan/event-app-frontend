@@ -17,7 +17,7 @@ class EventView extends StatefulWidget {
 
 class _EventViewState extends State<EventView> {
   Future<Event>? comments;
-  Future<Event>? banner;
+  late bool hasBanner;
 
   @override
   void initState() {
@@ -26,15 +26,15 @@ class _EventViewState extends State<EventView> {
       const Duration(seconds: 2),
       () => widget.event!.fetchComments(),
     );
-    banner = widget.event?.fetchBanner();
+    hasBanner = true;
   }
 
   @override
   void didUpdateWidget(old) {
     super.didUpdateWidget(old);
 
-    banner ??= widget.event?.fetchBanner();
     comments ??= widget.event?.fetchComments();
+    hasBanner = widget.event == null ? true : widget.event!.banner != null;
   }
 
   @override
@@ -44,13 +44,10 @@ class _EventViewState extends State<EventView> {
     return ListView(
       padding: const EdgeInsets.only(top: 0),
       children: [
-        if (event?.hasBanner ?? true)
-          FutureBuilder(
-            future: banner,
-            builder: (context, snapshot) => EventViewBanner(
-              title: event?.title,
-              banner: snapshot.data?.banner ?? event?.banner,
-            ),
+        if (hasBanner)
+          EventViewBanner(
+            title: event?.title,
+            banner: event?.banner,
           ),
         Padding(
           padding: const EdgeInsets.all(20),

@@ -15,13 +15,13 @@ class EventViewScreen extends StatefulWidget {
 
 class _EventViewScreenState extends State<EventViewScreen> {
   late final Future<Event> event;
+  late bool hasBanner;
 
   @override
   void initState() {
     super.initState();
-    event = widget.event != null
-        ? widget.event!.fetchAuthor()
-        : Event.find(widget.id).then((event) => event.fetchAuthor());
+    event = Event.find(widget.id).then((event) => event.fetchAuthor());
+    hasBanner = widget.event == null ? true : widget.event!.banner != null;
   }
 
   @override
@@ -35,13 +35,14 @@ class _EventViewScreenState extends State<EventViewScreen> {
           return Center(child: Text(l10n.eventNotFound));
         }
 
+        final elo =
+            hasBanner && !snapshot.hasData || snapshot.data?.banner != null;
+
         return Scaffold(
-          extendBodyBehindAppBar: snapshot.data?.hasBanner ?? true,
+          extendBodyBehindAppBar: elo,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
-            title: !(snapshot.data?.hasBanner ?? true)
-                ? Text(snapshot.requireData.title)
-                : null,
+            title: !elo ? Text(snapshot.requireData.title) : null,
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () {},

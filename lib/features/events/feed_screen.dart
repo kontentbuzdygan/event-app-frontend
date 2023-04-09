@@ -26,7 +26,6 @@ class _State extends State<FeedScreen> {
           events.map((event) => event.fetchAuthor()),
         ),
       );
-      await Future.wait(events.map((event) => event.fetchBanner()));
       return events;
     }();
   }
