@@ -18,9 +18,10 @@ class Event {
   final DateTime? endsAt;
   final LatLng location;
   final int commentCount;
+  final bool hasBanner;
 
   Profile? author;
-  List? comments;
+  List<EventComment>? comments;
   PhotoUrls? banner;
 
   Event._({
@@ -32,6 +33,7 @@ class Event {
     required this.location,
     this.endsAt,
     required this.commentCount,
+    required this.hasBanner,
   });
 
   factory Event.fromJson(JsonObject json) => Event._(
@@ -48,6 +50,7 @@ class Event {
         endsAt:
             json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
         commentCount: 2 + _random.nextInt(5),
+        hasBanner: json["has_banner"] ?? true,
       );
 
   static Future<Event> find(int id) async {

@@ -1,3 +1,4 @@
+import "package:event_app/api/models/event.dart";
 import "package:event_app/errors.dart";
 import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
@@ -80,6 +81,7 @@ class App extends StatelessWidget {
                   path: "/events/:eventId",
                   builder: (context, state) => EventViewScreen(
                     id: int.parse(state.params["eventId"] ?? "0"),
+                    event: state.extra as Event?,
                   ),
                 ),
               ]),

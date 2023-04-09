@@ -36,78 +36,76 @@ class _State extends State<CreateEventScreen> {
   DateTime? endsAt;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.createEvent),
-      ),
-      body: FormBuilder(
-        key: _formKey,
-        child: Stepper(
-          steps: steps,
-          currentStep: currentStep,
-          onStepCancel: () => currentStep == 0
-              ? null
-              : setState(() {
-                  currentStep -= 1;
-                  FocusScope.of(context).unfocus();
-                }),
-          onStepContinue: () {
-            FocusScope.of(context).unfocus();
-            bool isLastStep = currentStep == steps.length - 1;
-            if (isLastStep) {
-              if (endsAtController.text.isEmpty) {
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.createEvent),
+        ),
+        body: FormBuilder(
+          key: _formKey,
+          child: Stepper(
+            steps: steps,
+            currentStep: currentStep,
+            onStepCancel: () => currentStep == 0
+                ? null
+                : setState(() {
+                    currentStep -= 1;
+                    FocusScope.of(context).unfocus();
+                  }),
+            onStepContinue: () {
+              FocusScope.of(context).unfocus();
+              bool isLastStep = currentStep == steps.length - 1;
+              if (isLastStep) {
+                if (endsAtController.text.isEmpty) {
+                  NewEvent(
+                    title: titleController.text,
+                    description: descriptionController.text,
+                    startsAt: DateTime.parse(startsAtController.text),
+                  ).save();
+                  return;
+                }
                 NewEvent(
                   title: titleController.text,
                   description: descriptionController.text,
                   startsAt: DateTime.parse(startsAtController.text),
+                  endsAt: DateTime.parse(endsAtController.text),
                 ).save();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.eventCreated),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+                context.pop();
                 return;
               }
-              NewEvent(
-                title: titleController.text,
-                description: descriptionController.text,
-                startsAt: DateTime.parse(startsAtController.text),
-                endsAt: DateTime.parse(endsAtController.text),
-              ).save();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(l10n.eventCreated),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-              context.pop();
-              return;
-            }
-            setState(() {
-              if (_formKeys[currentStep].currentState!.saveAndValidate()) {
-                currentStep += 1;
-              }
-            });
-          },
-          controlsBuilder: (BuildContext context, ControlsDetails details) {
-            return Row(
-              children: <Widget>[
-                TextButton(
-                  onPressed: details.onStepCancel,
-                  child: Text(currentStep == 0 ? "" : l10n.back),
-                ),
-                const Spacer(),
-                TextButton(
-                  onPressed: details.onStepContinue,
-                  child: Text(
-                    currentStep == steps.length - 1 ? l10n.confirm : l10n.next,
+              setState(() {
+                if (_formKeys[currentStep].currentState!.saveAndValidate()) {
+                  currentStep += 1;
+                }
+              });
+            },
+            controlsBuilder: (BuildContext context, ControlsDetails details) {
+              return Row(
+                children: <Widget>[
+                  TextButton(
+                    onPressed: details.onStepCancel,
+                    child: Text(currentStep == 0 ? "" : l10n.back),
                   ),
-                ),
-              ],
-            );
-          },
+                  const Spacer(),
+                  TextButton(
+                    onPressed: details.onStepContinue,
+                    child: Text(
+                      currentStep == steps.length - 1
+                          ? l10n.confirm
+                          : l10n.next,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   List<Step> get steps => [
         Step(
