@@ -20,7 +20,7 @@ class _State extends State<FeedScreen> {
     super.initState();
 
     allEvents = () async {
-      final events = (await Event.findAll()).toList();
+      final events = await Event.findAll();
       await RestClient.runCached(
         () => Future.wait(
           events.map((event) => event.fetchAuthor()),

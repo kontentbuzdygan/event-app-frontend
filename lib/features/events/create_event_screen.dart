@@ -37,8 +37,6 @@ class _State extends State<CreateEventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.createEvent),

@@ -24,7 +24,11 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   void initState() {
     super.initState();
 
-    events = Event.findAll().then((value) => value.toList());
+    events = () async {
+      final events = await Event.findAll();
+      await Future.wait(events.map((event) async => await event.fetchBanner()));
+      return events;
+    }();
     sheetController = DraggableScrollableController();
     mapController = MapController();
     mapOpened = false;
@@ -60,7 +64,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                     NotificationListener<DraggableScrollableNotification>(
                       child: DraggableEventList(
                         controller: sheetController,
-                        snapshot: eventsSnapshot,
+                        events: events,
                       ),
                       onNotification: (notification) {
                         if (notification.extent >=

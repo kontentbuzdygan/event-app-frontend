@@ -1,5 +1,6 @@
+import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
-import "package:event_app/features/events/feed_screen.dart";
+import "package:event_app/features/events/event_list.dart";
 import "package:event_app/features/profile/profile_header.dart";
 import "package:event_app/features/profile/tickets.dart";
 import "package:event_app/main.dart";
@@ -70,7 +71,17 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                         ? Text(snapshot.error.toString())
                         : const CircularProgressIndicator(),
                   ),
-            const FeedScreen(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: EventList(
+                events: () async {
+                  final events = await Event.findAll();
+                  await Future.wait(
+                      events.map((event) async => await event.fetchBanner()));
+                  return events;
+                }(),
+              ),
+            ),
             const Tickets(),
           ]),
         ),

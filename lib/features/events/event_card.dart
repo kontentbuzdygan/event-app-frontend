@@ -1,6 +1,7 @@
 import "package:event_app/api/models/event.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:go_router/go_router.dart";
 
 class EventCard extends StatelessWidget {
   const EventCard({super.key, required this.event});
@@ -11,7 +12,7 @@ class EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(25),
       ),
       child: EventLayout(event: event),
     );
@@ -28,47 +29,46 @@ class EventLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        banner(context),
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                event.title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Text(
-                l10n.startsAtDate(event.startsAt),
-                style: Theme.of(context).textTheme.labelSmall!.merge(
-                      TextStyle(color: Theme.of(context).colorScheme.primary),
+    return GestureDetector(
+      onTap: () => context.push(
+        "/events/${event.id}",
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(25),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Image.network(
+              event.banner!.regular.toString(),
+              height: 150,
+              fit: BoxFit.cover,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    event.title,
+                    style: theme.textTheme.titleLarge,
+                  ),
+                  Text(
+                    l10n.startsAtDate(event.startsAt),
+                    style: theme.textTheme.labelSmall!.merge(
+                      TextStyle(color: theme.colorScheme.primary),
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(event.description),
+                ],
               ),
-              const SizedBox(height: 12),
-              Text(event.description),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    );
-  }
-
-  Container banner(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(26),
-          ),
-          color: Theme.of(context).colorScheme.onPrimary),
-      height: 150,
-      child: const Center(
-        child: Text("Banner"),
       ),
     );
   }
