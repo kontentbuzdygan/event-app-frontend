@@ -1,9 +1,9 @@
 import "package:event_app/api/models/event.dart";
-import "package:event_app/features/events/event_view.dart/banner.dart";
-import "package:event_app/features/events/event_view.dart/comments.dart";
-import "package:event_app/features/events/event_view.dart/date.dart";
-import "package:event_app/features/events/event_view.dart/description.dart";
-import "package:event_app/features/events/event_view.dart/map.dart";
+import "package:event_app/features/events/event_view/banner.dart";
+import "package:event_app/features/events/event_view/comments.dart";
+import "package:event_app/features/events/event_view/date.dart";
+import "package:event_app/features/events/event_view/description.dart";
+import "package:event_app/features/events/event_view/map.dart";
 import "package:flutter/material.dart";
 
 class EventView extends StatefulWidget {

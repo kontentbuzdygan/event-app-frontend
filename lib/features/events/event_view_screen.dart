@@ -1,7 +1,7 @@
 import "package:event_app/api/models/event.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
-import "event_view.dart/event_view.dart";
+import "event_view/event_view.dart";
 
 class EventViewScreen extends StatefulWidget {
   const EventViewScreen({super.key, required this.id, this.event});
@@ -20,9 +20,7 @@ class _EventViewScreenState extends State<EventViewScreen> {
   void initState() {
     super.initState();
     event = widget.event != null
-        ? widget.event!.author != null
-            ? Future.value(widget.event)
-            : widget.event!.fetchAuthor()
+        ? widget.event!.fetchAuthor()
         : Event.find(widget.id).then((event) => event.fetchAuthor());
   }
 
