@@ -73,8 +73,8 @@ class _State extends State<FeedScreen> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return MaterialButton(
-      onPressed: () => context.push("/events/${event.id}"),
+    return InkWell(
+      onTap: () => context.push("/events/${event.id}"),
       child: Container(
         padding: const EdgeInsets.all(20),
         alignment: Alignment.topLeft,

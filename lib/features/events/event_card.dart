@@ -32,7 +32,8 @@ class EventLayout extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(25),
       onTap: () => context.push(
         "/events/${event.id}",
       ),

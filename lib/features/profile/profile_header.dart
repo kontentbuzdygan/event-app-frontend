@@ -24,11 +24,8 @@ class ProfileHeader extends StatelessWidget {
             icon: const Icon(Icons.account_circle_outlined, size: 64),
           ),
           const SizedBox(width: 8),
-          TextButton(
-            onPressed: () => context.pushNamed("editProfile"),
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-            ),
+          GestureDetector(
+            onTap: () => context.pushNamed("editProfile"),
             child: Text(profile.displayName, style: theme.textTheme.titleLarge),
           )
         ]),

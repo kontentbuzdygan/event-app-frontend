@@ -76,12 +76,8 @@ class _EventViewState extends State<EventView> {
               l10n.createdBy(""),
               style: TextStyle(color: theme.hintColor),
             ),
-            TextButton(
-              onPressed: () =>
-                  context.push("/profiles/${widget.event.authorId}"),
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-              ),
+            GestureDetector(
+              onTap: () => context.push("/profiles/${widget.event.authorId}"),
               child: Text(
                 widget.event.author!.displayName,
                 style: TextStyle(color: theme.hintColor),
