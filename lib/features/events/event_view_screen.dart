@@ -74,48 +74,43 @@ class _EventViewState extends State<EventView> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: ListView(
-        children: [
-          Row(
-            children: [
-              if (widget.event.banner != null)
-                Expanded(
-                    child: Image.network(
-                        widget.event.banner!.regular.toString(),
-                        fit: BoxFit.fill)),
-            ],
+    return ListView(
+      children: [
+        Row(
+          children: [
+            if (widget.event.banner != null)
+              Expanded(
+                  child: Image.network(widget.event.banner!.regular.toString(),
+                      fit: BoxFit.fill)),
+          ],
+        ),
+        StoryListView(stories: allStories),
+        Row(children: [
+          Text(
+            l10n.createdBy(""),
+            style: TextStyle(color: theme.hintColor),
           ),
-          StoryListView(stories: allStories),
-          Row(children: [
-            Text(
-              l10n.createdBy(""),
+          TextButton(
+            onPressed: () => context.push("/profiles/${widget.event.authorId}"),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+            ),
+            child: Text(
+              widget.event.author!.displayName,
               style: TextStyle(color: theme.hintColor),
             ),
-            TextButton(
-              onPressed: () =>
-                  context.push("/profiles/${widget.event.authorId}"),
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-              ),
-              child: Text(
-                widget.event.author!.displayName,
-                style: TextStyle(color: theme.hintColor),
-              ),
-            ),
-          ]),
-          Text(
-            widget.event.endsAt != null
-                ? l10n.eventFromTo(widget.event.startsAt, widget.event.endsAt!)
-                : l10n.startsAtDate(widget.event.startsAt),
-            style: TextStyle(color: theme.colorScheme.primary),
           ),
-          Text(widget.event.description),
-          Text("Comments", style: theme.textTheme.headlineMedium),
-          Comments(event: widget.event),
-        ],
-      ),
+        ]),
+        Text(
+          widget.event.endsAt != null
+              ? l10n.eventFromTo(widget.event.startsAt, widget.event.endsAt!)
+              : l10n.startsAtDate(widget.event.startsAt),
+          style: TextStyle(color: theme.colorScheme.primary),
+        ),
+        Text(widget.event.description),
+        Text("Comments", style: theme.textTheme.headlineMedium),
+        Comments(event: widget.event),
+      ],
     );
   }
 }

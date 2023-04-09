@@ -1,4 +1,3 @@
-import "package:event_app/api/models/story.dart";
 import "package:event_app/errors.dart";
 import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
@@ -8,6 +7,7 @@ import "package:event_app/features/events/event_view_screen.dart";
 import "package:event_app/features/events/feed_screen.dart";
 import "package:event_app/features/profile/profile_edit_screen.dart";
 import "package:event_app/features/profile/profile_view_screen.dart";
+import "package:event_app/features/story/story_list_view.dart";
 import "package:event_app/features/story/story_view_screen.dart";
 import "package:event_app/tab_navigation.dart";
 import "package:flutter/material.dart";
@@ -16,6 +16,10 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
+
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellNavigatorKey =
+    GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,9 +40,11 @@ class App extends StatelessWidget {
   static final _errorNotifier = ErrorNotifier();
 
   static final _router = GoRouter(
+    navigatorKey: _rootNavigatorKey,
     initialLocation: "/auth",
     routes: [
       ShellRoute(
+        navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
           final errorNotifier = context.watch<ErrorNotifier>();
 
@@ -110,21 +116,25 @@ class App extends StatelessWidget {
                   path: "/profiles/me/edit",
                   builder: (context, state) => const ProfileEditScreen(),
                 ),
-                GoRoute(
-                  name: "stories",
-                  path: "/stories",
-                  pageBuilder: (context, state) => MaterialPage<void>(
-                    key: state.pageKey,
-                    restorationId: state.pageKey.value,
-                    fullscreenDialog: true,
-                    child: StoryViewScreen(stories: state.extra as List<Story>,)
-                    )
-                )
               ]),
             ],
-          )
+          ),
         ],
       ),
+      GoRoute(
+          parentNavigatorKey: _rootNavigatorKey,
+          name: "stories",
+          path: "/stories",
+          pageBuilder: (context, state) => CustomTransitionPage(
+            transitionDuration: const Duration(milliseconds: 300),
+              fullscreenDialog: true,
+              transitionsBuilder: (_, a, b, c) {
+                final curve = CurvedAnimation(parent: a, curve: Curves.fastOutSlowIn);
+                return ScaleTransition(scale: curve, alignment: Alignment.topLeft, child: c);
+              },
+              child: StoryViewScreen(
+                stories: state.extra as StoryData,
+              ))),
     ],
     redirect: (_, state) {
       if (!authState.loggedIn) return "/auth";

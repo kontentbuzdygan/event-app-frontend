@@ -1,5 +1,7 @@
 import "package:event_app/api/json.dart";
 import "package:event_app/api/rest_client.dart";
+import "package:event_app/utils.dart";
+import "package:unsplash_client/unsplash_client.dart";
 import 'package:username_gen/username_gen.dart';
 
 const String _apiPath = "profiles";
@@ -8,14 +10,13 @@ class Profile {
   final int id;
   String displayName;
   String? bio;
-  String? profilePicture;
+  PhotoUrls? profilePicture;
 
-  Profile._({
-    required this.id,
-    required this.displayName,
-    this.bio,
-    this.profilePicture
-  });
+  Profile._(
+      {required this.id,
+      required this.displayName,
+      this.bio,
+      this.profilePicture});
 
   factory Profile.fromJson(JsonObject json) => Profile._(
         id: json["id"],
@@ -48,6 +49,9 @@ class Profile {
   }
 }
 
-Future<Profile> randomProfile(int id) {
-  return Future.value(Profile._(id: id, displayName: UsernameGen().generate(), profilePicture: ""));
+Future<Profile> randomProfile(int id) async {
+  return Future.value(Profile._(
+      id: id,
+      displayName: UsernameGen().generate(),
+      profilePicture: await fetchMockImage("face")));
 }
