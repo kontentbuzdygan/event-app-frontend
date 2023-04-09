@@ -49,7 +49,7 @@ class _EventViewState extends State<EventView> {
             future: banner,
             builder: (context, snapshot) => EventViewBanner(
               title: event?.title,
-              banner: snapshot.data?.banner,
+              banner: snapshot.data?.banner ?? event?.banner,
             ),
           ),
         Padding(
