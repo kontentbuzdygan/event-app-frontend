@@ -79,6 +79,14 @@ class Event {
     return this;
   }
 
+  Future<Event> fetchCommentsWithAuthors() async {
+    await fetchComments();
+    await RestClient.runCached(
+      () => Future.wait(comments!.map((c) => c.fetchAuthor())),
+    );
+    return this;
+  }
+
   Future<Event> _fetchBanner() async {
     banner = await fetchMockImage("party");
     return this;

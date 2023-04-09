@@ -5,6 +5,7 @@ import "package:event_app/features/events/event_view/date.dart";
 import "package:event_app/features/events/event_view/description.dart";
 import "package:event_app/features/events/event_view/map.dart";
 import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
 
 class EventView extends StatefulWidget {
   const EventView({super.key, required this.event});
@@ -22,18 +23,14 @@ class _EventViewState extends State<EventView> {
   @override
   void initState() {
     super.initState();
-    comments = Future.delayed(
-      const Duration(seconds: 2),
-      () => widget.event!.fetchComments(),
-    );
+    comments = widget.event?.fetchCommentsWithAuthors();
     hasBanner = true;
   }
 
   @override
   void didUpdateWidget(old) {
     super.didUpdateWidget(old);
-
-    comments ??= widget.event?.fetchComments();
+    comments ??= widget.event?.fetchCommentsWithAuthors();
     hasBanner = widget.event == null ? true : widget.event!.banner != null;
   }
 
@@ -71,10 +68,18 @@ class _EventViewState extends State<EventView> {
               const SizedBox(height: 16),
               FutureBuilder(
                 future: comments,
-                builder: (context, snapshot) => EventViewComments(
-                  commentCount: event?.commentCount,
-                  comments:
-                      snapshot.hasData ? snapshot.requireData.comments : null,
+                builder: (context, snapshot) => GestureDetector(
+                  onTap: event == null
+                      ? null
+                      : () => context.push(
+                            "/events/${event.id}/comments",
+                            extra: snapshot.data,
+                          ),
+                  child: EventViewComments(
+                    commentCount: event?.commentCount,
+                    comments:
+                        snapshot.hasData ? snapshot.requireData.comments : null,
+                  ),
                 ),
               ),
             ],
