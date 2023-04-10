@@ -1,4 +1,5 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/features/discover/discover_screen_notifier.dart";
 import "package:event_app/features/discover/draggable_event_list.dart";
@@ -19,6 +20,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     with TickerProviderStateMixin {
   late DraggableScrollableController sheetController;
   late Future<List<Event>> events;
+  late Future<List<Profile>> profiles;
   late MapController mapController;
 
   @override
@@ -27,16 +29,6 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
     sheetController = DraggableScrollableController();
     mapController = MapController();
-    events = () async {
-      final events = (await Event.findAll()).toList();
-      await RestClient.runCached(
-        () => Future.wait(
-          events.map((event) => event.fetchAuthor()),
-        ),
-      );
-      await Future.wait(events.map((event) => event.fetchBanner()));
-      return events;
-    }();
   }
 
   @override
@@ -44,26 +36,18 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        body: FutureBuilder(
-          future: events,
-          builder: (context, eventsSnapshot) => ChangeNotifierProvider(
-            create: (_) => DiscoverScreenNotifier(),
-            child: Column(
-              children: [
-                const TopBar(),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      EventsMap(
-                        controller: mapController,
-                        eventsSnapshot: eventsSnapshot,
-                      ),
-                      DraggableEventList(snapshot: eventsSnapshot)
-                    ],
-                  ),
-                ),
-              ],
-            ),
+        body: ChangeNotifierProvider(
+          create: (context) => DiscoverScreenNotifier(),
+          child: Column(
+            children: [
+              const TopBar(),
+              Expanded(
+                child: Stack(children: [
+                  EventsMap(controller: mapController),
+                  const DraggableEventList(),
+                ]),
+              ),
+            ],
           ),
         ),
       ),

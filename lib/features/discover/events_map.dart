@@ -3,7 +3,7 @@ import "dart:math";
 import "package:event_app/api/locator.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/features/discover/discover_screen_notifier.dart";
-import "package:event_app/features/events/event_card.dart";
+import 'package:event_app/features/events/event_compact.dart';
 import "package:event_app/features/map/animated_map.dart";
 import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
@@ -11,14 +11,9 @@ import "package:latlong2/latlong.dart";
 import "package:provider/provider.dart";
 
 class EventsMap extends StatefulWidget {
-  const EventsMap({
-    super.key,
-    required this.controller,
-    required this.eventsSnapshot,
-  });
+  const EventsMap({super.key, required this.controller});
 
   final MapController controller;
-  final AsyncSnapshot<Iterable<Event>> eventsSnapshot;
 
   @override
   State<EventsMap> createState() => _EventsMapState();
@@ -48,6 +43,8 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<DiscoverScreenNotifier>();
+
     return FutureBuilder(
       future: userLocation,
       builder: (context, snapshot) => Column(
@@ -73,10 +70,9 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
                   urlTemplate:
                       "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
                 ),
-                if (widget.eventsSnapshot.hasData)
+                if (state.events != null)
                   MarkerLayer(
-                    markers:
-                        widget.eventsSnapshot.data!.map(eventMarker).toList(),
+                    markers: state.events!.map(eventMarker).toList(),
                   ),
               ],
             ),
@@ -112,7 +108,7 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
             builder: (context) {
               widget.controller
                   .animatedMapMove(this, event.location, max(11, zoom));
-              return EventLayout(event: event);
+              return EventCompact(event: event);
             },
           );
 

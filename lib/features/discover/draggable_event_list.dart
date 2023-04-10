@@ -1,16 +1,21 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/api/models/profile.dart";
 import "package:event_app/features/discover/discover_screen_notifier.dart";
-import "package:event_app/features/events/event_card.dart";
+import 'package:event_app/features/events/event_compact.dart';
+import "package:event_app/features/profile/profile_compact.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:skeletons/skeletons.dart";
 
-class DraggableEventList extends StatelessWidget {
-  const DraggableEventList({super.key, required this.snapshot});
+class DraggableEventList extends StatefulWidget {
+  const DraggableEventList({super.key});
 
-  final AsyncSnapshot<List<Event>> snapshot;
+  @override
+  State<DraggableEventList> createState() => _DraggableEventListState();
+}
 
+class _DraggableEventListState extends State<DraggableEventList> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<DiscoverScreenNotifier>();
@@ -18,11 +23,11 @@ class DraggableEventList extends StatelessWidget {
 
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
-        if (notification.extent >= notification.maxExtent - 0.1) {
+        if (notification.extent >= notification.maxExtent) {
           state.mapOpened = false;
         }
 
-        if (notification.extent <= notification.minExtent + 0.1) {
+        if (notification.extent <= notification.minExtent) {
           state.mapOpened = true;
         }
         return false;
@@ -33,16 +38,18 @@ class DraggableEventList extends StatelessWidget {
         minChildSize: 0.05,
         initialChildSize: 1,
         snap: true,
+        expand: true,
         builder: (context, scrollController) {
           return Container(
             color: Theme.of(context).colorScheme.background,
             child: SingleChildScrollView(
               controller: scrollController,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 13),
-                  dragHandle(context),
-                  eventsList(state.filterEvent),
+                  Center(child: dragHandle(context)),
+                  list()
                 ],
               ),
             ),
@@ -63,61 +70,95 @@ class DraggableEventList extends StatelessWidget {
     );
   }
 
-  Widget eventsList(bool Function(Event) filter) => !snapshot.hasData
-      ? eventListSkeleton
-      : Builder(builder: (context) {
-          final events = snapshot.requireData.where(filter).toList();
+  Widget list() {
+    final widgets = profileList() + eventList();
 
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: events.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, i) => GestureDetector(
-              onTap: () => context.push(
-                "/events/${events[i].id}",
-              ),
-              child: EventCard(event: events[i]),
-            ),
-          );
-        });
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: widgets.length,
+        // separatorBuilder: (context, i) => const SizedBox(height: 4),
+        itemBuilder: (context, i) => widgets[i],
+      ),
+    );
+  }
 
-  Widget get eventListSkeleton => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        child: SkeletonItem(
-          child: Column(
-            children: [
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  height: 180,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              const SizedBox(height: 10),
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  height: 140,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              const SizedBox(height: 10),
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  height: 100,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              const SizedBox(height: 10),
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  height: 140,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              const SizedBox(height: 10),
-            ],
+  List<Widget> eventList() {
+    final events = context.read<DiscoverScreenNotifier>().events ?? <Event>[];
+    return events.map(eventListItem).toList();
+  }
+
+  List<Widget> profileList() {
+    final profiles = context.read<DiscoverScreenNotifier>().profiles;
+    if (profiles == null) {
+      return const [
+        Center(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: CircularProgressIndicator(),
           ),
+        )
+      ];
+    }
+    if (profiles.isEmpty) {
+      return const [SizedBox()];
+    }
+    return profiles.map(profileListItem).toList();
+  }
+
+  Widget profileListItem(Profile profile) => InkWell(
+        onTap: () => context.push("/profiles/${profile.id}"),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ProfileCompact(profile: profile),
+          ),
+        ),
+      );
+
+  Widget eventListItem(Event event) => InkWell(
+        onTap: () => context.push("/events/${event.id}"),
+        child: Card(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: EventCompact(event: event),
+        ),
+      );
+
+  //   return ListView.separated(
+  Widget get eventListSkeleton => SkeletonItem(
+        child: Column(
+          children: [
+            SkeletonLine(
+              style: SkeletonLineStyle(
+                height: 180,
+                borderRadius: BorderRadius.circular(25),
+              ),
+            ),
+            const SizedBox(height: 10),
+            SkeletonLine(
+              style: SkeletonLineStyle(
+                height: 140,
+                borderRadius: BorderRadius.circular(25),
+              ),
+            ),
+            const SizedBox(height: 10),
+            SkeletonLine(
+              style: SkeletonLineStyle(
+                height: 100,
+                borderRadius: BorderRadius.circular(25),
+              ),
+            ),
+            const SizedBox(height: 10),
+            SkeletonLine(
+              style: SkeletonLineStyle(
+                height: 140,
+                borderRadius: BorderRadius.circular(25),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
         ),
       );
 }

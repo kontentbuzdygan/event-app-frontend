@@ -1,7 +1,14 @@
 import "package:event_app/api/models/event.dart";
+import "package:event_app/api/models/profile.dart";
+import "package:event_app/api/rest_client.dart";
 import "package:flutter/material.dart";
 
 class DiscoverScreenNotifier extends ChangeNotifier {
+  DiscoverScreenNotifier() {
+    fetchEvents();
+    fetchProfiles();
+  }
+
   String? _filterText;
   final Set<String> _filterTags = {};
   Set<String> get filterTags => _filterTags;
@@ -13,7 +20,35 @@ class DiscoverScreenNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<Profile>? profiles;
+  List<Event>? events;
+
   final sheetController = DraggableScrollableController();
+
+  Future<void> fetchEvents() async {
+    final e = (await Event.findAll()).toList();
+    await RestClient.runCached(
+      () => Future.wait(
+        e.map((event) => event.fetchAuthor()),
+      ),
+    );
+    await Future.wait(e.map((event) => event.fetchBanner()));
+    events = e;
+    notifyListeners();
+  }
+
+  Future<void> fetchProfiles() async {
+    if ((_filterText?.length ?? 0) < 3) {
+      profiles = [];
+      notifyListeners();
+      return;
+    }
+
+    profiles = null;
+    notifyListeners();
+    profiles = await Profile.search(_filterText ?? "");
+    notifyListeners();
+  }
 
   void addFilterTag(String tag) {
     _filterTags.add(tag);
@@ -27,6 +62,7 @@ class DiscoverScreenNotifier extends ChangeNotifier {
 
   void setFilterText(String? newText) {
     _filterText = newText?.toLowerCase();
+    fetchProfiles();
     notifyListeners();
   }
 

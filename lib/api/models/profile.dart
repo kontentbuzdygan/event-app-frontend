@@ -1,3 +1,4 @@
+import "package:event_app/api/exceptions.dart";
 import "package:event_app/api/json.dart";
 import "package:event_app/api/rest_client.dart";
 
@@ -33,11 +34,16 @@ class Profile {
     return Profile.fromJson(await rest.get([_apiPath, id]));
   }
 
-  static Future<Iterable<Profile>> search(String name) async {
-    final json = await rest.get([_apiPath, "?name=$name"]);
-    return (json["profiles"] as Iterable<dynamic>)
-        .cast<JsonObject>()
-        .map(Profile.fromJson);
+  static Future<List<Profile>> search(String name) async {
+    try {
+      final json = await rest.get([_apiPath, "?name=$name"]);
+      return (json["profiles"] as Iterable<dynamic>)
+          .cast<JsonObject>()
+          .map(Profile.fromJson)
+          .toList();
+    } on NotFound {
+      return [];
+    }
   }
 
   static Future<Profile> me() async {
