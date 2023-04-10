@@ -126,11 +126,13 @@ class App extends StatelessWidget {
           name: "stories",
           path: "/stories",
           pageBuilder: (context, state) => CustomTransitionPage(
-            transitionDuration: const Duration(milliseconds: 300),
+              transitionDuration: const Duration(milliseconds: 300),
               fullscreenDialog: true,
               transitionsBuilder: (_, a, b, c) {
-                final curve = CurvedAnimation(parent: a, curve: Curves.fastOutSlowIn);
-                return ScaleTransition(scale: curve, alignment: Alignment.topLeft, child: c);
+                final curve =
+                    CurvedAnimation(parent: a, curve: Curves.fastOutSlowIn);
+                return ScaleTransition(
+                    scale: curve, alignment: Alignment.topLeft, child: c);
               },
               child: StoryViewScreen(
                 stories: state.extra as StoryData,
