@@ -1,3 +1,4 @@
+import "package:camera/camera.dart";
 import "package:event_app/errors.dart";
 import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
@@ -7,6 +8,8 @@ import "package:event_app/features/events/event_view_screen.dart";
 import "package:event_app/features/events/feed_screen.dart";
 import "package:event_app/features/profile/profile_edit_screen.dart";
 import "package:event_app/features/profile/profile_view_screen.dart";
+import "package:event_app/features/story/camera/display_picture_screen.dart";
+import "package:event_app/features/story/camera/take_picture_screen.dart";
 import "package:event_app/features/story/story_list_view.dart";
 import "package:event_app/features/story/story_view_screen.dart";
 import "package:event_app/tab_navigation.dart";
@@ -126,9 +129,8 @@ class App extends StatelessWidget {
           name: "stories",
           path: "/stories",
           pageBuilder: (context, state) => CustomTransitionPage(
-              transitionDuration: const Duration(milliseconds: 300),
               fullscreenDialog: true,
-              transitionsBuilder: (_, a, b, c) {
+              transitionsBuilder: (_, a, __, c) {
                 final curve =
                     CurvedAnimation(parent: a, curve: Curves.fastOutSlowIn);
                 return ScaleTransition(
@@ -137,6 +139,25 @@ class App extends StatelessWidget {
               child: StoryViewScreen(
                 stories: state.extra as StoryData,
               ))),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        name: "takePhoto",
+        path: "/photo",
+        pageBuilder: (context, state) => CustomTransitionPage(
+            transitionsBuilder: (_, a, __, c) => SlideTransition(
+                  position: a.drive(
+                      Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+                          .chain(CurveTween(curve: Curves.easeIn))),
+                  child: c,
+                ),
+            child: TakePictureScreen(camera: state.extra as CameraDescription)),
+      ),
+      GoRoute(
+          parentNavigatorKey: _rootNavigatorKey,
+          name: "displayPicture",
+          path: "/displayPicture",
+          pageBuilder: (context, state) => MaterialPage(
+              child: DisplayPictureScreen(imagePath: state.extra as String)))
     ],
     redirect: (_, state) {
       if (!authState.loggedIn) return "/auth";

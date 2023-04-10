@@ -1,6 +1,8 @@
+import "package:camera/camera.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/models/story.dart";
+import "package:event_app/features/story/story_item_layout.dart";
 import "package:event_app/features/story/story_list_skeleton.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
@@ -36,61 +38,45 @@ class _StoryListViewState extends State<StoryListView> {
         child: Row(children: [
           addNewStoryItem(),
           ...stories.asMap().entries.map((e) {
-            return profileItem(stories[e.key].author!, stories, e.key);
+            return storyItem(stories[e.key], stories, e.key);
           }).toList()
         ]));
   }
 
-  Widget profileItem(Profile author, List<Story> stories, int startingIndex) {
+  Widget storyItem(Story story, List<Story> stories, int startingIndex) {
     return GestureDetector(
       onTap: () => context.push("/stories",
           extra: StoryData._(stories: stories, startingIndex: startingIndex)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          children: [
-            circularImageWithBorder(author.profilePicture!.thumb.toString()),
-            RichText(
-                overflow: TextOverflow.ellipsis,
-                text: TextSpan(
-                    text: author.displayName,
-                    style: const TextStyle(
-                      fontSize: 14,
-                    )))
-          ],
-        ),
+      child: StoryItemLayout(
+        children: [
+          circularImageWithBorder(story.event?.banner!.thumb.toString() ??
+              story.author!.profilePicture!.thumb.toString()),
+          captionUnderStory(story.event?.title ?? story.author!.displayName)
+        ],
       ),
     );
   }
 
   Widget addNewStoryItem() {
-    final theme = Theme.of(context);
-
     return GestureDetector(
-      onTap: () => "",
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
+        onTap: () async => await availableCameras()
+            .then((cameras) => context.push("/photo", extra: cameras.first)),
+        child: StoryItemLayout(
           children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle, color: theme.colorScheme.secondary),
-              alignment: Alignment.center,
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
-            RichText(
-                overflow: TextOverflow.ellipsis,
-                text: const TextSpan(
-                    text: "Your story",
-                    style: TextStyle(
-                      fontSize: 14,
-                    )))
+            circularAddNewStory(),
+            captionUnderStory("Your story"),
           ],
-        ),
-      ),
-    );
+        ));
+  }
+
+  Widget captionUnderStory(String caption) {
+    return RichText(
+        overflow: TextOverflow.ellipsis,
+        text: TextSpan(
+            text: caption,
+            style: const TextStyle(
+              fontSize: 14,
+            )));
   }
 
   Widget circularImageWithBorder(String url) {
@@ -110,13 +96,16 @@ class _StoryListViewState extends State<StoryListView> {
     );
   }
 
-  Widget eventItem(Event event, List<Story> stories) {
-    return GestureDetector(
-      onTap: () => context.push("/stories", extra: stories),
-      child: CircleAvatar(
-        backgroundColor: Colors.red,
-        child: Text(event.title),
-      ),
+  Widget circularAddNewStory() {
+    final theme = Theme.of(context);
+
+    return Container(
+      width: 64,
+      height: 64,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle, color: theme.colorScheme.secondary),
+      alignment: Alignment.center,
+      child: const Icon(Icons.add, color: Colors.white),
     );
   }
 }

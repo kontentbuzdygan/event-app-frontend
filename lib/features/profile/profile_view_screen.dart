@@ -1,4 +1,6 @@
 import "package:event_app/api/models/profile.dart";
+import "package:event_app/api/models/story.dart";
+import "package:event_app/features/story/story_list_view.dart";
 import "package:event_app/main.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -15,7 +17,20 @@ class ProfileViewScreen extends StatefulWidget {
 
 class _ProfileViewScreenState extends State<ProfileViewScreen> {
   late final Future<Profile> profile =
-      widget.id != null ? Profile.find(widget.id!) : Profile.me();
+      widget.id != null ? Profile.find(widget.id!) : Profile.me();  
+  late final Future<List<Story>> allStories;
+
+  @override
+  void initState() {
+    super.initState();
+
+    allStories = () async {
+      final stories = await fetchRandomStoriesByAuthorId(widget.id ?? 0);
+      await Future.wait(stories.map((story) => story.fetchAuthor()));
+      await Future.wait(stories.map((story) => story.fetchEvent()));
+      return stories;
+    }();
+  }
 
   @override
   Widget build(context) {
@@ -41,7 +56,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
           ],
         ),
         body: () {
-          if (snapshot.hasData) return ProfileView(profile: snapshot.data!);
+          if (snapshot.hasData) return ProfileView(profile: snapshot.data!, stories: allStories,);
 
           return Center(
             child: snapshot.hasError
@@ -55,16 +70,20 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
 }
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key, required this.profile});
+  const ProfileView({super.key, required this.profile, required this.stories});
 
   final Profile profile;
+  final Future<List<Story>> stories;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Column(
-        children: [if (profile.bio != null) Text(profile.bio!)],
+        children: [
+          if (profile.bio != null) Text(profile.bio!),
+          StoryListView(stories: stories),
+        ],
       ),
     );
   }

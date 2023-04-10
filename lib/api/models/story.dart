@@ -30,12 +30,12 @@ class Story {
       );
 
   Future<Story> fetchAuthor() async {
-    author = await randomProfile(id);
+    author = await randomProfile(authorId);
     return this;
   }
 
   Future<Story> fetchEvent() async {
-    event = await Event.find(authorId);
+    event = await randomEvent(eventId);
     return this;
   }
 }
@@ -62,18 +62,19 @@ Future<List<Story>> fetchRandomStoriesByEventId(int eventId) async {
 
 Future<List<Story>> fetchRandomStoriesByAuthorId(int authorId) async {
   List<Story> stories = List.empty(growable: true);
-  List<PhotoUrls> medias = List.empty();
 
-  for (int i = 0; i < 100; i++) {
-    for (int j = 0; j < _random.nextInt(7) + 1; i++) {
-      medias.add(await fetchMockImage("party"));
+  for (int i = 0; i < 7; i++) {
+    List<PhotoUrls> medias = List.empty(growable: true);
+    for (int j = 0; j < _random.nextInt(2) + 1; j++) {
+      var photo = await fetchMockImage("party");
+      medias.add(photo);
     }
+
     stories.add(Story._(
-      id: i,
-      authorId: authorId,
-      eventId: _random.nextInt(100),
-      media: medias,
-    ));
+        id: i,
+        authorId: authorId,
+        eventId: _random.nextInt(100),
+        media: medias));
   }
 
   return stories;
