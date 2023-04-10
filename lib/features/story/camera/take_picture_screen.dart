@@ -45,16 +45,15 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final mediaSize = MediaQuery.of(context).size;
-            final scale = 1 / (_controller.value.aspectRatio * mediaSize.aspectRatio);
+            final scale =
+                1 / (_controller.value.aspectRatio * mediaSize.aspectRatio);
 
             return ClipRect(
-              clipper: _MediaSizeClipper(mediaSize),
-              child: Transform.scale(
-                scale: scale,
-                alignment: Alignment.topCenter,
-                child: CameraPreview(_controller)
-                )
-              );
+                clipper: _MediaSizeClipper(mediaSize),
+                child: Transform.scale(
+                    scale: scale,
+                    alignment: Alignment.topCenter,
+                    child: CameraPreview(_controller)));
           } else {
             return const Center(child: CircularProgressIndicator());
           }
@@ -87,6 +86,7 @@ class _MediaSizeClipper extends CustomClipper<Rect> {
   Rect getClip(Size size) {
     return Rect.fromLTWH(0, 0, mediaSize.width, mediaSize.height);
   }
+
   @override
   bool shouldReclip(CustomClipper<Rect> oldClipper) {
     return true;

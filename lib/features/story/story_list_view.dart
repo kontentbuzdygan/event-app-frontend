@@ -70,12 +70,15 @@ class _StoryListViewState extends State<StoryListView> {
   }
 
   Widget captionUnderStory(String caption) {
+    final theme = Theme.of(context);
+
     return RichText(
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
             text: caption,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
+              color: theme.colorScheme.onBackground,
             )));
   }
 

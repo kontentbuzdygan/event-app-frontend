@@ -41,41 +41,34 @@ class Story {
 }
 
 Future<List<Story>> fetchRandomStoriesByEventId(int eventId) async {
-  List<Story> stories = List.empty(growable: true);
+  List<Story> stories = List.generate(
+      7,
+      (index) => Story._(
+          id: index,
+          authorId: _random.nextInt(100),
+          eventId: eventId,
+          media: List.empty()));
 
-  for (int i = 0; i < 7; i++) {
-    List<PhotoUrls> medias = List.empty(growable: true);
-    for (int j = 0; j < _random.nextInt(2) + 1; j++) {
-      var photo = await fetchMockImage("party");
-      medias.add(photo);
-    }
-
-    stories.add(Story._(
-        id: i,
-        authorId: _random.nextInt(100),
-        eventId: eventId,
-        media: medias));
-  }
+  await Future.wait(stories.map((story) async {
+    story.media = [for (var i = 0; i < 2; i++) await fetchMockImage("party")];
+  }));
 
   return stories;
 }
 
 Future<List<Story>> fetchRandomStoriesByAuthorId(int authorId) async {
-  List<Story> stories = List.empty(growable: true);
+  List<Story> stories = List.generate(
+      7,
+      (index) => Story._(
+            id: index,
+            authorId: authorId,
+            eventId: _random.nextInt(100),
+            media: List.empty(growable: true),
+          ));
 
-  for (int i = 0; i < 7; i++) {
-    List<PhotoUrls> medias = List.empty(growable: true);
-    for (int j = 0; j < _random.nextInt(2) + 1; j++) {
-      var photo = await fetchMockImage("party");
-      medias.add(photo);
-    }
-
-    stories.add(Story._(
-        id: i,
-        authorId: authorId,
-        eventId: _random.nextInt(100),
-        media: medias));
-  }
+  await Future.wait(stories.map((story) async {
+    story.media = [for (var i = 0; i < 2; i++) await fetchMockImage("party")];
+  }));
 
   return stories;
 }

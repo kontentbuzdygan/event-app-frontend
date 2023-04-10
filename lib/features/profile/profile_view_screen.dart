@@ -17,7 +17,7 @@ class ProfileViewScreen extends StatefulWidget {
 
 class _ProfileViewScreenState extends State<ProfileViewScreen> {
   late final Future<Profile> profile =
-      widget.id != null ? Profile.find(widget.id!) : Profile.me();  
+      widget.id != null ? Profile.find(widget.id!) : Profile.me();
   late final Future<List<Story>> allStories;
 
   @override
@@ -56,7 +56,11 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
           ],
         ),
         body: () {
-          if (snapshot.hasData) return ProfileView(profile: snapshot.data!, stories: allStories,);
+          if (snapshot.hasData)
+            return ProfileView(
+              profile: snapshot.data!,
+              stories: allStories,
+            );
 
           return Center(
             child: snapshot.hasError
