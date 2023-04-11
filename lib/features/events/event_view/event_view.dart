@@ -4,6 +4,7 @@ import "package:event_app/features/events/event_view/comments.dart";
 import "package:event_app/features/events/event_view/date.dart";
 import "package:event_app/features/events/event_view/description.dart";
 import "package:event_app/features/events/event_view/map.dart";
+import "package:event_app/features/events/tags/tags.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 
@@ -51,6 +52,10 @@ class _EventViewState extends State<EventView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (event != null) ...[
+                Tags(event: event, short: false),
+                const SizedBox(height: 16),
+              ],
               EventViewDate(
                 startsAt: event?.startsAt,
                 endsAt: event?.endsAt,
