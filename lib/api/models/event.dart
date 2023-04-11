@@ -2,10 +2,11 @@ import "dart:math";
 
 import "package:event_app/api/json.dart";
 import "package:event_app/api/models/event_comment.dart";
+import "package:event_app/api/models/event_tag.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
-import "package:latlong2/latlong.dart";
 import "package:event_app/utils.dart";
+import "package:latlong2/latlong.dart";
 import "package:unsplash_client/unsplash_client.dart";
 
 const String _apiPath = "events";
@@ -20,8 +21,9 @@ class Event {
   final int commentCount;
 
   Profile? author;
-  List? comments;
+  List<EventComment>? comments;
   PhotoUrls? banner;
+  List? tags;
 
   Event._({
     required this.id,
@@ -40,30 +42,28 @@ class Event {
         title: json["title"],
         description: json["description"],
         startsAt: DateTime.parse(json["starts_at"]),
-        // TODO: parse from json
+        endsAt:
+            json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
+        commentCount: 2 + _random.nextInt(5),
         location: LatLng(
           50 + _random.nextDouble() * 4.5,
           16 + _random.nextDouble() * 6,
         ),
-        endsAt:
-            json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
-        commentCount: 2 + _random.nextInt(5),
       );
 
   static Future<Event> find(int id) async {
-    return Event.fromJson(await rest.get([_apiPath, id]));
+    final event = Event.fromJson(await rest.get([_apiPath, id]));
+    return event._fetchBanner();
   }
 
-  /// NOTE: It's important to collect the returned iterable, for example by
-  /// calling `toList()`, if you want to use mutating methods like `fetchAuthor()`.
-  /// Otherwise the actual `Event` objects yielded from the iterable will be regenerated
-  /// on every iteration due to laziness, and so their non-serialized state will
-  /// not be persisted.
-  static Future<Iterable<Event>> findAll() async {
+  static Future<List<Event>> findAll() async {
     final json = await rest.get([_apiPath]);
-    return (json["events"] as Iterable<dynamic>)
+    final events = (json["events"] as Iterable<dynamic>)
         .cast<JsonObject>()
-        .map(Event.fromJson);
+        .map(Event.fromJson)
+        .map((event) async => await event._fetchBanner());
+
+    return Future.wait(events);
   }
 
   Future<Event> fetchAuthor() async {
@@ -76,8 +76,21 @@ class Event {
     return this;
   }
 
-  Future<Event> fetchBanner() async {
+  Future<Event> fetchCommentsWithAuthors() async {
+    await fetchComments();
+    await RestClient.runCached(
+      () => Future.wait(comments!.map((c) => c.fetchAuthor())),
+    );
+    return this;
+  }
+
+  Future<Event> _fetchBanner() async {
     banner = await fetchMockImage("party");
+    return this;
+  }
+
+  Future<Event> fetchTags() async {
+    tags = await findEventTags(id);
     return this;
   }
 }

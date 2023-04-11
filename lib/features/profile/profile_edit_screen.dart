@@ -81,7 +81,7 @@ class _ProfileEditFormState extends State<ProfileEditForm> {
           TextFormField(
             enabled: !loading,
             minLines: 2,
-            maxLines: 3,
+            maxLines: null,
             controller: bioController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
