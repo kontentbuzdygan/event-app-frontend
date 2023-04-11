@@ -91,5 +91,10 @@
   "editProfile": "Edit profile",
   "displayName": "Display name",
   "bio": "Bio",
-  "save": "Save"
+  "save": "Save",
+  "searchHint": "Search",
+  "homeTabLabel": "Home",
+  "discoverTabLabel": "Discover",
+  "profileTabLabel": "Profile",
+  "showMap": "Show map" 
 }

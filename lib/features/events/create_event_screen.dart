@@ -7,7 +7,6 @@ import "package:event_app/features/events/create_event_steps/tags_step.dart";
 import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
-import "package:fluttertoast/fluttertoast.dart";
 import "package:go_router/go_router.dart";
 
 class CreateEventScreen extends StatefulWidget {
@@ -74,9 +73,11 @@ class _State extends State<CreateEventScreen> {
                 startsAt: DateTime.parse(startsAtController.text),
                 endsAt: DateTime.parse(endsAtController.text),
               ).save();
-              Fluttertoast.showToast(
-                msg: l10n.eventCreated,
-                backgroundColor: theme.colorScheme.background,
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(l10n.eventCreated),
+                  behavior: SnackBarBehavior.floating,
+                ),
               );
               context.pop();
               return;

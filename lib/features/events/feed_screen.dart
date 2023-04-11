@@ -27,6 +27,7 @@ class _State extends State<FeedScreen> {
           events.map((event) => event.fetchAuthor()),
         ),
       );
+      await Future.wait(events.map((event) => event.fetchBanner()));
       return events;
     }();
   }
@@ -81,6 +82,8 @@ class _State extends State<FeedScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (event.banner != null)
+              Image.network(event.banner!.small.toString()),
             Text(event.title, style: theme.textTheme.titleLarge),
             const SizedBox(height: 5),
             Text(l10n.createdBy(event.author!.displayName)),
