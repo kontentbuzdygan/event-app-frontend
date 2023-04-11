@@ -74,12 +74,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: EventList(
-                events: () async {
-                  final events = await Event.findAll();
-                  await Future.wait(
-                      events.map((event) async => await event.fetchBanner()));
-                  return events;
-                }(),
+                events: Event.findAll(),
               ),
             ),
             const Tickets(),

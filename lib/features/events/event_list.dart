@@ -1,7 +1,7 @@
 import "dart:math";
 
 import "package:event_app/api/models/event.dart";
-import "package:event_app/features/events/event_card.dart";
+import "package:event_app/features/events/event_compact.dart";
 import "package:flutter/material.dart";
 import "package:skeletons/skeletons.dart";
 
@@ -33,8 +33,10 @@ class _EventListState extends State<EventList> {
         return ListView.separated(
           shrinkWrap: true,
           itemCount: snapshot.data!.length,
-          itemBuilder: (context, index) =>
-              EventCard(event: snapshot.data![index]),
+          itemBuilder: (context, index) => Card(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: EventCompact(event: snapshot.data![index]),
+          ),
           separatorBuilder: (context, index) => const SizedBox(height: 8),
         );
       },

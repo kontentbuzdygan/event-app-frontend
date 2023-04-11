@@ -27,7 +27,7 @@ extension AnimatedMap on MapController {
 
     final Animation<double> animation = CurvedAnimation(
       parent: controller,
-      curve: Curves.ease,
+      curve: Curves.easeInOutCubicEmphasized,
     );
 
     controller.addListener(() {

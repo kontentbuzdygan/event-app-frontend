@@ -20,7 +20,7 @@ class Event {
   final int commentCount;
 
   Profile? author;
-  List? comments;
+  List<EventComment>? comments;
   PhotoUrls? banner;
 
   Event._({
@@ -40,27 +40,28 @@ class Event {
         title: json["title"],
         description: json["description"],
         startsAt: DateTime.parse(json["starts_at"]),
-        // TODO: parse from json
+        endsAt:
+            json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
+        commentCount: 2 + _random.nextInt(5),
         location: LatLng(
           50 + _random.nextDouble() * 4.5,
           16 + _random.nextDouble() * 6,
         ),
-        endsAt:
-            json["ends_at"] != null ? DateTime.parse(json["ends_at"]) : null,
-        commentCount: 2 + _random.nextInt(5),
       );
 
   static Future<Event> find(int id) async {
-    return Event.fromJson(await rest.get([_apiPath, id]));
+    final event = Event.fromJson(await rest.get([_apiPath, id]));
+    return event._fetchBanner();
   }
 
   static Future<List<Event>> findAll() async {
     final json = await rest.get([_apiPath]);
-    return json["events"]
+    final events = (json["events"] as Iterable<dynamic>)
         .cast<JsonObject>()
         .map(Event.fromJson)
-        .toList()
-        .cast<Event>();
+        .map((event) async => await event._fetchBanner());
+
+    return Future.wait(events);
   }
 
   Future<Event> fetchAuthor() async {
@@ -73,7 +74,15 @@ class Event {
     return this;
   }
 
-  Future<Event> fetchBanner() async {
+  Future<Event> fetchCommentsWithAuthors() async {
+    await fetchComments();
+    await RestClient.runCached(
+      () => Future.wait(comments!.map((c) => c.fetchAuthor())),
+    );
+    return this;
+  }
+
+  Future<Event> _fetchBanner() async {
     banner = await fetchMockImage("party");
     return this;
   }
