@@ -22,18 +22,10 @@ class EventsMap extends StatefulWidget {
 class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
   late Future<LatLng> userLocation;
   late final state = context.watch<DiscoverScreenNotifier>();
-  late bool modalShown;
-  late AnimationController modalController;
 
   @override
   void initState() {
     super.initState();
-    modalShown = false;
-    modalController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
-    modalController.drive(CurveTween(curve: Curves.ease));
 
     userLocation = userLatLng()
       ..then(
@@ -77,13 +69,6 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
               ],
             ),
           ),
-          AnimatedSize(
-            curve: Curves.ease,
-            duration: const Duration(milliseconds: 200),
-            child: SizedBox(
-              height: modalShown ? 200 : 0,
-            ),
-          ),
         ],
       ),
     );
@@ -97,12 +82,7 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
           final center = widget.controller.center;
           final zoom = widget.controller.zoom;
 
-          setState(() {
-            modalShown = true;
-          });
-
           await showModalBottomSheet<void>(
-            transitionAnimationController: modalController,
             barrierColor: Colors.transparent,
             context: context,
             builder: (context) {
@@ -111,10 +91,6 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
               return EventCompact(event: event);
             },
           );
-
-          setState(() {
-            modalShown = false;
-          });
 
           widget.controller.animatedMapMove(this, center, zoom);
         },

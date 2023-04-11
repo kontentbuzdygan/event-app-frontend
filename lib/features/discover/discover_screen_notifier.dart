@@ -32,7 +32,6 @@ class DiscoverScreenNotifier extends ChangeNotifier {
         e.map((event) => event.fetchAuthor()),
       ),
     );
-    await Future.wait(e.map((event) => event.fetchBanner()));
     events = e;
     notifyListeners();
   }

@@ -26,14 +26,15 @@ class _EventViewMapState extends State<EventViewMap> {
     map = MapController();
   }
 
-  @override
-  void didUpdateWidget(oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  // TODO: Fix this
+  // @override
+  // void didUpdateWidget(oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
 
-    if (widget.location != null) {
-      map.move(widget.location!, map.zoom);
-    }
-  }
+  //   // if (widget.location != null) {
+  //   //   map.move(widget.location!, map.zoom);
+  //   // }
+  // }
 
   @override
   Widget build(BuildContext context) {
