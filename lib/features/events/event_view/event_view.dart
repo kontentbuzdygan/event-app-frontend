@@ -19,7 +19,6 @@ class EventView extends StatefulWidget {
 
 class _EventViewState extends State<EventView> {
   Future<Event>? comments;
-  Future<Event>? tags;
   late bool hasBanner;
 
   @override
@@ -53,15 +52,10 @@ class _EventViewState extends State<EventView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              FutureBuilder(
-                future: tags,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Tags(event: event!, short: false);
-                  }
-                  return const CircularProgressIndicator();
-                },
-              ),
+              if (event != null) ...[
+                Tags(event: event, short: false),
+                const SizedBox(height: 16),
+              ],
               EventViewDate(
                 startsAt: event?.startsAt,
                 endsAt: event?.endsAt,
