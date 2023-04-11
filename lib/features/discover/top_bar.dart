@@ -1,69 +1,54 @@
+import "package:event_app/features/discover/discover_screen_notifier.dart";
 import "package:event_app/features/discover/search_field.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:provider/provider.dart";
 
 class TopBar extends StatefulWidget {
-  const TopBar({
-    super.key,
-    required this.searchFieldController,
-    this.mapOnClick,
-    required this.mapOpened,
-  });
-
-  final TextEditingController? searchFieldController;
-  final void Function()? mapOnClick;
-  final bool mapOpened;
+  const TopBar({super.key});
 
   @override
   State<TopBar> createState() => _TopBarState();
 }
 
 class _TopBarState extends State<TopBar> {
+  late final state = context.watch<DiscoverScreenNotifier>();
   late final l10n = AppLocalizations.of(context)!;
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(12),
-        color: Theme.of(context).colorScheme.background,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SearchField(
-              controller: widget.searchFieldController,
-              suffix: IconButton(
-                tooltip: l10n.showMap,
-                icon: Icon(
-                  widget.mapOpened ? Icons.map : Icons.map_outlined,
-                  size: 30,
-                ),
-                isSelected: widget.mapOpened,
-                onPressed: () {
-                  if (widget.mapOnClick != null) {
-                    widget.mapOnClick!();
-                  }
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            filters,
-          ],
-        ),
-      );
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: Theme.of(context).colorScheme.background,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SearchField(),
+          const SizedBox(height: 16),
+          filters,
+          const SizedBox(height: 6),
+        ],
+      ),
+    );
+  }
 
   Widget get filters => SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        // TODO: Load these from the db?
         child: Row(
-          children: const [
-            Chip(label: Text("🎉 Party")),
-            SizedBox(width: 10),
-            Chip(label: Text("🏋️ Gym")),
-            SizedBox(width: 10),
-            Chip(label: Text("🏌️ Golf")),
-            SizedBox(width: 10),
-            Chip(label: Text("👻 Movie night")),
-          ],
+          // TODO: Load these from the db
+          children: ["🎉 Party", "🏋️ Gym", "🏌️ Golf", "👻 Movie night"]
+              .map((tag) => Row(children: [
+                    FilterChip(
+                      selected: state.filterTags.contains(tag),
+                      label: Text(tag),
+                      onSelected: (selected) => !selected
+                          ? state.removeFilterTag(tag)
+                          : state.addFilterTag(tag),
+                    ),
+                    const SizedBox(width: 10)
+                  ]))
+              .toList(),
         ),
       );
 }
