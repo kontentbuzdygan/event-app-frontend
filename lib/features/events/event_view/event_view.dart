@@ -5,6 +5,8 @@ import "package:event_app/features/events/event_view/date.dart";
 import "package:event_app/features/events/event_view/description.dart";
 import "package:event_app/features/events/event_view/map.dart";
 import "package:event_app/features/events/tags/tags.dart";
+import "package:event_app/api/models/story.dart";
+import "package:event_app/features/story/story_list_view.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 
@@ -19,12 +21,18 @@ class EventView extends StatefulWidget {
 
 class _EventViewState extends State<EventView> {
   Future<Event>? comments;
+  late Future<List<Story>> stories;
   late bool hasBanner;
 
   @override
   void initState() {
     super.initState();
     comments = widget.event?.fetchCommentsWithAuthors();
+    stories = () async {
+      final stories = await fetchRandomStoriesByEventId(widget.event!.id);
+      await Future.wait(stories.map((story) => story.fetchAuthor()));
+      return stories;
+    }();
     hasBanner = true;
   }
 
@@ -47,6 +55,8 @@ class _EventViewState extends State<EventView> {
             title: event?.title,
             banner: event?.banner,
           ),
+        const SizedBox(height: 16),
+        StoryListView(stories: stories),
         Padding(
           padding: const EdgeInsets.all(20),
           child: Column(

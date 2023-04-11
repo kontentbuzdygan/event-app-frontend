@@ -119,3 +119,16 @@ class NewEvent {
     return Event.fromJson(createdJson);
   }
 }
+
+Future<Event> randomEvent(int id) async {
+  Event event = Event._(
+      id: id,
+      authorId: _random.nextInt(100),
+      description: "pizda ogien",
+      title: "event",
+      commentCount: _random.nextInt(10),
+      startsAt: DateTime.now(),
+      location: LatLng(10, 15));
+  event = await event._fetchBanner(); // TODO: remove
+  return Future.value(event);
+}

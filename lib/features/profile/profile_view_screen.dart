@@ -1,5 +1,6 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
+import "package:event_app/api/models/story.dart";
 import "package:event_app/features/events/event_list.dart";
 import "package:event_app/features/profile/profile_header.dart";
 import "package:event_app/features/profile/tickets.dart";
@@ -21,6 +22,19 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
     with SingleTickerProviderStateMixin {
   late final Future<Profile> profile =
       widget.id != null ? Profile.find(widget.id!) : Profile.me();
+  late final Future<List<Story>> allStories;
+
+  @override
+  void initState() {
+    super.initState();
+
+    allStories = () async {
+      final stories = await fetchRandomStoriesByAuthorId(widget.id ?? 0);
+      await Future.wait(stories.map((story) => story.fetchAuthor()));
+      await Future.wait(stories.map((story) => story.fetchEvent()));
+      return stories;
+    }();
+  }
 
   static const List<Tab> _tabs = [
     Tab(
