@@ -19,7 +19,7 @@ class ProfileHeader extends StatelessWidget {
         Row(children: [
           IconButton(
             onPressed: () {
-              // TODO: open image picer
+              // TODO: open image picker
             },
             icon: const Icon(Icons.account_circle_outlined, size: 64),
           ),
