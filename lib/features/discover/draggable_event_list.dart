@@ -1,7 +1,7 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/features/discover/discover_screen_notifier.dart";
-import 'package:event_app/features/events/event_compact.dart';
+import "package:event_app/features/events/event_compact.dart";
 import "package:event_app/features/profile/profile_compact.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
@@ -86,8 +86,9 @@ class _DraggableEventListState extends State<DraggableEventList> {
   }
 
   List<Widget> eventList() {
-    final events = context.read<DiscoverScreenNotifier>().events ?? <Event>[];
-    return events.map(eventListItem).toList();
+    final state = context.read<DiscoverScreenNotifier>();
+    final events = state.events ?? <Event>[];
+    return events.where(state.filterEvent).map(eventListItem).toList();
   }
 
   List<Widget> profileList() {
