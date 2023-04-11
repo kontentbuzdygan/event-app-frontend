@@ -75,11 +75,11 @@ class _DraggableEventListState extends State<DraggableEventList> {
 
     return Padding(
       padding: const EdgeInsets.all(8),
-      child: ListView.builder(
+      child: ListView.separated(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: widgets.length,
-        // separatorBuilder: (context, i) => const SizedBox(height: 4),
+        separatorBuilder: (context, i) => const SizedBox(height: 4),
         itemBuilder: (context, i) => widgets[i],
       ),
     );
@@ -104,7 +104,7 @@ class _DraggableEventListState extends State<DraggableEventList> {
       ];
     }
     if (profiles.isEmpty) {
-      return const [SizedBox()];
+      return const [];
     }
     return profiles.map(profileListItem).toList();
   }
@@ -127,7 +127,6 @@ class _DraggableEventListState extends State<DraggableEventList> {
         ),
       );
 
-  //   return ListView.separated(
   Widget get eventListSkeleton => SkeletonItem(
         child: Column(
           children: [

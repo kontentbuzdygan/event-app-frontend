@@ -36,7 +36,7 @@ class ProfileCompact extends StatelessWidget {
             ),
           ],
         ),
-        OutlinedButton(onPressed: () {}, child: Text("Follow"))
+        OutlinedButton(onPressed: () {}, child: const Text("Follow"))
       ],
     );
   }

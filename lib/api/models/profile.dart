@@ -35,15 +35,18 @@ class Profile {
   }
 
   static Future<List<Profile>> search(String name) async {
+    var json;
+
     try {
-      final json = await rest.get([_apiPath, "?name=$name"]);
-      return (json["profiles"] as Iterable<dynamic>)
-          .cast<JsonObject>()
-          .map(Profile.fromJson)
-          .toList();
+      json = await rest.get([_apiPath, "?name=$name"]);
     } on NotFound {
       return [];
     }
+
+    return (json["profiles"] as Iterable<dynamic>)
+        .cast<JsonObject>()
+        .map(Profile.fromJson)
+        .toList();
   }
 
   static Future<Profile> me() async {

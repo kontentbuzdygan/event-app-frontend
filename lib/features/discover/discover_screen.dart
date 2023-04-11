@@ -1,6 +1,5 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
-import "package:event_app/api/rest_client.dart";
 import "package:event_app/features/discover/discover_screen_notifier.dart";
 import "package:event_app/features/discover/draggable_event_list.dart";
 import "package:event_app/features/discover/events_map.dart";

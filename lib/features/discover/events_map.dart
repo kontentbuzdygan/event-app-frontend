@@ -3,7 +3,7 @@ import "dart:math";
 import "package:event_app/api/locator.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/features/discover/discover_screen_notifier.dart";
-import 'package:event_app/features/events/event_compact.dart';
+import "package:event_app/features/events/event_compact.dart";
 import "package:event_app/features/map/animated_map.dart";
 import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
