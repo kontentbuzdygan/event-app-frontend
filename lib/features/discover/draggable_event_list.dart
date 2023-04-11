@@ -62,6 +62,7 @@ class DraggableEventList extends StatelessWidget {
           itemBuilder: (context, i) => GestureDetector(
             onTap: () => context.push(
               "/events/${snapshot.data![i].id}",
+              extra: snapshot.data![i],
             ),
             child: EventCard(event: snapshot.data![i]),
           ),
