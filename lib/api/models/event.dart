@@ -129,6 +129,6 @@ Future<Event> randomEvent(int id) async {
       commentCount: _random.nextInt(10),
       startsAt: DateTime.now(),
       location: LatLng(10, 15));
-  event = await event.fetchBanner(); // TODO: remove
+  event = await event._fetchBanner(); // TODO: remove
   return Future.value(event);
 }

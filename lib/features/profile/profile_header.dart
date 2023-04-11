@@ -1,12 +1,33 @@
 import "package:event_app/api/models/profile.dart";
+import "package:event_app/api/models/story.dart";
+import "package:event_app/features/story/story_list_view.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
 
-class ProfileHeader extends StatelessWidget {
+class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key, required this.profile});
 
   final Profile profile;
+
+  @override
+  State<ProfileHeader> createState() => _ProfileHeaderState();
+}
+
+class _ProfileHeaderState extends State<ProfileHeader> {
+  late Future<List<Story>> stories;
+
+  @override
+  void initState() {
+    super.initState();
+
+    stories = () async {
+      final stories = await fetchRandomStoriesByAuthorId(widget.profile.id);
+      await Future.wait(stories.map((story) => story.fetchAuthor()));
+      await Future.wait(stories.map((story) => story.fetchEvent()));
+      return stories;
+    }();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +47,12 @@ class ProfileHeader extends StatelessWidget {
           const SizedBox(width: 8),
           GestureDetector(
             onTap: () => context.pushNamed("editProfile"),
-            child: Text(profile.displayName, style: theme.textTheme.titleLarge),
+            child: Text(widget.profile.displayName, style: theme.textTheme.titleLarge),
           )
         ]),
         const SizedBox(height: 8),
         TextFormField(
-          initialValue: profile.bio,
+          initialValue: widget.profile.bio,
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
             alignLabelWithHint: true,
@@ -41,7 +62,9 @@ class ProfileHeader extends StatelessWidget {
           minLines: 2,
           maxLines: null,
           onTap: () => context.pushNamed("editProfile"),
-        )
+        ),
+        const SizedBox(height: 8),
+        StoryListView(stories: stories),
       ]),
     );
   }

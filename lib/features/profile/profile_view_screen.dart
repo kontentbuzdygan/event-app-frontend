@@ -1,7 +1,6 @@
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/models/story.dart";
-import "package:event_app/features/story/story_list_view.dart";
 import "package:event_app/features/events/event_list.dart";
 import "package:event_app/features/profile/profile_header.dart";
 import "package:event_app/features/profile/tickets.dart";
