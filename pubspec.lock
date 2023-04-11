@@ -402,10 +402,10 @@ packages:
     description:
       path: "packages/go_router"
       ref: nested-persistent-navigation
-      resolved-ref: "3a830075480d5a88e0c3e69230a1c4518b30a209"
+      resolved-ref: "72857881bd56650bc194b65266b2f0e97d272a56"
       url: "https://github.com/tolo/flutter_packages.git"
     source: git
-    version: "6.5.2"
+    version: "6.6.0"
   go_router_builder:
     dependency: "direct dev"
     description:
