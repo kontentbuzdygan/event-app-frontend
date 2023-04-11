@@ -6,7 +6,6 @@ import "package:event_app/features/events/event_view/description.dart";
 import "package:event_app/features/events/event_view/map.dart";
 import "package:event_app/features/events/tags/tags.dart";
 import "package:event_app/api/models/story.dart";
-import "package:event_app/api/rest_client.dart";
 import "package:event_app/features/story/story_list_view.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";

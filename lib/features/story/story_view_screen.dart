@@ -1,4 +1,3 @@
-import "package:event_app/api/models/story.dart";
 import "package:event_app/features/story/story_list_view.dart";
 import "package:flutter/material.dart";
 import "package:story/story.dart";

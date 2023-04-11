@@ -1,6 +1,4 @@
 import "package:camera/camera.dart";
-import "package:event_app/api/models/event.dart";
-import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/models/story.dart";
 import "package:event_app/features/story/story_item_layout.dart";
 import "package:event_app/features/story/story_list_skeleton.dart";

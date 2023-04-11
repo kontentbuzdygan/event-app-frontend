@@ -1,13 +1,11 @@
 import "package:camera/camera.dart";
 import "package:event_app/api/models/event.dart";
-import "package:event_app/api/models/event_comment.dart";
 import "package:event_app/errors.dart";
 import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/discover/discover_screen.dart";
 import "package:event_app/features/events/comments/comments_view_screen.dart";
 import "package:event_app/features/events/create_event_screen.dart";
-import "package:event_app/features/events/event_view/comments.dart";
 import "package:event_app/features/events/event_view_screen.dart";
 import "package:event_app/features/events/feed_screen.dart";
 import "package:event_app/features/profile/profile_edit_screen.dart";
