@@ -99,14 +99,6 @@ class App extends StatelessWidget {
                     event: state.extra as Event?,
                   ),
                 ),
-                GoRoute(
-                  name: "viewEventComments",
-                  path: "/events/:eventId/comments",
-                  builder: (context, state) => CommentsViewScreen(
-                    eventId: int.parse(state.params["eventId"] ?? "0"),
-                    event: state.extra as Event?,
-                  ),
-                )
               ]),
               StatefulShellBranch(routes: [
                 GoRoute(
@@ -139,39 +131,48 @@ class App extends StatelessWidget {
         ],
       ),
       GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
-          name: "stories",
-          path: "/stories",
-          pageBuilder: (context, state) => CustomTransitionPage(
-              fullscreenDialog: true,
-              transitionsBuilder: (_, a, __, c) {
-                final curve =
-                    CurvedAnimation(parent: a, curve: Curves.fastOutSlowIn);
-                return ScaleTransition(
-                    scale: curve, alignment: Alignment.topLeft, child: c);
-              },
-              child: StoryViewScreen(
-                stories: state.extra as StoryData,
-              ))),
+        parentNavigatorKey: _rootNavigatorKey,
+        name: "stories",
+        path: "/stories",
+        pageBuilder: (context, state) => CustomTransitionPage(
+          fullscreenDialog: true,
+          transitionsBuilder: (_, a, __, c) {
+            final curve =
+              CurvedAnimation(parent: a, curve: Curves.fastOutSlowIn);
+              return ScaleTransition(
+                scale: curve, alignment: Alignment.topLeft, child: c);
+            },
+            child: StoryViewScreen(
+              stories: state.extra as StoryData,
+            ))),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         name: "takePhoto",
         path: "/photo",
         pageBuilder: (context, state) => CustomTransitionPage(
-            transitionsBuilder: (_, a, __, c) => SlideTransition(
-                  position: a.drive(
-                      Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
-                          .chain(CurveTween(curve: Curves.easeIn))),
-                  child: c,
-                ),
-            child: TakePictureScreen(camera: state.extra as CameraDescription)),
+          transitionsBuilder: (_, a, __, c) => SlideTransition(
+            position: a.drive(
+              Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+                .chain(CurveTween(curve: Curves.easeIn))),
+                child: c,
+              ),
+          child: TakePictureScreen(camera: state.extra as CameraDescription)),
       ),
       GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
-          name: "displayPicture",
-          path: "/displayPicture",
-          pageBuilder: (context, state) => MaterialPage(
-              child: DisplayPictureScreen(imagePath: state.extra as String)))
+        parentNavigatorKey: _rootNavigatorKey,
+        name: "displayPicture",
+        path: "/displayPicture",
+        pageBuilder: (context, state) => MaterialPage(
+          child: DisplayPictureScreen(imagePath: state.extra as String))),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        name: "viewEventComments",
+        path: "/events/:eventId/comments",
+        builder: (context, state) => CommentsViewScreen(
+          eventId: int.parse(state.params["eventId"] ?? "0"),
+          event: state.extra as Event?,
+        ),
+      ),
     ],
     redirect: (_, state) {
       if (!authState.loggedIn) return "/auth";
