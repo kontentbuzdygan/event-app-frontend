@@ -2,6 +2,7 @@ import "dart:math";
 
 import "package:event_app/api/json.dart";
 import "package:event_app/api/models/event_comment.dart";
+import "package:event_app/api/models/event_tag.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/utils.dart";
@@ -22,6 +23,7 @@ class Event {
   Profile? author;
   List<EventComment>? comments;
   PhotoUrls? banner;
+  List? tags;
 
   Event._({
     required this.id,
@@ -84,6 +86,11 @@ class Event {
 
   Future<Event> _fetchBanner() async {
     banner = await fetchMockImage("party");
+    return this;
+  }
+
+  Future<Event> fetchTags() async {
+    tags = await findEventTags(id);
     return this;
   }
 }
