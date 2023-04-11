@@ -77,7 +77,7 @@ class _EventsMapState extends State<EventsMap> with TickerProviderStateMixin {
   Marker eventMarker(Event event) {
     return Marker(
       point: event.location,
-      builder: (_) => GestureDetector(
+      builder: (_) => InkWell(
         onTap: () async {
           final center = widget.controller.center;
           final zoom = widget.controller.zoom;

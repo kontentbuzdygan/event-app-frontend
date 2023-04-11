@@ -6,7 +6,6 @@ import "package:event_app/features/profile/profile_compact.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
-import "package:skeletons/skeletons.dart";
 
 class DraggableEventList extends StatefulWidget {
   const DraggableEventList({super.key});
@@ -124,41 +123,6 @@ class _DraggableEventListState extends State<DraggableEventList> {
         child: Card(
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: EventCompact(event: event),
-        ),
-      );
-
-  Widget get eventListSkeleton => SkeletonItem(
-        child: Column(
-          children: [
-            SkeletonLine(
-              style: SkeletonLineStyle(
-                height: 180,
-                borderRadius: BorderRadius.circular(25),
-              ),
-            ),
-            const SizedBox(height: 10),
-            SkeletonLine(
-              style: SkeletonLineStyle(
-                height: 140,
-                borderRadius: BorderRadius.circular(25),
-              ),
-            ),
-            const SizedBox(height: 10),
-            SkeletonLine(
-              style: SkeletonLineStyle(
-                height: 100,
-                borderRadius: BorderRadius.circular(25),
-              ),
-            ),
-            const SizedBox(height: 10),
-            SkeletonLine(
-              style: SkeletonLineStyle(
-                height: 140,
-                borderRadius: BorderRadius.circular(25),
-              ),
-            ),
-            const SizedBox(height: 10),
-          ],
         ),
       );
 }

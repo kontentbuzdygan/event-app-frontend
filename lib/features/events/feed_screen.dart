@@ -21,7 +21,7 @@ class _State extends State<FeedScreen> {
     super.initState();
 
     allEvents = () async {
-      final events = (await Event.findAll()).toList();
+      final events = await Event.findAll();
       await RestClient.runCached(
         () => Future.wait(
           events.map((event) => event.fetchAuthor()),
@@ -73,8 +73,8 @@ class _State extends State<FeedScreen> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    return MaterialButton(
-      onPressed: () => context.push("/events/${event.id}", extra: event),
+    return InkWell(
+      onTap: () => context.push("/events/${event.id}", extra: event),
       child: Container(
         padding: const EdgeInsets.all(20),
         alignment: Alignment.topLeft,

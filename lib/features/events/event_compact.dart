@@ -12,17 +12,17 @@ class EventCompact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
     return Column(
-      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (event.banner != null)
           SizedBox(
             height: 150,
             child: Image.network(
-              event.banner!.small.toString(),
+              event.banner!.regular.toString(),
               fit: BoxFit.cover,
             ),
           ),
@@ -33,13 +33,13 @@ class EventCompact extends StatelessWidget {
             children: [
               Text(
                 event.title,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: theme.textTheme.titleLarge,
               ),
               Text(
                 l10n.startsAtDate(event.startsAt),
-                style: Theme.of(context).textTheme.labelSmall!.merge(
-                      TextStyle(color: Theme.of(context).colorScheme.primary),
-                    ),
+                style: theme.textTheme.labelSmall!.merge(
+                  TextStyle(color: theme.colorScheme.primary),
+                ),
               ),
               const SizedBox(height: 12),
               Text(event.description),

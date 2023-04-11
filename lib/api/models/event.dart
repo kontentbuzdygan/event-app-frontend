@@ -5,8 +5,8 @@ import "package:event_app/api/models/event_comment.dart";
 import "package:event_app/api/models/event_tag.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
-import "package:latlong2/latlong.dart";
 import "package:event_app/utils.dart";
+import "package:latlong2/latlong.dart";
 import "package:unsplash_client/unsplash_client.dart";
 
 const String _apiPath = "events";
@@ -56,12 +56,7 @@ class Event {
     return event._fetchBanner();
   }
 
-  /// NOTE: It's important to collect the returned iterable, for example by
-  /// calling `toList()`, if you want to use mutating methods like `fetchAuthor()`.
-  /// Otherwise the actual `Event` objects yielded from the iterable will be regenerated
-  /// on every iteration due to laziness, and so their non-serialized state will
-  /// not be persisted.
-  static Future<Iterable<Event>> findAll() async {
+  static Future<List<Event>> findAll() async {
     final json = await rest.get([_apiPath]);
     final events = (json["events"] as Iterable<dynamic>)
         .cast<JsonObject>()

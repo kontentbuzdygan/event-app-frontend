@@ -73,7 +73,7 @@ class _EventViewState extends State<EventView> {
               const SizedBox(height: 16),
               FutureBuilder(
                 future: comments,
-                builder: (context, snapshot) => GestureDetector(
+                builder: (context, snapshot) => InkWell(
                   onTap: event == null
                       ? null
                       : () => context.push(

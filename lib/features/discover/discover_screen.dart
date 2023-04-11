@@ -26,6 +26,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   void initState() {
     super.initState();
 
+    events = Event.findAll();
     sheetController = DraggableScrollableController();
     mapController = MapController();
   }

@@ -1,6 +1,7 @@
 import "package:event_app/api/models/event.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+
 import "event_view/event_view.dart";
 
 class EventViewScreen extends StatefulWidget {
