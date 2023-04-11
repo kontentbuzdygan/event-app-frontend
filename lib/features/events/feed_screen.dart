@@ -27,7 +27,6 @@ class _State extends State<FeedScreen> {
           events.map((event) => event.fetchAuthor()),
         ),
       );
-      await Future.wait(events.map((event) => event.fetchBanner()));
       return events;
     }();
   }
@@ -75,7 +74,7 @@ class _State extends State<FeedScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return MaterialButton(
-      onPressed: () => context.push("/events/${event.id}"),
+      onPressed: () => context.push("/events/${event.id}", extra: event),
       child: Container(
         padding: const EdgeInsets.all(20),
         alignment: Alignment.topLeft,
