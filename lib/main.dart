@@ -55,6 +55,7 @@ class App extends StatelessWidget {
 
           final error = errorNotifier.consumeError();
           if (error != null) {
+
             WidgetsBinding.instance.addPostFrameCallback(
               (_) {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
