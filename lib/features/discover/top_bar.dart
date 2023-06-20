@@ -12,7 +12,7 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
-  late final state = context.watch<DiscoverScreenNotifier>();
+  late final state = context.watch<DiscoverPageNotifier>();
   late final l10n = AppLocalizations.of(context)!;
 
   @override

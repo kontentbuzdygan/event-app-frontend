@@ -1,3 +1,4 @@
+import "package:auto_route/annotations.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/auth/slide_out_buttons.dart";
 import "package:event_app/main.dart";
@@ -6,11 +7,12 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:form_validator/form_validator.dart";
 import "package:provider/provider.dart";
 
-class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+@RoutePage()
+class AuthPage extends StatefulWidget {
+  const AuthPage({super.key});
 
   @override
-  State<AuthScreen> createState() {
+  State<AuthPage> createState() {
     return _State();
   }
 }
@@ -26,7 +28,7 @@ class _FormState {
   _FormState._(this.getButtonText, this.canGoBack);
 }
 
-class _State extends State<AuthScreen> with TickerProviderStateMixin {
+class _State extends State<AuthPage> with TickerProviderStateMixin {
   static const transitionTime = Duration(milliseconds: 300);
 
   final emailController = TextEditingController();

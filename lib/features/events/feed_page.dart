@@ -1,19 +1,22 @@
+import "package:auto_route/annotations.dart";
+import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/errors.dart";
 import "package:event_app/features/events/tags/tags.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
-import "package:go_router/go_router.dart";
 
-class FeedScreen extends StatefulWidget {
-  const FeedScreen({super.key});
+@RoutePage()
+class FeedPage extends StatefulWidget {
+  const FeedPage({super.key});
 
   @override
-  State<FeedScreen> createState() => _State();
+  State<FeedPage> createState() => _State();
 }
 
-class _State extends State<FeedScreen> {
+class _State extends State<FeedPage> {
   late Future<List<Event>> allEvents;
 
   @override
@@ -48,7 +51,7 @@ class _State extends State<FeedScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add_outlined),
-        onPressed: () => context.pushNamed("createEvent"),
+        onPressed: () => context.pushRoute(CreateEventRoute()),
       ),
       body: FutureBuilder(
         future: allEvents,
@@ -74,7 +77,7 @@ class _State extends State<FeedScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return InkWell(
-      onTap: () => context.push("/events/${event.id}", extra: event),
+      onTap: () => context.pushRoute(EventViewRoute(id: event.id, event: event)),
       child: Container(
         padding: const EdgeInsets.all(20),
         alignment: Alignment.topLeft,

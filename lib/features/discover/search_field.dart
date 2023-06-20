@@ -11,7 +11,7 @@ class SearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final state = context.watch<DiscoverScreenNotifier>();
+    final state = context.watch<DiscoverPageNotifier>();
 
     return SizedBox(
       height: 60,

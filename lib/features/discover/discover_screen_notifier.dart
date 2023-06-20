@@ -3,8 +3,8 @@ import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:flutter/material.dart";
 
-class DiscoverScreenNotifier extends ChangeNotifier {
-  DiscoverScreenNotifier() {
+class DiscoverPageNotifier extends ChangeNotifier {
+  DiscoverPageNotifier() {
     fetchEvents();
     fetchProfiles();
   }

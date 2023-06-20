@@ -1,12 +1,12 @@
 import "dart:io";
 
+import "package:auto_route/auto_route.dart";
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
 
-class DisplayPictureScreen extends StatelessWidget {
+class DisplayPicturePage extends StatelessWidget {
   final String imagePath;
 
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  const DisplayPicturePage({super.key, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +20,8 @@ class DisplayPictureScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // TODO: there has to be a better way for it
-          context.pop();
-          context.pop();
+          // Fo sho ma man ;) 
+          context.router.popUntilRouteWithPath("da path");
         },
         child: const Icon(Icons.send),
       ),

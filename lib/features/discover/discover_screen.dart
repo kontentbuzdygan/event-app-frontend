@@ -1,3 +1,4 @@
+import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/features/discover/discover_screen_notifier.dart";
@@ -8,14 +9,15 @@ import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
 import "package:provider/provider.dart";
 
-class DiscoverScreen extends StatefulWidget {
-  const DiscoverScreen({super.key});
+@RoutePage()
+class DiscoverPage extends StatefulWidget {
+  const DiscoverPage({super.key});
 
   @override
-  State<DiscoverScreen> createState() => _DiscoverScreenState();
+  State<DiscoverPage> createState() => _DiscoverPageState();
 }
 
-class _DiscoverScreenState extends State<DiscoverScreen>
+class _DiscoverPageState extends State<DiscoverPage>
     with TickerProviderStateMixin {
   late DraggableScrollableController sheetController;
   late Future<List<Event>> events;
@@ -37,7 +39,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: ChangeNotifierProvider(
-          create: (context) => DiscoverScreenNotifier(),
+          create: (context) => DiscoverPageNotifier(),
           child: Column(
             children: [
               const TopBar(),

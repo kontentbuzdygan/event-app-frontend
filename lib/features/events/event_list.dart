@@ -1,9 +1,10 @@
 import "dart:math";
 
+import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/features/events/event_compact.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
 import "package:skeletons/skeletons.dart";
 
 final _random = Random();
@@ -31,14 +32,17 @@ class _EventListState extends State<EventList> {
           return eventListSkeleton();
         }
 
+        final data = snapshot.requireData;
+
         return ListView.separated(
           shrinkWrap: true,
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) => Card(
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: InkWell(
-              onTap: () => context.push("/events/${snapshot.data![index].id}",
-                  extra: snapshot.requireData[index]),
+              onTap: () => context.pushRoute(
+                EventViewRoute(id: data[index].id, event: data[index])
+              ),
               child: EventCompact(event: snapshot.data![index]),
             ),
           ),

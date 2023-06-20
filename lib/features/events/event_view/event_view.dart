@@ -1,3 +1,4 @@
+import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/features/events/event_view/banner.dart";
 import "package:event_app/features/events/event_view/comments.dart";
@@ -7,8 +8,8 @@ import "package:event_app/features/events/event_view/map.dart";
 import "package:event_app/features/events/tags/tags.dart";
 import "package:event_app/api/models/story.dart";
 import "package:event_app/features/story/story_list_view.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
 
 class EventView extends StatefulWidget {
   const EventView({super.key, required this.event});
@@ -86,10 +87,7 @@ class _EventViewState extends State<EventView> {
                 builder: (context, snapshot) => InkWell(
                   onTap: event == null
                       ? null
-                      : () => context.push(
-                            "/events/${event.id}/comments",
-                            extra: snapshot.data,
-                          ),
+                      : () => context.pushRoute(EventCommentsViewRoute(eventId: event.id, event: event)),
                   child: EventViewComments(
                     commentCount: event?.commentCount,
                     comments:

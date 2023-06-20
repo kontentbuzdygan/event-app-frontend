@@ -2,10 +2,9 @@ import "dart:async";
 
 import "package:camera/camera.dart";
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
 
-class TakePictureScreen extends StatefulWidget {
-  const TakePictureScreen({
+class TakePicturePage extends StatefulWidget {
+  const TakePicturePage({
     super.key,
     required this.camera,
   });
@@ -13,10 +12,10 @@ class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
 
   @override
-  TakePictureScreenState createState() => TakePictureScreenState();
+  TakePicturePageState createState() => TakePicturePageState();
 }
 
-class TakePictureScreenState extends State<TakePictureScreen> {
+class TakePicturePageState extends State<TakePicturePage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
 
@@ -68,7 +67,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
             if (!mounted) return;
 
-            context.push("/displayPicture", extra: image.path);
+            // context.push("/displayPicture", extra: image.path);
           } catch (e) {
             return;
           }
