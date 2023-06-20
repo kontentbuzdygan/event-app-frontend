@@ -1,3 +1,4 @@
+import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/models/story.dart";
@@ -9,6 +10,7 @@ import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
 
+@RoutePage()
 class ProfileViewScreen extends StatefulWidget {
   const ProfileViewScreen({super.key, this.id});
 

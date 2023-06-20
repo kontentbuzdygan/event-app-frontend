@@ -63,6 +63,7 @@ dependencies:
   qr_flutter: ^4.0.0
   story: ^1.0.0+1
   username_gen: ^1.0.4
+  auto_route: ^7.4.0
 
 dependency_overrides:
   intl: ^0.17.0
@@ -72,6 +73,7 @@ dev_dependencies:
     sdk: flutter
     
   go_router_builder: ^1.0.0
+  auto_route_generator: ^7.1.1
   build_runner: ^2.0.0
   build_verify: ^3.1.0
 

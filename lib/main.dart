@@ -14,6 +14,7 @@ import "package:event_app/features/story/camera/display_picture_screen.dart";
 import "package:event_app/features/story/camera/take_picture_screen.dart";
 import "package:event_app/features/story/story_list_view.dart";
 import "package:event_app/features/story/story_view_screen.dart";
+import "package:event_app/router.dart";
 import "package:event_app/tab_navigation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
@@ -186,6 +187,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(context) {
+    final appRouter = AppRouter();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: authState),
@@ -194,7 +197,9 @@ class App extends StatelessWidget {
       child: MaterialApp.router(
         theme: ThemeData(useMaterial3: true),
         darkTheme: ThemeData.dark(useMaterial3: true),
-        routerConfig: _router,
+        routerConfig: appRouter.config(
+          reevaluateListenable: authState,
+        ),
         title: "Event App",
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

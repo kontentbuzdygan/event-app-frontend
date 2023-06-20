@@ -1,3 +1,4 @@
+import "package:auto_route/annotations.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:event_app/features/auth/slide_out_buttons.dart";
 import "package:event_app/main.dart";
@@ -6,6 +7,7 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:form_validator/form_validator.dart";
 import "package:provider/provider.dart";
 
+@RoutePage()
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
 
