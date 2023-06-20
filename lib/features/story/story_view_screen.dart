@@ -2,16 +2,16 @@ import "package:event_app/features/story/story_list_view.dart";
 import "package:flutter/material.dart";
 import "package:story/story.dart";
 
-class StoryViewScreen extends StatefulWidget {
-  const StoryViewScreen({super.key, required this.stories});
+class StoryViewPage extends StatefulWidget {
+  const StoryViewPage({super.key, required this.stories});
 
   final StoryData stories;
 
   @override
-  State<StoryViewScreen> createState() => _StoryViewScreenState();
+  State<StoryViewPage> createState() => _StoryViewPageState();
 }
 
-class _StoryViewScreenState extends State<StoryViewScreen> {
+class _StoryViewPageState extends State<StoryViewPage> {
   @override
   Widget build(context) {
     final int start = widget.stories.startingIndex;
