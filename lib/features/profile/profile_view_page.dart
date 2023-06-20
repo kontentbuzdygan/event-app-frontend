@@ -6,21 +6,21 @@ import "package:event_app/features/events/event_list.dart";
 import "package:event_app/features/profile/profile_header.dart";
 import "package:event_app/features/profile/tickets.dart";
 import "package:event_app/main.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
-import "package:go_router/go_router.dart";
 
 @RoutePage()
-class ProfileViewScreen extends StatefulWidget {
-  const ProfileViewScreen({super.key, this.id});
+class ProfileViewPage extends StatefulWidget {
+  const ProfileViewPage({super.key, @pathParam this.id});
 
   final int? id;
 
   @override
-  State<ProfileViewScreen> createState() => _ProfileViewScreenState();
+  State<ProfileViewPage> createState() => _ProfileViewPageState();
 }
 
-class _ProfileViewScreenState extends State<ProfileViewScreen>
+class _ProfileViewPageState extends State<ProfileViewPage>
     with SingleTickerProviderStateMixin {
   late final Future<Profile> profile =
       widget.id != null ? Profile.find(widget.id!) : Profile.me();
@@ -68,7 +68,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
               actions: [
                 if (widget.id == null) ...[
                   IconButton(
-                    onPressed: () => context.pushNamed("editProfile"),
+                    onPressed: () => context.pushRoute(const ProfileEditRoute()),
                     tooltip: l10n.editProfile,
                     icon: const Icon(Icons.edit_outlined),
                   ),

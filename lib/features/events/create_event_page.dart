@@ -1,3 +1,4 @@
+import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/event_tag.dart";
 import "package:event_app/features/events/create_event_steps/description_step.dart";
@@ -7,16 +8,16 @@ import "package:event_app/features/events/create_event_steps/tags_step.dart";
 import "package:flutter/material.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
-import "package:go_router/go_router.dart";
 
-class CreateEventScreen extends StatefulWidget {
-  const CreateEventScreen({super.key});
+@RoutePage()
+class CreateEventPage extends StatefulWidget {
+  const CreateEventPage({super.key});
 
   @override
-  State<CreateEventScreen> createState() => _State();
+  State<CreateEventPage> createState() => _State();
 }
 
-class _State extends State<CreateEventScreen> {
+class _State extends State<CreateEventPage> {
   final _formKey = GlobalKey<FormBuilderState>();
   final List<GlobalKey<FormBuilderState>> _formKeys = [
     GlobalKey<FormBuilderState>(),
@@ -76,7 +77,7 @@ class _State extends State<CreateEventScreen> {
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
-                context.pop();
+                context.popRoute();
                 return;
               }
               setState(() {

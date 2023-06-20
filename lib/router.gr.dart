@@ -18,30 +18,52 @@ abstract class _$AppRouter extends RootStackRouter {
     AuthRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const AuthScreen(),
+        child: const AuthPage(),
       );
     },
     DiscoverRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const DiscoverScreen(),
+        child: const DiscoverPage(),
+      );
+    },
+    EventCommentsViewRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<EventCommentsViewRouteArgs>(
+          orElse: () =>
+              EventCommentsViewRouteArgs(eventId: pathParams.getInt('id')));
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: EventCommentsViewPage(
+          key: args.key,
+          eventId: args.eventId,
+          event: args.event,
+        ),
+      );
+    },
+    CreateEventRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CreateEventPage(),
+      );
+    },
+    EventViewRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<EventViewRouteArgs>(
+          orElse: () => EventViewRouteArgs(id: pathParams.getInt('id')));
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: EventViewPage(
+          key: args.key,
+          id: args.id,
+          event: args.event,
+        ),
       );
     },
     FeedRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const FeedScreen(),
-      );
-    },
-    ProfileViewRoute.name: (routeData) {
-      final args = routeData.argsAs<ProfileViewRouteArgs>(
-          orElse: () => const ProfileViewRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: ProfileViewScreen(
-          key: args.key,
-          id: args.id,
-        ),
+        child: const FeedPage(),
       );
     },
     MainRoute.name: (routeData) {
@@ -50,11 +72,29 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MainPage(),
       );
     },
+    ProfileEditRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ProfileEditPage(),
+      );
+    },
+    ProfileViewRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<ProfileViewRouteArgs>(
+          orElse: () => ProfileViewRouteArgs(id: pathParams.optInt('id')));
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ProfileViewPage(
+          key: args.key,
+          id: args.id,
+        ),
+      );
+    },
   };
 }
 
 /// generated route for
-/// [AuthScreen]
+/// [AuthPage]
 class AuthRoute extends PageRouteInfo<void> {
   const AuthRoute({List<PageRouteInfo>? children})
       : super(
@@ -68,7 +108,7 @@ class AuthRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [DiscoverScreen]
+/// [DiscoverPage]
 class DiscoverRoute extends PageRouteInfo<void> {
   const DiscoverRoute({List<PageRouteInfo>? children})
       : super(
@@ -82,7 +122,109 @@ class DiscoverRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [FeedScreen]
+/// [EventCommentsViewPage]
+class EventCommentsViewRoute extends PageRouteInfo<EventCommentsViewRouteArgs> {
+  EventCommentsViewRoute({
+    Key? key,
+    required int eventId,
+    Event? event,
+    List<PageRouteInfo>? children,
+  }) : super(
+          EventCommentsViewRoute.name,
+          args: EventCommentsViewRouteArgs(
+            key: key,
+            eventId: eventId,
+            event: event,
+          ),
+          rawPathParams: {'id': eventId},
+          initialChildren: children,
+        );
+
+  static const String name = 'EventCommentsViewRoute';
+
+  static const PageInfo<EventCommentsViewRouteArgs> page =
+      PageInfo<EventCommentsViewRouteArgs>(name);
+}
+
+class EventCommentsViewRouteArgs {
+  const EventCommentsViewRouteArgs({
+    this.key,
+    required this.eventId,
+    this.event,
+  });
+
+  final Key? key;
+
+  final int eventId;
+
+  final Event? event;
+
+  @override
+  String toString() {
+    return 'EventCommentsViewRouteArgs{key: $key, eventId: $eventId, event: $event}';
+  }
+}
+
+/// generated route for
+/// [CreateEventPage]
+class CreateEventRoute extends PageRouteInfo<void> {
+  const CreateEventRoute({List<PageRouteInfo>? children})
+      : super(
+          CreateEventRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CreateEventRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [EventViewPage]
+class EventViewRoute extends PageRouteInfo<EventViewRouteArgs> {
+  EventViewRoute({
+    Key? key,
+    required int id,
+    Event? event,
+    List<PageRouteInfo>? children,
+  }) : super(
+          EventViewRoute.name,
+          args: EventViewRouteArgs(
+            key: key,
+            id: id,
+            event: event,
+          ),
+          rawPathParams: {'id': id},
+          initialChildren: children,
+        );
+
+  static const String name = 'EventViewRoute';
+
+  static const PageInfo<EventViewRouteArgs> page =
+      PageInfo<EventViewRouteArgs>(name);
+}
+
+class EventViewRouteArgs {
+  const EventViewRouteArgs({
+    this.key,
+    required this.id,
+    this.event,
+  });
+
+  final Key? key;
+
+  final int id;
+
+  final Event? event;
+
+  @override
+  String toString() {
+    return 'EventViewRouteArgs{key: $key, id: $id, event: $event}';
+  }
+}
+
+/// generated route for
+/// [FeedPage]
 class FeedRoute extends PageRouteInfo<void> {
   const FeedRoute({List<PageRouteInfo>? children})
       : super(
@@ -96,7 +238,35 @@ class FeedRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [ProfileViewScreen]
+/// [MainPage]
+class MainRoute extends PageRouteInfo<void> {
+  const MainRoute({List<PageRouteInfo>? children})
+      : super(
+          MainRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MainRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ProfileEditPage]
+class ProfileEditRoute extends PageRouteInfo<void> {
+  const ProfileEditRoute({List<PageRouteInfo>? children})
+      : super(
+          ProfileEditRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ProfileEditRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ProfileViewPage]
 class ProfileViewRoute extends PageRouteInfo<ProfileViewRouteArgs> {
   ProfileViewRoute({
     Key? key,
@@ -108,6 +278,7 @@ class ProfileViewRoute extends PageRouteInfo<ProfileViewRouteArgs> {
             key: key,
             id: id,
           ),
+          rawPathParams: {'id': id},
           initialChildren: children,
         );
 
@@ -131,18 +302,4 @@ class ProfileViewRouteArgs {
   String toString() {
     return 'ProfileViewRouteArgs{key: $key, id: $id}';
   }
-}
-
-/// generated route for
-/// [MainPage]
-class MainRoute extends PageRouteInfo<void> {
-  const MainRoute({List<PageRouteInfo>? children})
-      : super(
-          MainRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'MainRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
 }

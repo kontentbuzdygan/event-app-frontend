@@ -1,20 +1,26 @@
+import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 import "event_view/event_view.dart";
 
-class EventViewScreen extends StatefulWidget {
-  const EventViewScreen({super.key, required this.id, this.event});
+@RoutePage()
+class EventViewPage extends StatefulWidget {
+  const EventViewPage({
+    super.key, 
+    @pathParam required this.id, 
+    this.event
+  });
 
   final int id;
   final Event? event;
 
   @override
-  State<EventViewScreen> createState() => _EventViewScreenState();
+  State<EventViewPage> createState() => _EventViewPageState();
 }
 
-class _EventViewScreenState extends State<EventViewScreen> {
+class _EventViewPageState extends State<EventViewPage> {
   late final Future<Event> event;
   late bool hasBanner;
 

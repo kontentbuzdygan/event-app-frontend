@@ -1,9 +1,10 @@
+import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/models/story.dart";
 import "package:event_app/features/story/story_list_view.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
-import "package:go_router/go_router.dart";
 
 class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key, required this.profile});
@@ -46,7 +47,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           ),
           const SizedBox(width: 8),
           GestureDetector(
-            onTap: () => context.pushNamed("editProfile"),
+            onTap: () => context.pushRoute(const ProfileEditRoute()),
             child: Text(widget.profile.displayName, style: theme.textTheme.titleLarge),
           )
         ]),
@@ -61,7 +62,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           readOnly: true,
           minLines: 2,
           maxLines: null,
-          onTap: () => context.pushNamed("editProfile"),
+          onTap: () => context.pushRoute(const ProfileEditRoute()),
         ),
         const SizedBox(height: 8),
         StoryListView(stories: stories),

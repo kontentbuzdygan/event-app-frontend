@@ -8,11 +8,11 @@ import "package:form_validator/form_validator.dart";
 import "package:provider/provider.dart";
 
 @RoutePage()
-class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+class AuthPage extends StatefulWidget {
+  const AuthPage({super.key});
 
   @override
-  State<AuthScreen> createState() {
+  State<AuthPage> createState() {
     return _State();
   }
 }
@@ -28,7 +28,7 @@ class _FormState {
   _FormState._(this.getButtonText, this.canGoBack);
 }
 
-class _State extends State<AuthScreen> with TickerProviderStateMixin {
+class _State extends State<AuthPage> with TickerProviderStateMixin {
   static const transitionTime = Duration(milliseconds: 300);
 
   final emailController = TextEditingController();

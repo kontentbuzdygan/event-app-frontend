@@ -1,10 +1,11 @@
+import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/features/discover/discover_screen_notifier.dart";
 import "package:event_app/features/events/event_compact.dart";
 import "package:event_app/features/profile/profile_compact.dart";
+import "package:event_app/router.dart";
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 
 class DraggableEventList extends StatefulWidget {
@@ -17,7 +18,7 @@ class DraggableEventList extends StatefulWidget {
 class _DraggableEventListState extends State<DraggableEventList> {
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<DiscoverScreenNotifier>();
+    final state = context.watch<DiscoverPageNotifier>();
     final controller = state.sheetController;
 
     return NotificationListener<DraggableScrollableNotification>(
@@ -85,13 +86,13 @@ class _DraggableEventListState extends State<DraggableEventList> {
   }
 
   List<Widget> eventList() {
-    final state = context.read<DiscoverScreenNotifier>();
+    final state = context.read<DiscoverPageNotifier>();
     final events = state.events ?? <Event>[];
     return events.where(state.filterEvent).map(eventListItem).toList();
   }
 
   List<Widget> profileList() {
-    final profiles = context.read<DiscoverScreenNotifier>().profiles;
+    final profiles = context.read<DiscoverPageNotifier>().profiles;
     if (profiles == null) {
       return const [
         Center(
@@ -109,7 +110,7 @@ class _DraggableEventListState extends State<DraggableEventList> {
   }
 
   Widget profileListItem(Profile profile) => InkWell(
-        onTap: () => context.push("/profiles/${profile.id}"),
+        onTap: () => context.pushRoute(ProfileViewRoute(id: profile.id)),
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -119,7 +120,7 @@ class _DraggableEventListState extends State<DraggableEventList> {
       );
 
   Widget eventListItem(Event event) => InkWell(
-        onTap: () => context.push("/events/${event.id}"),
+        onTap: () => context.pushRoute(EventViewRoute(id: event.id)),
         child: Card(
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: EventCompact(event: event),

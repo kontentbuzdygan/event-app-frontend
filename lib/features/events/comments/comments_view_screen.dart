@@ -1,13 +1,15 @@
+import "package:auto_route/annotations.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/features/events/comments/comment.dart";
 import "package:event_app/features/events/comments/comment_input.dart";
 import "package:event_app/features/events/comments/comment_skeleton.dart";
 import "package:flutter/material.dart";
 
-class CommentsViewScreen extends StatefulWidget {
-  const CommentsViewScreen({
+@RoutePage()
+class EventCommentsViewPage extends StatefulWidget {
+  const EventCommentsViewPage({
     super.key,
-    required this.eventId,
+    @PathParam("id") required this.eventId,
     this.event,
   });
 
@@ -15,10 +17,10 @@ class CommentsViewScreen extends StatefulWidget {
   final Event? event;
 
   @override
-  State<CommentsViewScreen> createState() => _CommentsViewScreenState();
+  State<EventCommentsViewPage> createState() => _EventCommentsViewPageState();
 }
 
-class _CommentsViewScreenState extends State<CommentsViewScreen> {
+class _EventCommentsViewPageState extends State<EventCommentsViewPage> {
   late Future<Event> event;
 
   @override

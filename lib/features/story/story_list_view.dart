@@ -3,7 +3,6 @@ import "package:event_app/api/models/story.dart";
 import "package:event_app/features/story/story_item_layout.dart";
 import "package:event_app/features/story/story_list_skeleton.dart";
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
 
 class StoryListView extends StatefulWidget {
   const StoryListView({super.key, required this.stories});
@@ -43,8 +42,8 @@ class _StoryListViewState extends State<StoryListView> {
 
   Widget storyItem(Story story, List<Story> stories, int startingIndex) {
     return GestureDetector(
-      onTap: () => context.push("/stories",
-          extra: StoryData._(stories: stories, startingIndex: startingIndex)),
+      // onTap: () => context.push("/stories",
+      //     extra: StoryData._(stories: stories, startingIndex: startingIndex)),
       child: StoryItemLayout(
         children: [
           circularImageWithBorder(story.event?.banner!.thumb.toString() ??
@@ -57,8 +56,8 @@ class _StoryListViewState extends State<StoryListView> {
 
   Widget addNewStoryItem() {
     return GestureDetector(
-        onTap: () async => await availableCameras()
-            .then((cameras) => context.push("/photo", extra: cameras.first)),
+        onTap: () async => await availableCameras(),
+            // .then((cameras) => context.push("/photo", extra: cameras.first)),
         child: StoryItemLayout(
           children: [
             circularAddNewStory(),

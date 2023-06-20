@@ -1,9 +1,14 @@
 
 import "package:auto_route/auto_route.dart";
+import "package:event_app/api/models/event.dart";
 import "package:event_app/features/auth/auth_screen.dart";
 import "package:event_app/features/discover/discover_screen.dart";
-import "package:event_app/features/events/feed_screen.dart";
-import "package:event_app/features/profile/profile_view_screen.dart";
+import "package:event_app/features/events/comments/comments_view_screen.dart";
+import "package:event_app/features/events/create_event_page.dart";
+import "package:event_app/features/events/event_view_page.dart";
+import "package:event_app/features/events/feed_page.dart";
+import 'package:event_app/features/profile/profile_edit_page.dart';
+import 'package:event_app/features/profile/profile_view_page.dart';
 import "package:event_app/main.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -58,13 +63,47 @@ class AppRouter extends _$AppRouter {
     AutoRoute(                    
       path: "/",                    
       page: MainRoute.page,
-      guards: [AuthenticatedGuard()],  
+      guards: [AuthenticatedGuard()], 
       children: [
-        AutoRoute(page: FeedRoute.page, path: ""),
-        AutoRoute(page: DiscoverRoute.page, path: "discover"),
-        AutoRoute(page: ProfileViewRoute.page, path: "profile"),
-      ]                                
-    ),                
+        AutoRoute(
+          path: "",
+          page: FeedRoute.page, 
+        ),
+        AutoRoute(
+          path: "discover",
+          page: DiscoverRoute.page, 
+        ),
+        AutoRoute(
+          path: "profiles/me",
+          page: ProfileViewRoute.page, 
+        ),
+      ]                            
+    ),
+    AutoRoute(
+      path: "/profiles/:id",
+      page: ProfileViewRoute.page, 
+      guards: [AuthenticatedGuard()], 
+    ),
+    AutoRoute(
+      path: "/profiles/me/edit",
+      page: ProfileEditRoute.page, 
+      guards: [AuthenticatedGuard()], 
+    ),
+    AutoRoute(
+      path: "/events/create", 
+      page: CreateEventRoute.page, 
+      guards: [AuthenticatedGuard()], 
+    ),
+    AutoRoute(
+      path: "/events/:id", 
+      page: EventViewRoute.page, 
+      guards: [AuthenticatedGuard()], 
+    ), 
+    AutoRoute(
+      page: EventCommentsViewRoute.page, 
+      path: "/events/:id/comments",
+      guards: [AuthenticatedGuard()], 
+    ),               
     AutoRoute(
       path: "/auth", 
       page: AuthRoute.page, 

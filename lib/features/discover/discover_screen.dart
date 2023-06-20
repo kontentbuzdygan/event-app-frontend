@@ -10,14 +10,14 @@ import "package:flutter_map/flutter_map.dart";
 import "package:provider/provider.dart";
 
 @RoutePage()
-class DiscoverScreen extends StatefulWidget {
-  const DiscoverScreen({super.key});
+class DiscoverPage extends StatefulWidget {
+  const DiscoverPage({super.key});
 
   @override
-  State<DiscoverScreen> createState() => _DiscoverScreenState();
+  State<DiscoverPage> createState() => _DiscoverPageState();
 }
 
-class _DiscoverScreenState extends State<DiscoverScreen>
+class _DiscoverPageState extends State<DiscoverPage>
     with TickerProviderStateMixin {
   late DraggableScrollableController sheetController;
   late Future<List<Event>> events;
@@ -39,7 +39,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: ChangeNotifierProvider(
-          create: (context) => DiscoverScreenNotifier(),
+          create: (context) => DiscoverPageNotifier(),
           child: Column(
             children: [
               const TopBar(),
