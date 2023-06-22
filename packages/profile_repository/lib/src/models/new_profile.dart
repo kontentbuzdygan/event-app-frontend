@@ -1,5 +1,6 @@
-import "package:api_client/json.dart";
+
 import "package:json_annotation/json_annotation.dart";
+import "package:rest_client/rest_client.dart";
 
 part "new_profile.g.dart";
 

@@ -8,8 +8,8 @@ environment:
 dependencies:
   equatable: ^2.0.5
   json_annotation: ^4.8.1
-  api_client:
-    path: "../api_client"
+  rest_client:
+    path: "../rest_client"
 
 dev_dependencies:
   build_runner: ^2.4.5

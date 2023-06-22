@@ -1,8 +1,9 @@
 import "dart:async";
 import "dart:convert";
 
-import "../exceptions.dart";
 import "package:http/http.dart";
+
+import "exceptions.dart";
 
 /// Converts the given elements to strings and joins them with slashes, ensuring
 /// there is no consecutive or leading/trailing slashes

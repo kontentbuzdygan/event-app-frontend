@@ -1,24 +1,22 @@
-import "package:api_client/api_client.dart";
-import "package:api_client/exceptions.dart";
-import "package:api_client/json.dart";
 import "package:profile_repository/src/models/models.dart";
+import "package:rest_client/rest_client.dart";
 
 const String _apiPath = "profiles";
 
 class ProfileRepository {
   Future<void> update(NewProfile profile) async {
-    await rest.patch([_apiPath, "me"], profile.toJson());
+    await restClient.patch([_apiPath, "me"], profile.toJson());
   }
 
   Future<Profile> find(int id) async {
-    return Profile.fromJson(await rest.get([_apiPath, id]));
+    return Profile.fromJson(await restClient.get([_apiPath, id]));
   }
 
   Future<List<Profile>> search(String name) async {
     JsonObject json;
 
     try {
-      json = await rest.get([_apiPath, "?name=$name"]);
+      json = await restClient.get([_apiPath, "?name=$name"]);
     } on NotFound {
       return [];
     }
@@ -30,6 +28,6 @@ class ProfileRepository {
   }
 
   Future<Profile> me() async {
-    return Profile.fromJson(await rest.get([_apiPath, "me"]));
+    return Profile.fromJson(await restClient.get([_apiPath, "me"]));
   }
 }

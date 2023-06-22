@@ -1,4 +1,4 @@
-name: api_client
+name: rest_client
 description: Dart package to comunicate with the API
 publish_to: none
 

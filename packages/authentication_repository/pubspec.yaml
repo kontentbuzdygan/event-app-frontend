@@ -6,5 +6,6 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  api_client:
-    path: "../api_client"
+  flutter_secure_storage: ^8.0.0
+  rest_client:
+    path: "../rest_client"

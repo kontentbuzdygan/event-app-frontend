@@ -4,24 +4,26 @@ import "dart:developer";
 import "dart:io";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 
-import 'exceptions.dart';
-import 'json.dart';
-import 'utils.dart';
+import "exceptions.dart";
+import "json.dart";
+import "utils.dart";
 import "package:http/http.dart" as http;
 
 const _logSourceName = "event_app/api/rest_client";
 
-RestClient _rest = RestClient();
+RestClient _restClient = RestClient._();
 
-RestClient get rest => _rest;
+RestClient get restClient => _restClient;
 
 void overrideRestClient(RestClient value) {
-  _rest = value;
+  _restClient = value;
 }
 
 typedef Cache = Map<String, Completer<JsonObject>>;
 
-class RestClient {
+final class RestClient {
+  RestClient._();
+
   /// Runs the given callback while caching all GET requests made by any RestClient
   /// instance. Meant to be used in the scope of a single view or widget, where
   /// you might perform many requests to the same endpoint within a short period
@@ -98,12 +100,17 @@ class RestClient {
     return await (cache[endpoint] = wrapInCompleter(body())).future;
   }
 
+  Map<String, String>? authorizationHeader;
+
+  void setAuthorizationHeader(String? token) => token != null
+      ? authorizationHeader = {
+          HttpHeaders.authorizationHeader: "Bearer ${token}"
+        }
+      : null;
+
   Map<String, String> get _headers => {
         HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8",
         HttpHeaders.acceptHeader: "application/json",
-
-        /// TODO: Add the autorization token logic
-        // if (App.authState.loggedIn)
-        //   HttpHeaders.authorizationHeader: "Bearer ${App.authState.userToken}"
+        ...authorizationHeader ?? {},
       };
 }
