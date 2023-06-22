@@ -1,8 +1,7 @@
 import "package:api_client/api_client.dart";
 import "package:api_client/exceptions.dart";
 import "package:api_client/json.dart";
-import "package:user_repository/src/models/models.dart";
-import "package:user_repository/src/models/new_profile.dart";
+import "package:profile_repository/src/models/models.dart";
 
 const String _apiPath = "profiles";
 
