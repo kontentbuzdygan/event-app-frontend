@@ -11,11 +11,11 @@ class AuthenticationRepository {
   final _controller = StreamController<AuthenticationStatus>();
   final _storage = FlutterSecureStorage();
 
-  Future<void> setToken(String? token) async {
+  Future<void> _writeToken(String? token) async {
     await _storage.write(key: _tokenStorageKey, value: token);
   }
 
-  Future<void> deleteToken() async {
+  Future<void> _deleteToken() async {
     await _storage.delete(key: _tokenStorageKey);
   }
 
@@ -42,7 +42,7 @@ class AuthenticationRepository {
     }
 
     final res = await restClient.post([_apiPath, "refresh"]);
-    await setToken(token);
+    await _writeToken(token);
 
     restClient.setAuthorizationHeader(res["token"]);
     _controller.add(AuthenticationStatus.authenticated);
@@ -50,7 +50,7 @@ class AuthenticationRepository {
 
   Future<void> signOut() async {
     await restClient.delete([_apiPath, "sign-out"]);
-    await deleteToken();
+    await _deleteToken();
 
     restClient.setAuthorizationHeader(null);
     _controller.add(AuthenticationStatus.unauthenticated);
@@ -65,8 +65,15 @@ class AuthenticationRepository {
       "password": password,
     });
 
-    setToken(res["token"]);
+    _writeToken(res["token"]);
     restClient.setAuthorizationHeader(res["token"]);
     _controller.add(AuthenticationStatus.authenticated);
   }
+
+  Future<void> clearToken() async {
+    restClient.setAuthorizationHeader(null);
+    await _deleteToken();
+  }
+
+  void dispose() => _controller.close();
 }
