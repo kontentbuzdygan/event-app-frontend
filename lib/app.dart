@@ -1,8 +1,10 @@
 import "package:authentication_repository/authentication_repository.dart";
-import "package:event_app/app_bloc_observer.dart";
+import "package:auto_route/auto_route.dart";
 import "package:event_app/authentication/bloc/authentication_bloc.dart";
+import "package:event_app/router/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -18,12 +20,10 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-
     _authenticationRepository = AuthenticationRepository();
-    _authenticationBloc =
-        AuthenticationBloc(authenticationRepository: _authenticationRepository);
-
-    Bloc.observer = AppBlocObserver(authenticationBloc: _authenticationBloc);
+    _authenticationBloc = AuthenticationBloc(
+      authenticationRepository: _authenticationRepository,
+    );
   }
 
   @override
@@ -52,8 +52,44 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
+  late AppRouter _appRouter;
+
+  @override
+  void initState() {
+    super.initState();
+    _appRouter = AppRouter();
+  }
+
+  List<PageRouteInfo<dynamic>> stateToRoute(AuthenticationState state) => [
+    switch (state) {
+      AuthenticationAuthenticated() => const MainRoute(),
+      AuthenticationUnauthenticated() => const AuthRoute(),
+      _ => const LoadingRoute()
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp();
+    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) => _appRouter.updateDeclarativeRoutes(stateToRoute(state)),
+      builder: (context, state) => MaterialApp.router(
+          title: "Event App",
+          theme: ThemeData(useMaterial3: true),
+          darkTheme: ThemeData.dark(useMaterial3: true),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          debugShowCheckedModeBanner: false,
+          routeInformationProvider: _appRouter.routeInfoProvider(),
+          routeInformationParser: _appRouter.defaultRouteParser(),
+          routerDelegate: _appRouter.declarativeDelegate(
+            routes: (_) => [
+            switch (state) {
+              AuthenticationAuthenticated() => const MainStackRoute(),
+              _ => const AuthenticationStackRoute(),
+            }
+          ]
+          ),
+        ),
+    );
   }
 }

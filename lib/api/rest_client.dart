@@ -5,7 +5,6 @@ import "dart:io";
 import "package:event_app/api/exceptions.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:event_app/api/json.dart";
-import "package:event_app/main.dart";
 import "package:event_app/utils.dart";
 import "package:http/http.dart" as http;
 
@@ -71,7 +70,7 @@ class RestClient {
     try {
       return await response.json();
     } on Unauthorized {
-      App.authState.deleteUserToken();
+      // App.authState.deleteUserToken();
       rethrow;
     }
   }
@@ -99,7 +98,7 @@ class RestClient {
   Map<String, String> get _headers => {
         HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8",
         HttpHeaders.acceptHeader: "application/json",
-        if (App.authState.loggedIn)
-          HttpHeaders.authorizationHeader: "Bearer ${App.authState.userToken}"
+        // if (App.authState.loggedIn)
+        //   HttpHeaders.authorizationHeader: "Bearer ${App.authState.userToken}"
       };
 }

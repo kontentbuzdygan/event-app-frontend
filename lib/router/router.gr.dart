@@ -66,12 +66,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const FeedPage(),
       );
     },
-    MainRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const MainPage(),
-      );
-    },
     ProfileEditRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -88,6 +82,30 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           id: args.id,
         ),
+      );
+    },
+    LoadingRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const LoadingPage(),
+      );
+    },
+    MainStackRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MainStack(),
+      );
+    },
+    MainRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MainPage(),
+      );
+    },
+    AuthenticationStackRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AuthenticationStack(),
       );
     },
   };
@@ -238,20 +256,6 @@ class FeedRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [MainPage]
-class MainRoute extends PageRouteInfo<void> {
-  const MainRoute({List<PageRouteInfo>? children})
-      : super(
-          MainRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'MainRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
 /// [ProfileEditPage]
 class ProfileEditRoute extends PageRouteInfo<void> {
   const ProfileEditRoute({List<PageRouteInfo>? children})
@@ -302,4 +306,60 @@ class ProfileViewRouteArgs {
   String toString() {
     return 'ProfileViewRouteArgs{key: $key, id: $id}';
   }
+}
+
+/// generated route for
+/// [LoadingPage]
+class LoadingRoute extends PageRouteInfo<void> {
+  const LoadingRoute({List<PageRouteInfo>? children})
+      : super(
+          LoadingRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'LoadingRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MainStack]
+class MainStackRoute extends PageRouteInfo<void> {
+  const MainStackRoute({List<PageRouteInfo>? children})
+      : super(
+          MainStackRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MainStackRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MainPage]
+class MainRoute extends PageRouteInfo<void> {
+  const MainRoute({List<PageRouteInfo>? children})
+      : super(
+          MainRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MainRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [AuthenticationStack]
+class AuthenticationStackRoute extends PageRouteInfo<void> {
+  const AuthenticationStackRoute({List<PageRouteInfo>? children})
+      : super(
+          AuthenticationStackRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AuthenticationStackRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }

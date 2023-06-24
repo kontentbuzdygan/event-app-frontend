@@ -2,7 +2,6 @@ import "dart:async";
 
 import "package:bloc/bloc.dart";
 import "package:authentication_repository/authentication_repository.dart";
-import "package:equatable/equatable.dart";
 
 part "authentication_event.dart";
 part "authentication_state.dart";
@@ -12,8 +11,8 @@ class AuthenticationBloc
   AuthenticationBloc({
     required AuthenticationRepository authenticationRepository,
   })  : _authenticationRepository = authenticationRepository,
-        super(const AuthenticationState.unknown()) {
-      
+        super(AuthenticationUnknown()) {
+
     on<_AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
     on<AuthenticationLogoutForced>(_onAuthenticationLogoutForced);
@@ -21,6 +20,7 @@ class AuthenticationBloc
     _authenticationStatusSubscription = _authenticationRepository.status.listen(
       (status) => add(_AuthenticationStatusChanged(status)),
     );
+    _authenticationRepository.restoreAndRefreshToken();
   }
 
   final AuthenticationRepository _authenticationRepository;
@@ -38,11 +38,9 @@ class AuthenticationBloc
     Emitter<AuthenticationState> emit,
   ) async =>
       switch (event.status) {
-        AuthenticationStatus.authenticated =>
-          emit(const AuthenticationState.authenticated()),
-        AuthenticationStatus.unauthenticated =>
-          emit(const AuthenticationState.unauthenticated()),
-        _ => emit(const AuthenticationState.unknown())
+        AuthenticationStatus.authenticated => emit(AuthenticationAuthenticated()),
+        AuthenticationStatus.unauthenticated => emit(AuthenticationUnauthenticated()),
+        _ => _authenticationRepository.restoreAndRefreshToken()
       };
 
   void _onAuthenticationLogoutRequested(

@@ -2,7 +2,7 @@ import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/profile.dart";
 import "package:event_app/api/models/story.dart";
 import "package:event_app/features/story/story_list_view.dart";
-import "package:event_app/router.dart";
+import "package:event_app/router/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 

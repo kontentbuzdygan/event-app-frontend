@@ -3,7 +3,7 @@ import "dart:math";
 import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/features/events/event_compact.dart";
-import "package:event_app/router.dart";
+import "package:event_app/router/router.dart";
 import "package:flutter/material.dart";
 import "package:skeletons/skeletons.dart";
 

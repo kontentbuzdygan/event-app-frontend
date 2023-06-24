@@ -5,8 +5,7 @@ import "package:event_app/api/models/story.dart";
 import "package:event_app/features/events/event_list.dart";
 import "package:event_app/features/profile/profile_header.dart";
 import "package:event_app/features/profile/tickets.dart";
-import "package:event_app/main.dart";
-import "package:event_app/router.dart";
+import "package:event_app/router/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
@@ -73,7 +72,7 @@ class _ProfileViewPageState extends State<ProfileViewPage>
                     icon: const Icon(Icons.edit_outlined),
                   ),
                   IconButton(
-                    onPressed: App.authState.signOut,
+                    onPressed: null,
                     tooltip: l10n.logOut,
                     icon: const Icon(Icons.logout_outlined),
                   ),

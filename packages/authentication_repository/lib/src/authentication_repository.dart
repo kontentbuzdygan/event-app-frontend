@@ -22,8 +22,6 @@ class AuthenticationRepository {
   Future<String?> readToken() => _storage.read(key: _tokenStorageKey);
 
   Stream<AuthenticationStatus> get status async* {
-    await Future<void>.delayed(const Duration(seconds: 1));
-    yield AuthenticationStatus.unauthenticated;
     yield* _controller.stream;
   }
 
@@ -33,7 +31,7 @@ class AuthenticationRepository {
     return res["user_exists"];
   }
 
-  Future<void> refreshToken() async {
+  Future<void> restoreAndRefreshToken() async {
     final token = await readToken();
 
     if (token == null) {

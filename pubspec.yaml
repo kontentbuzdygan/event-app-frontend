@@ -56,7 +56,7 @@ dependencies:
   qr_flutter: ^4.0.0
   story: ^1.0.0+1
   username_gen: ^1.0.4
-  auto_route: ^7.4.0
+  auto_route: ^7.5.0
 
   authentication_repository:
     path: packages/authentication_repository
