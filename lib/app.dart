@@ -62,8 +62,8 @@ class _AppViewState extends State<AppView> {
 
   List<PageRouteInfo<dynamic>> stateToRoute(AuthenticationState state) => [
     switch (state) {
-      AuthenticationAuthenticated() => const MainRoute(),
-      AuthenticationUnauthenticated() => const AuthRoute(),
+      AuthenticationAuthenticated() => const MainStackRoute(),
+      AuthenticationUnauthenticated() => const AuthenticationStackRoute(),
       _ => const LoadingRoute()
     }
   ];
@@ -82,12 +82,7 @@ class _AppViewState extends State<AppView> {
           routeInformationProvider: _appRouter.routeInfoProvider(),
           routeInformationParser: _appRouter.defaultRouteParser(),
           routerDelegate: _appRouter.declarativeDelegate(
-            routes: (_) => [
-            switch (state) {
-              AuthenticationAuthenticated() => const MainStackRoute(),
-              _ => const AuthenticationStackRoute(),
-            }
-          ]
+            routes: (_) => stateToRoute(state)
           ),
         ),
     );

@@ -65,6 +65,9 @@ final class RestClient {
     final uri = Uri.parse("$baseUrl/$path");
 
     final request = http.Request(method, uri);
+
+    print(_headers);
+
     request.headers.addAll(_headers);
     request.body = jsonEncode(body);
 

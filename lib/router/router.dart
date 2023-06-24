@@ -14,6 +14,8 @@ import "package:event_app/router/authentication_stack.dart";
 import "package:event_app/router/loading_page.dart";
 import "package:flutter/material.dart";
 
+import "../login/view/login_page.dart";
+
 part "router.gr.dart"; 
 
 @AutoRouterConfig()
@@ -39,12 +41,12 @@ class AppRouter extends _$AppRouter {
         AutoRoute(path: "events/:id", page: EventViewRoute.page), 
         AutoRoute(path: "events/:id/comments", page: EventCommentsViewRoute.page),  
       ]
-    ),              
+    ),
     AutoRoute(
       path: "/",
       page: AuthenticationStackRoute.page, 
       children: [
-        AutoRoute(path: "", page: AuthRoute.page),
+        AutoRoute(path: "", page: LoginRoute.page),
       ]
     ),  
     AutoRoute(path: "/", page: LoadingRoute.page)     

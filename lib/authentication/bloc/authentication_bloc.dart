@@ -6,13 +6,15 @@ import "package:authentication_repository/authentication_repository.dart";
 part "authentication_event.dart";
 part "authentication_state.dart";
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AuthenticationBloc({
-    required AuthenticationRepository authenticationRepository,
-  })  : _authenticationRepository = authenticationRepository,
-        super(AuthenticationUnknown()) {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> { 
+  
+  final AuthenticationRepository _authenticationRepository;
+  late StreamSubscription<AuthenticationStatus> _authenticationStatusSubscription;
 
+  AuthenticationBloc({required AuthenticationRepository authenticationRepository})  
+    : _authenticationRepository = authenticationRepository,
+    super(AuthenticationUnknown()) 
+  {
     on<_AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
     on<AuthenticationLogoutForced>(_onAuthenticationLogoutForced);
@@ -20,17 +22,7 @@ class AuthenticationBloc
     _authenticationStatusSubscription = _authenticationRepository.status.listen(
       (status) => add(_AuthenticationStatusChanged(status)),
     );
-    _authenticationRepository.restoreAndRefreshToken();
-  }
-
-  final AuthenticationRepository _authenticationRepository;
-  late StreamSubscription<AuthenticationStatus>
-      _authenticationStatusSubscription;
-
-  @override
-  Future<void> close() {
-    _authenticationStatusSubscription.cancel();
-    return super.close();
+    _authenticationRepository.restoreAndRefreshToken(); 
   }
 
   Future<void> _onAuthenticationStatusChanged(
@@ -46,14 +38,16 @@ class AuthenticationBloc
   void _onAuthenticationLogoutRequested(
     AuthenticationLogoutRequested event,
     Emitter<AuthenticationState> emit,
-  ) {
-    _authenticationRepository.signOut();
-  }
+  ) => _authenticationRepository.signOut();
 
   void _onAuthenticationLogoutForced(
     AuthenticationLogoutForced event,
     Emitter<AuthenticationState> emit,
-  ) {
-    _authenticationRepository.clearToken();
+  ) => _authenticationRepository.clearToken();
+
+  @override
+  Future<void> close() {
+    _authenticationStatusSubscription.cancel();
+    return super.close();
   }
 }

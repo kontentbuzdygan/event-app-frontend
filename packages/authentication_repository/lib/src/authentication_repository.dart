@@ -25,23 +25,23 @@ class AuthenticationRepository {
     yield* _controller.stream;
   }
 
-  Future<bool> exists(String email) async {
+  Future<bool> exists({required String email}) async {
     final res =
         await restClient.post([_apiPath, "user-exists"], {"email": email});
     return res["user_exists"];
   }
 
   Future<void> restoreAndRefreshToken() async {
-    final token = await readToken();
+    final token = null;
 
     if (token == null) {
       _controller.add(AuthenticationStatus.unauthenticated);
       return;
     }
-
+    restClient.setAuthorizationHeader(token);
     final res = await restClient.post([_apiPath, "refresh"]);
     await _writeToken(token);
-
+    print(res["token"]);
     restClient.setAuthorizationHeader(res["token"]);
     _controller.add(AuthenticationStatus.authenticated);
   }
@@ -54,7 +54,7 @@ class AuthenticationRepository {
     _controller.add(AuthenticationStatus.unauthenticated);
   }
 
-  Future<void> signIn(String email, String password) async {
+  Future<void> signIn({required String email, required String password}) async {
     final res = await restClient.post([
       _apiPath,
       "sign-in"
@@ -64,6 +64,21 @@ class AuthenticationRepository {
     });
 
     _writeToken(res["token"]);
+    restClient.setAuthorizationHeader(res["token"]);
+    _controller.add(AuthenticationStatus.authenticated);
+  }
+
+  Future<void> signUp({required String email, required String password}) async {
+    final res = await restClient.post([
+      _apiPath,
+      "sign-up"
+    ], {
+      "email": email,
+      "password": password,
+    });
+
+    _writeToken(res["token"]);
+    print(res["token"]);
     restClient.setAuthorizationHeader(res["token"]);
     _controller.add(AuthenticationStatus.authenticated);
   }
