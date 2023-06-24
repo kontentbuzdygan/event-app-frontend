@@ -1,4 +1,4 @@
-import "package:authentication_repository/authentication_repository.dart";
+import "package:auth_repository/auth_repository.dart";
 import "package:auto_route/auto_route.dart";
 import "package:event_app/auth/auth.dart";
 import "package:event_app/router/router.dart";

@@ -58,8 +58,8 @@ dependencies:
   username_gen: ^1.0.4
   auto_route: ^7.5.0
 
-  authentication_repository:
-    path: packages/authentication_repository
+  auth_repository:
+    path: packages/auth_repository
   profile_repository:
     path: packages/profile_repository
 

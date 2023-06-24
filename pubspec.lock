@@ -33,10 +33,10 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  authentication_repository:
+  auth_repository:
     dependency: "direct main"
     description:
-      path: "packages/authentication_repository"
+      path: "packages/auth_repository"
       relative: true
     source: path
     version: "0.0.0"
