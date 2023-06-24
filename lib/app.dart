@@ -1,6 +1,6 @@
 import "package:authentication_repository/authentication_repository.dart";
 import "package:auto_route/auto_route.dart";
-import "package:event_app/authentication/bloc/authentication_bloc.dart";
+import "package:event_app/auth/auth.dart";
 import "package:event_app/router/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -14,14 +14,14 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  late final AuthenticationRepository _authenticationRepository;
-  late final AuthenticationBloc _authenticationBloc;
+  late final AuthRepository _authenticationRepository;
+  late final AuthBloc _authenticationBloc;
 
   @override
   void initState() {
     super.initState();
-    _authenticationRepository = AuthenticationRepository();
-    _authenticationBloc = AuthenticationBloc(
+    _authenticationRepository = AuthRepository();
+    _authenticationBloc = AuthBloc(
       authenticationRepository: _authenticationRepository,
     );
   }
@@ -60,17 +60,17 @@ class _AppViewState extends State<AppView> {
     _appRouter = AppRouter();
   }
 
-  List<PageRouteInfo<dynamic>> stateToRoute(AuthenticationState state) => [
+  List<PageRouteInfo<dynamic>> stateToRoute(AuthState state) => [
     switch (state) {
-      AuthenticationAuthenticated() => const MainStackRoute(),
-      AuthenticationUnauthenticated() => const AuthenticationStackRoute(),
+      AuthAuthenticated() => const MainStackRoute(),
+      AuthUnauthenticated() => const AuthStackRoute(),
       _ => const LoadingRoute()
     }
   ];
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) => _appRouter.updateDeclarativeRoutes(stateToRoute(state)),
       builder: (context, state) => MaterialApp.router(
           title: "Event App",

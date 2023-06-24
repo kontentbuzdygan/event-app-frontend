@@ -5,10 +5,10 @@ import "package:rest_client/rest_client.dart";
 const String _apiPath = "auth";
 const String _tokenStorageKey = "event-app-user-token";
 
-enum AuthenticationStatus { unknown, authenticated, unauthenticated }
+enum AuthStatus { unknown, authenticated, unauthenticated }
 
-class AuthenticationRepository {
-  final _controller = StreamController<AuthenticationStatus>();
+class AuthRepository {
+  final _controller = StreamController<AuthStatus>();
   final _storage = FlutterSecureStorage();
 
   Future<void> _writeToken(String? token) async {
@@ -21,7 +21,7 @@ class AuthenticationRepository {
 
   Future<String?> readToken() => _storage.read(key: _tokenStorageKey);
 
-  Stream<AuthenticationStatus> get status async* {
+  Stream<AuthStatus> get status async* {
     yield* _controller.stream;
   }
 
@@ -35,7 +35,7 @@ class AuthenticationRepository {
     final token = null;
 
     if (token == null) {
-      _controller.add(AuthenticationStatus.unauthenticated);
+      _controller.add(AuthStatus.unauthenticated);
       return;
     }
     restClient.setAuthorizationHeader(token);
@@ -43,7 +43,7 @@ class AuthenticationRepository {
     await _writeToken(token);
     print(res["token"]);
     restClient.setAuthorizationHeader(res["token"]);
-    _controller.add(AuthenticationStatus.authenticated);
+    _controller.add(AuthStatus.authenticated);
   }
 
   Future<void> signOut() async {
@@ -51,7 +51,7 @@ class AuthenticationRepository {
     await _deleteToken();
 
     restClient.setAuthorizationHeader(null);
-    _controller.add(AuthenticationStatus.unauthenticated);
+    _controller.add(AuthStatus.unauthenticated);
   }
 
   Future<void> signIn({required String email, required String password}) async {
@@ -65,7 +65,7 @@ class AuthenticationRepository {
 
     _writeToken(res["token"]);
     restClient.setAuthorizationHeader(res["token"]);
-    _controller.add(AuthenticationStatus.authenticated);
+    _controller.add(AuthStatus.authenticated);
   }
 
   Future<void> signUp({required String email, required String password}) async {
@@ -80,7 +80,7 @@ class AuthenticationRepository {
     _writeToken(res["token"]);
     print(res["token"]);
     restClient.setAuthorizationHeader(res["token"]);
-    _controller.add(AuthenticationStatus.authenticated);
+    _controller.add(AuthStatus.authenticated);
   }
 
   Future<void> clearToken() async {

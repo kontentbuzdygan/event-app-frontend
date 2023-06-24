@@ -84,18 +84,6 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    LoginRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const LoginPage(),
-      );
-    },
-    AuthenticationStackRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const AuthenticationStack(),
-      );
-    },
     LoadingRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -112,6 +100,12 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const MainPage(),
+      );
+    },
+    AuthStackRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AuthStack(),
       );
     },
   };
@@ -315,34 +309,6 @@ class ProfileViewRouteArgs {
 }
 
 /// generated route for
-/// [LoginPage]
-class LoginRoute extends PageRouteInfo<void> {
-  const LoginRoute({List<PageRouteInfo>? children})
-      : super(
-          LoginRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'LoginRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [AuthenticationStack]
-class AuthenticationStackRoute extends PageRouteInfo<void> {
-  const AuthenticationStackRoute({List<PageRouteInfo>? children})
-      : super(
-          AuthenticationStackRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'AuthenticationStackRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
 /// [LoadingPage]
 class LoadingRoute extends PageRouteInfo<void> {
   const LoadingRoute({List<PageRouteInfo>? children})
@@ -380,6 +346,20 @@ class MainRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'MainRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [AuthStack]
+class AuthStackRoute extends PageRouteInfo<void> {
+  const AuthStackRoute({List<PageRouteInfo>? children})
+      : super(
+          AuthStackRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AuthStackRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

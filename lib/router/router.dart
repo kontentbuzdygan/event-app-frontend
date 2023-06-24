@@ -10,11 +10,9 @@ import "package:event_app/features/events/feed_page.dart";
 import "package:event_app/features/profile/profile_edit_page.dart";
 import "package:event_app/features/profile/profile_view_page.dart";
 import "package:event_app/router/main_stack.dart";
-import "package:event_app/router/authentication_stack.dart";
 import "package:event_app/router/loading_page.dart";
+import "package:event_app/router/auth_stack.dart";
 import "package:flutter/material.dart";
-
-import "../login/view/login_page.dart";
 
 part "router.gr.dart"; 
 
@@ -44,9 +42,9 @@ class AppRouter extends _$AppRouter {
     ),
     AutoRoute(
       path: "/",
-      page: AuthenticationStackRoute.page, 
+      page: AuthStackRoute.page, 
       children: [
-        AutoRoute(path: "", page: LoginRoute.page),
+        AutoRoute(path: "", page: AuthRoute.page),
       ]
     ),  
     AutoRoute(path: "/", page: LoadingRoute.page)     
