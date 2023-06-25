@@ -1,10 +1,29 @@
+
 import "package:auth_repository/auth_repository.dart";
 import "package:auto_route/auto_route.dart";
+import "package:event_app/api/exceptions.dart";
 import "package:event_app/auth/auth.dart";
+import "package:event_app/main.dart";
 import "package:event_app/router/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+
+class _AppBlocObserver extends BlocObserver {
+  final AuthRepository _authRepository;
+
+  _AppBlocObserver({required AuthRepository authRepository})
+    : _authRepository = authRepository;
+
+  @override
+  void onError(bloc, error, stackTrace) {
+    if (error.toString() == const Unauthorized().message) {
+      _authRepository.clearToken();
+    }
+    super.onError(bloc, error, stackTrace);
+  }
+}
+
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -14,30 +33,39 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  late final AuthRepository _authenticationRepository;
-  late final AuthBloc _authenticationBloc;
+  late final AuthRepository _authRepository;
+  late final AuthBloc _authBloc;
 
   @override
   void initState() {
     super.initState();
-    _authenticationRepository = AuthRepository();
-    _authenticationBloc = AuthBloc(
-      authenticationRepository: _authenticationRepository,
+    
+    _authRepository = AuthRepository(
+      restClient: restClient, 
+      storage: storage
+    );
+
+    Bloc.observer = _AppBlocObserver(
+      authRepository: _authRepository
+    );
+
+    _authBloc = AuthBloc(
+      authenticationRepository: _authRepository,
     );
   }
 
   @override
   void dispose() {
-    _authenticationRepository.dispose();
+    _authRepository.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
-      value: _authenticationRepository,
+      value: _authRepository,
       child: BlocProvider.value(
-        value: _authenticationBloc,
+        value: _authBloc,
         child: const AppView(),
       ),
     );

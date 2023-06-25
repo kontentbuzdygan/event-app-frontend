@@ -1,0 +1,119 @@
+import "package:auto_route/auto_route.dart";
+import "package:event_app/api/models/event.dart";
+import "package:event_app/api/rest_client.dart";
+import "package:event_app/errors.dart";
+import "package:event_app/features/events/tags/tags.dart";
+import "package:event_app/router/router.dart";
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+
+@RoutePage()
+class FeedPage extends StatefulWidget {
+  const FeedPage({super.key});
+
+  @override
+  State<FeedPage> createState() => _State();
+}
+
+class _State extends State<FeedPage> {
+  late Future<List<Event>> allEvents;
+
+  @override
+  void initState() {
+    super.initState();
+
+    allEvents = () async {
+      final events = await Event.findAll();
+      await RestClient.runCached(
+        () => Future.wait(
+          events.map((event) => event.fetchAuthor()),
+        ),
+      );
+      return events;
+    }();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.feedTitle),
+        actions: [
+          IconButton(
+            onPressed: () => throw const ApplicationException(message: "Kurwa"),
+            tooltip: "Throw",
+            icon: const Icon(Icons.sports_basketball_outlined),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add_outlined),
+        onPressed: () => context.pushRoute(const CreateEventRoute()),
+      ),
+      body: FutureBuilder(
+        future: allEvents,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return eventsListView(snapshot.requireData);
+          }
+
+          return const Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
+  }
+
+  Widget eventsListView(Iterable<Event> events) {
+    return ListView(
+      children: events.map(eventListItem).toList(),
+    );
+  }
+
+  Widget eventListItem(Event event) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return InkWell(
+      onTap: () => context.pushRoute(EventViewRoute(id: event.id, event: event)),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        alignment: Alignment.topLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (event.banner != null)
+              Image.network(event.banner!.small.toString()),
+            Text(event.title, style: theme.textTheme.titleLarge),
+            const SizedBox(height: 5),
+            Text(l10n.createdBy(event.author!.displayName)),
+            const SizedBox(height: 5),
+            Text(
+              event.endsAt != null
+                  ? l10n.eventFromTo(event.startsAt, event.endsAt!)
+                  : l10n.startsAtDate(event.startsAt),
+              style: TextStyle(color: theme.colorScheme.primary),
+            ),
+            const SizedBox(height: 5),
+            Text(event.description),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                OutlinedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.comment_outlined, size: 16),
+                    label: Text(event.commentCount.toString())),
+                const SizedBox(width: 8),
+                Tags(
+                  event: event,
+                  short: true,
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

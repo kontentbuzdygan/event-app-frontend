@@ -4,19 +4,24 @@ import "package:rest_client/rest_client.dart";
 const String _apiPath = "profiles";
 
 class ProfileRepository {
+  final RestClient _restClient;
+
+  ProfileRepository({ required RestClient restClient })  
+    : _restClient = restClient;
+
   Future<void> update(NewProfile profile) async {
-    await restClient.patch([_apiPath, "me"], profile.toJson());
+    await _restClient.patch([_apiPath, "me"], profile.toJson());
   }
 
   Future<Profile> find(int id) async {
-    return Profile.fromJson(await restClient.get([_apiPath, id]));
+    return Profile.fromJson(await _restClient.get([_apiPath, id]));
   }
 
   Future<List<Profile>> search(String name) async {
     JsonObject json;
 
     try {
-      json = await restClient.get([_apiPath, "?name=$name"]);
+      json = await _restClient.get([_apiPath, "?name=$name"]);
     } on NotFound {
       return [];
     }
@@ -28,6 +33,6 @@ class ProfileRepository {
   }
 
   Future<Profile> me() async {
-    return Profile.fromJson(await restClient.get([_apiPath, "me"]));
+    return Profile.fromJson(await _restClient.get([_apiPath, "me"]));
   }
 }

@@ -2,88 +2,71 @@ import "dart:async";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:rest_client/rest_client.dart";
 
-const String _apiPath = "auth";
-const String _tokenStorageKey = "event-app-user-token";
+part "auth_status.dart";
 
-enum AuthStatus { unknown, authenticated, unauthenticated }
+const String _apiPath = "auth";
+const String _accessTokenStroageKey = "event-app-access-token";
 
 class AuthRepository {
-  final _storage = FlutterSecureStorage();
-  final _controller = StreamController<AuthStatus>();
+  final FlutterSecureStorage _storage;
+  final RestClient _restClient;
+  final _controller =  StreamController<AuthStatus>();
+
   Stream<AuthStatus> get status async* {
+    yield AuthStatus.unknown;
     yield* _controller.stream;
   }
 
-  Future<void> _writeToken(String? token) async {
-    await _storage.write(key: _tokenStorageKey, value: token);
-  }
-
-  Future<void> _deleteToken() async {
-    await _storage.delete(key: _tokenStorageKey);
-  }
-
-  Future<String?> readToken() => _storage.read(key: _tokenStorageKey);
+  AuthRepository({required RestClient restClient, required FlutterSecureStorage storage}) 
+    : _restClient = restClient,
+    _storage = storage;
 
   Future<bool> exists({required String email}) async {
-    final res =
-        await restClient.post([_apiPath, "user-exists"], {"email": email});
+    final res = await _restClient.post(
+      [_apiPath, "user-exists"], 
+      {"email": email},
+    );
     return res["user_exists"];
   }
 
-  Future<void> restoreAndRefreshToken() async {
-    final token = await readToken();
-
-    if (token == null) {
-      _controller.add(AuthStatus.unauthenticated);
-      return;
-    }
-    restClient.setAuthorizationHeader(token);
-    final res = await restClient.post([_apiPath, "refresh"]);
-    await _writeToken(token);
-    restClient.setAuthorizationHeader(res["token"]);
-    _controller.add(AuthStatus.authenticated);
-  }
-
-  Future<void> signOut() async {
-    await restClient.delete([_apiPath, "sign-out"]);
-    await _deleteToken();
-
-    restClient.setAuthorizationHeader(null);
-    _controller.add(AuthStatus.unauthenticated);
+  Future<void> restoreAndResfreshToken() async {
+    final token = await _storage.read(key: _accessTokenStroageKey);
+    _restClient.accessToken = token;
+    final res = await _restClient.post([_apiPath, "refresh"]);
+    _saveToken(res["token"]);
   }
 
   Future<void> signIn({required String email, required String password}) async {
-    final res = await restClient.post([
-      _apiPath,
-      "sign-in"
-    ], {
-      "email": email,
-      "password": password,
-    });
-
-    _writeToken(res["token"]);
-    restClient.setAuthorizationHeader(res["token"]);
-    _controller.add(AuthStatus.authenticated);
+    final res = await _restClient.post(
+      [_apiPath,"sign-in"], 
+      {"email": email,"password": password}
+    );
+    _saveToken(res["token"]);
   }
 
   Future<void> signUp({required String email, required String password}) async {
-    final res = await restClient.post([
-      _apiPath,
-      "sign-up"
-    ], {
-      "email": email,
-      "password": password,
-    });
-
-    _writeToken(res["token"]);
-    print(res["token"]);
-    restClient.setAuthorizationHeader(res["token"]);
-    _controller.add(AuthStatus.authenticated);
+    final res = await _restClient.post(
+      [_apiPath, "sign-up"], 
+      {"email": email,"password": password},
+    );
+    _saveToken(res["token"]);
   }
 
-  Future<void> clearToken() async {
-    restClient.setAuthorizationHeader(null);
-    await _deleteToken();
+  Future<void> signOut() async {
+    await _restClient.delete([_apiPath, "sign-out"]);
+    clearToken();
+  }
+
+  void clearToken() {
+    _restClient.accessToken = null;
+    _storage.delete(key: _accessTokenStroageKey);
+    _controller.add(AuthStatus.unauthenticated);
+  }
+
+  void _saveToken(String token) {
+    _restClient.accessToken = token;
+    _storage.write(key: _accessTokenStroageKey, value: token);
+    _controller.add(AuthStatus.authenticated);
   }
 
   void dispose() => _controller.close();

@@ -106,7 +106,9 @@ class _FormControls extends StatelessWidget {
             padding: EdgeInsets.zero,
           ),
           rightChild: FilledButton(
-            onPressed: () => bloc.add(AuthFormSubmitted()),
+            onPressed: !state.loading ?
+              () => bloc.add(AuthFormSubmitted())
+              : null,
             child: Text(
               switch (state.formState) {
                 AuthFormAction.signingIn => "Sign In",

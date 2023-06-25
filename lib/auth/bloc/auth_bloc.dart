@@ -8,46 +8,41 @@ part "auth_state.dart";
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> { 
   
-  final AuthRepository _authenticationRepository;
-  late StreamSubscription<AuthStatus> _authenticationStatusSubscription;
+  final AuthRepository _authRepository;
+  late StreamSubscription<AuthStatus> _authStatusSubscription;
 
-  AuthBloc({required AuthRepository authenticationRepository})  
-    : _authenticationRepository = authenticationRepository,
+  AuthBloc({
+    required AuthRepository authenticationRepository,
+  }) : _authRepository = authenticationRepository,
     super(AuthUnknown()) 
   {
     on<_AuthStatusChanged>(_onAuthStatusChanged);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
-    on<AuthLogoutForced>(_onAuthLogoutForced);
 
-    _authenticationStatusSubscription = _authenticationRepository.status.listen(
+    _authStatusSubscription = _authRepository.status.listen(
       (status) => add(_AuthStatusChanged(status)),
     );
-    _authenticationRepository.restoreAndRefreshToken(); 
   }
 
   Future<void> _onAuthStatusChanged(
     _AuthStatusChanged event,
     Emitter<AuthState> emit,
-  ) async =>
+  ) async {
       switch (event.status) {
-        AuthStatus.authenticated => emit(AuthAuthenticated()),
-        AuthStatus.unauthenticated => emit(AuthUnauthenticated()),
-        _ => _authenticationRepository.restoreAndRefreshToken()
-      };
+        case AuthStatus.authenticated: emit(AuthAuthenticated());
+        case AuthStatus.unauthenticated: emit(AuthUnauthenticated());
+        case _: await _authRepository.restoreAndResfreshToken(); 
+      }
+  }
 
   void _onAuthLogoutRequested(
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
-  ) => _authenticationRepository.signOut();
-
-  void _onAuthLogoutForced(
-    AuthLogoutForced event,
-    Emitter<AuthState> emit,
-  ) => _authenticationRepository.clearToken();
+  ) => _authRepository.signOut();
 
   @override
   Future<void> close() {
-    _authenticationStatusSubscription.cancel();
+    _authStatusSubscription.cancel();
     return super.close();
   }
 }

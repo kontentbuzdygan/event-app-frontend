@@ -67,8 +67,6 @@ class RestClient {
     log("$method $uri", name: _logSourceName);
     final response = await http.Client().send(request);
 
-    print(_headers);
-
     try {
       return await response.json();
     } on Unauthorized {
