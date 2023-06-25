@@ -1,6 +1,9 @@
 import "package:auto_route/auto_route.dart";
+import "package:event_app/main.dart";
 import "package:event_app/router/router.dart";
+import "package:event_repository/event_repository.dart";
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 
@@ -10,7 +13,10 @@ class MainStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AutoRouter();
+    return RepositoryProvider(
+      create: (context) => EventRepository(restClient: restClient),
+      child: const AutoRouter()
+    );
   }
 }
 

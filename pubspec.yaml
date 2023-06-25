@@ -62,6 +62,8 @@ dependencies:
     path: packages/auth_repository
   profile_repository:
     path: packages/profile_repository
+  event_repository:
+    path: packages/event_repository
   rest_client:
     path: packages/rest_client
 

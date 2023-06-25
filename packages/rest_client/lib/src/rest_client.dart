@@ -8,7 +8,7 @@ import "json.dart";
 import "utils.dart";
 import "package:http/http.dart" as http;
 
-const _logSourceName = "event_app/api/rest_client";
+const _logSourceName = "rest_client";
 
 typedef Cache = Map<String, Completer<JsonObject>>;
 
