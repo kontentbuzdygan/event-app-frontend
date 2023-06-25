@@ -2,24 +2,21 @@ import "dart:async";
 import "dart:convert";
 import "dart:developer";
 import "dart:io";
-import "package:event_app/api/exceptions.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
-import "package:event_app/api/json.dart";
-import "package:event_app/utils.dart";
+
+import "json.dart";
+import "utils.dart";
 import "package:http/http.dart" as http;
 
 const _logSourceName = "rest_client";
 
-RestClient _rest = RestClient();
-RestClient get rest => _rest;
-
-void overrideRestClient(RestClient value) {
-  _rest = value;
-}
-
 typedef Cache = Map<String, Completer<JsonObject>>;
 
-class RestClient {
+final class RestClient {
+  String? accessToken;
+
+  RestClient();
+
   /// Runs the given callback while caching all GET requests made by any RestClient
   /// instance. Meant to be used in the scope of a single view or widget, where
   /// you might perform many requests to the same endpoint within a short period
@@ -61,18 +58,14 @@ class RestClient {
     final uri = Uri.parse("$baseUrl/$path");
 
     final request = http.Request(method, uri);
+
     request.headers.addAll(_headers);
     request.body = jsonEncode(body);
 
     log("$method $uri", name: _logSourceName);
     final response = await http.Client().send(request);
-
-    try {
-      return await response.json();
-    } on Unauthorized {
-      // App.authState.deleteUserToken();
-      rethrow;
-    }
+    
+    return await response.json();
   }
 
   Future<JsonObject> _runCached(
@@ -98,7 +91,7 @@ class RestClient {
   Map<String, String> get _headers => {
         HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8",
         HttpHeaders.acceptHeader: "application/json",
-        // if (App.authState.loggedIn)
-        //   HttpHeaders.authorizationHeader: "Bearer ${App.authState.userToken}"
+        if (accessToken != null) 
+          HttpHeaders.authorizationHeader: "Bearer ${accessToken}"
       };
 }

@@ -8,7 +8,7 @@ import "package:event_app/features/events/event_view/map.dart";
 import "package:event_app/features/events/tags/tags.dart";
 import "package:event_app/api/models/story.dart";
 import "package:event_app/features/story/story_list_view.dart";
-import "package:event_app/router.dart";
+import "package:event_app/router/router.dart";
 import "package:flutter/material.dart";
 
 class EventView extends StatefulWidget {

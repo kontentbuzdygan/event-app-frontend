@@ -1,0 +1,11 @@
+name: rest_client
+description: Dart package to comunicate with the API
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  http: ^0.13.5
+  flutter_dotenv: ^5.1.0
+  equatable: ^2.0.5

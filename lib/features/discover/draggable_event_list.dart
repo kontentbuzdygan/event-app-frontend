@@ -4,7 +4,7 @@ import "package:event_app/api/models/profile.dart";
 import "package:event_app/features/discover/discover_screen_notifier.dart";
 import "package:event_app/features/events/event_compact.dart";
 import "package:event_app/features/profile/profile_compact.dart";
-import "package:event_app/router.dart";
+import "package:event_app/router/router.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 

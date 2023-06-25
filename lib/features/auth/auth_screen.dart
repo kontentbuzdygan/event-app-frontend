@@ -1,13 +1,8 @@
-import "package:auto_route/annotations.dart";
 import "package:event_app/features/auth/auth_state.dart";
-import "package:event_app/features/auth/slide_out_buttons.dart";
-import "package:event_app/main.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:form_validator/form_validator.dart";
-import "package:provider/provider.dart";
 
-@RoutePage()
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
 
@@ -64,19 +59,19 @@ class _State extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   Future<void> signIn(String email, String password) async {
-    await App.authState.signIn(email, password);
+    // await App.authState.signIn(email, password);
   }
 
   Future<void> signUp(String email, String password) async {
-    await App.authState.signUp(email, password);
-    await App.authState.signIn(email, password);
+    // await App.authState.signUp(email, password);
+    // await App.authState.signIn(email, password);
   }
 
   Future<void> userExists(String email) async {
-    final userExists = await App.authState.userExists(email);
+    // final userExists = await App.authState.userExists(email);
     setState(() {
-      formState.value =
-          userExists ? _FormState.signingIn : _FormState.signingUp;
+      // formState.value =
+      //     userExists ? _FormState.signingIn : _FormState.signingUp;
     });
   }
 
@@ -95,7 +90,7 @@ class _State extends State<AuthPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final authState = context.watch<AuthState>();
+    // final authState = context.watch<AuthState>();
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.welcome)),
@@ -108,23 +103,23 @@ class _State extends State<AuthPage> with TickerProviderStateMixin {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  emailField(authState),
+                  // emailField(authState),
                   SizeTransition(
                     sizeFactor: sizeAnimation,
-                    child: Column(
+                    child: const Column(
                       children: [
-                        const SizedBox(height: 12),
-                        passwordField(authState),
+                        SizedBox(height: 12),
+                        // passwordField(authState),
                       ],
                     ),
                   ),
                   const SizedBox(height: 12),
-                  SlideOutButtons(
-                    transitionTime: transitionTime,
-                    expanded: formState.value.canGoBack,
-                    leftChild: goBackButton,
-                    rightChild: continueButton(authState),
-                  ),
+                  // SlideOutButtons(
+                  //   transitionTime: transitionTime,
+                  //   expanded: formState.value.canGoBack,
+                  //   leftChild: goBackButton,
+                  //   rightChild: continueButton(authState),
+                  // ),
                 ],
               ),
             ),
@@ -211,3 +206,4 @@ class _State extends State<AuthPage> with TickerProviderStateMixin {
     );
   }
 }
+

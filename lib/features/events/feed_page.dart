@@ -1,10 +1,9 @@
-import "package:auto_route/annotations.dart";
 import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
 import "package:event_app/api/rest_client.dart";
 import "package:event_app/errors.dart";
 import "package:event_app/features/events/tags/tags.dart";
-import "package:event_app/router.dart";
+import "package:event_app/router/router.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
@@ -51,7 +50,7 @@ class _State extends State<FeedPage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add_outlined),
-        onPressed: () => context.pushRoute(CreateEventRoute()),
+        onPressed: () => context.pushRoute(const CreateEventRoute()),
       ),
       body: FutureBuilder(
         future: allEvents,
