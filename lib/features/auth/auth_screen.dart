@@ -1,10 +1,8 @@
-import "package:auto_route/auto_route.dart";
 import "package:event_app/features/auth/auth_state.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:form_validator/form_validator.dart";
 
-@RoutePage()
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
 
@@ -114,10 +112,6 @@ class _State extends State<AuthPage> with TickerProviderStateMixin {
                         // passwordField(authState),
                       ],
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => {},
-                    child: const Text("No dalej, zrób to")
                   ),
                   const SizedBox(height: 12),
                   // SlideOutButtons(

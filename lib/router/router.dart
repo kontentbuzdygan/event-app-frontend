@@ -1,7 +1,7 @@
 
 import "package:auto_route/auto_route.dart";
 import "package:event_app/api/models/event.dart";
-import "package:event_app/features/auth/auth_screen.dart";
+import "package:event_app/auth_form/auth_form.dart";
 import "package:event_app/features/discover/discover_screen.dart";
 import "package:event_app/features/events/comments/comments_view_screen.dart";
 import "package:event_app/features/events/create_event_page.dart";

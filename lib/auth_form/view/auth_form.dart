@@ -8,7 +8,6 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_form_builder/flutter_form_builder.dart";
 import "package:form_validator/form_validator.dart";
 
-
 class AuthForm extends StatefulWidget {
   const AuthForm({super.key});
 

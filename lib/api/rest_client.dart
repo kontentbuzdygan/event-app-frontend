@@ -8,7 +8,7 @@ import "package:event_app/api/json.dart";
 import "package:event_app/utils.dart";
 import "package:http/http.dart" as http;
 
-const _logSourceName = "event_app/api/rest_client";
+const _logSourceName = "rest_client";
 
 RestClient _rest = RestClient();
 RestClient get rest => _rest;

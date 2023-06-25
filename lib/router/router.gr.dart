@@ -84,6 +84,12 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    AuthStackRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AuthStack(),
+      );
+    },
     LoadingRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -100,12 +106,6 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const MainPage(),
-      );
-    },
-    AuthStackRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const AuthStack(),
       );
     },
   };
@@ -309,6 +309,20 @@ class ProfileViewRouteArgs {
 }
 
 /// generated route for
+/// [AuthStack]
+class AuthStackRoute extends PageRouteInfo<void> {
+  const AuthStackRoute({List<PageRouteInfo>? children})
+      : super(
+          AuthStackRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AuthStackRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [LoadingPage]
 class LoadingRoute extends PageRouteInfo<void> {
   const LoadingRoute({List<PageRouteInfo>? children})
@@ -346,20 +360,6 @@ class MainRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'MainRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [AuthStack]
-class AuthStackRoute extends PageRouteInfo<void> {
-  const AuthStackRoute({List<PageRouteInfo>? children})
-      : super(
-          AuthStackRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'AuthStackRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

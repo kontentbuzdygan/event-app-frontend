@@ -8,8 +8,11 @@ const String _tokenStorageKey = "event-app-user-token";
 enum AuthStatus { unknown, authenticated, unauthenticated }
 
 class AuthRepository {
-  final _controller = StreamController<AuthStatus>();
   final _storage = FlutterSecureStorage();
+  final _controller = StreamController<AuthStatus>();
+  Stream<AuthStatus> get status async* {
+    yield* _controller.stream;
+  }
 
   Future<void> _writeToken(String? token) async {
     await _storage.write(key: _tokenStorageKey, value: token);
@@ -21,10 +24,6 @@ class AuthRepository {
 
   Future<String?> readToken() => _storage.read(key: _tokenStorageKey);
 
-  Stream<AuthStatus> get status async* {
-    yield* _controller.stream;
-  }
-
   Future<bool> exists({required String email}) async {
     final res =
         await restClient.post([_apiPath, "user-exists"], {"email": email});
@@ -32,7 +31,7 @@ class AuthRepository {
   }
 
   Future<void> restoreAndRefreshToken() async {
-    final token = null;
+    final token = await readToken();
 
     if (token == null) {
       _controller.add(AuthStatus.unauthenticated);
@@ -41,7 +40,6 @@ class AuthRepository {
     restClient.setAuthorizationHeader(token);
     final res = await restClient.post([_apiPath, "refresh"]);
     await _writeToken(token);
-    print(res["token"]);
     restClient.setAuthorizationHeader(res["token"]);
     _controller.add(AuthStatus.authenticated);
   }
